@@ -1,0 +1,1 @@
+export { TextMotion } from './TextMotion';

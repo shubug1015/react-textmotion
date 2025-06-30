@@ -1,0 +1,18 @@
+# dependencies
+node_modules
+
+# output of build
+dist
+
+# output of test coverage
+coverage
+
+# cache
+.cache
+
+# logs
+*.log
+
+# environment variables & system files
+.env
+.DS_Store

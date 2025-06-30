@@ -1,1 +1,16 @@
-pnpm test
+echo "🔍 Running lint-staged before commit..."
+
+# Check if pnpm is installed
+if ! command -v pnpm >/dev/null 2>&1; then
+  echo "❌ pnpm is not installed. Please install it and try again."
+  exit 1
+fi
+
+# Run lint-staged
+if pnpm exec lint-staged; then
+  echo "✅ lint-staged passed. All files are properly linted and formatted."
+else
+  echo "❌ lint-staged failed. Commit aborted."
+  echo "🛠 Please fix the issues and try committing again."
+  exit 1
+fi

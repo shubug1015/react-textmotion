@@ -7,7 +7,8 @@
   }
 }
 
-span {
+.text-motion span {
   display: inline-block;
   white-space: pre;
+  animation: fade var(--duration) ease-out var(--delay) both;
 }

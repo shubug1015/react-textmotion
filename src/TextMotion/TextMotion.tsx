@@ -1,6 +1,6 @@
 import './TextMotion.scss';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 
 type TextMotionProps = {
   as?: keyof React.JSX.IntrinsicElements;
@@ -12,12 +12,13 @@ const DEFAULT_DELAY = 0.025;
 
 export const TextMotion: React.FC<TextMotionProps> = ({ as = 'span', text }) => {
   const Tag = as;
+  const letters = useMemo(() => text.split(''), [text]);
 
   return (
     <Tag className="text-motion" aria-label={text}>
-      {text.split('').map((item, index) => (
+      {letters.map((letter, index) => (
         <span
-          key={`${item}-${index}`}
+          key={`${letter}-${index}`}
           style={
             {
               '--duration': `${DEFAULT_DURATION}s`,
@@ -26,7 +27,7 @@ export const TextMotion: React.FC<TextMotionProps> = ({ as = 'span', text }) => 
           }
           aria-hidden="true"
         >
-          {item === ' ' ? '\u00A0' : item}
+          {letter === ' ' ? '\u00A0' : letter}
         </span>
       ))}
     </Tag>

@@ -1,17 +1,31 @@
 import './TextMotion.scss';
 
+import React from 'react';
+
 type TextMotionProps = {
   as?: keyof React.JSX.IntrinsicElements;
   text: string;
 };
 
+const DEFAULT_DURATION = 0.25;
+const DEFAULT_DELAY = 0.025;
+
 export const TextMotion: React.FC<TextMotionProps> = ({ as = 'span', text }) => {
   const Tag = as;
 
   return (
-    <Tag aria-label={text}>
+    <Tag className="text-motion" aria-label={text}>
       {text.split('').map((item, index) => (
-        <span key={index} style={{ animation: `fade 0.25s ease-out ${index * 0.025}s both` }} aria-hidden="true">
+        <span
+          key={`${item}-${index}`}
+          style={
+            {
+              '--duration': `${DEFAULT_DURATION}s`,
+              '--delay': `${index * DEFAULT_DELAY}s`,
+            } as React.CSSProperties
+          }
+          aria-hidden="true"
+        >
           {item === ' ' ? '\u00A0' : item}
         </span>
       ))}

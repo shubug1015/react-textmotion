@@ -1,0 +1,38 @@
+name: PR Change Checker
+
+on:
+  pull_request_target:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  check-changes:
+    name: Check for Source Changes
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+      changed_files: ${{ steps.filter.outputs.changed_files }}
+
+    steps:
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+
+      - name: Check for changes in source files
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: shell
+          filters: |
+            changed:
+              - 'src/**/*.ts'
+              - 'src/**/*.tsx'
+
+      - name: Post result as comment
+        if: ${{ steps.filter.outputs.changed == 'true' }}
+        run: |
+          echo "Source code was changed in this PR."

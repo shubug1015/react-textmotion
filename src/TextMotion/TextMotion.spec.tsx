@@ -1,102 +1,129 @@
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 
 import { splitText, TextMotion } from './TextMotion';
 
+afterEach(() => cleanup());
+
 describe('TextMotion component', () => {
-  const getSpans = (label: string) =>
-    screen.getByLabelText(label).querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
+  const TEXT = 'Hello';
 
-  it('renders the container with correct aria-label', () => {
-    render(<TextMotion text="Hello" />);
+  const getSpans = (label: string) => {
+    const elements = screen.getAllByLabelText(label);
+    const container = elements[elements.length - 1];
 
-    expect(screen.getByLabelText('Hello')).toBeInTheDocument();
+    return container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
+  };
+
+  describe('container rendering', () => {
+    it('renders with correct aria-label', () => {
+      render(<TextMotion text={TEXT} />);
+
+      expect(screen.getByLabelText(TEXT)).toBeInTheDocument();
+    });
+
+    it('renders default as <span> tag', () => {
+      render(<TextMotion text={TEXT} />);
+
+      expect(screen.getByLabelText(TEXT).tagName.toLowerCase()).toBe('span');
+    });
+
+    it('renders custom tag via "as" prop', () => {
+      render(<TextMotion as="div" text={TEXT} />);
+
+      expect(screen.getByLabelText(TEXT).tagName.toLowerCase()).toBe('div');
+    });
+
+    it('applies "text-motion" class', () => {
+      render(<TextMotion text={TEXT} />);
+
+      expect(screen.getByLabelText(TEXT)).toHaveClass('text-motion');
+    });
   });
 
-  it('renders default tag as <span>', () => {
-    render(<TextMotion text="Hello" />);
+  describe('text splitting and rendering', () => {
+    it('renders no spans for empty text', () => {
+      render(<TextMotion text="" />);
 
-    expect(screen.getByLabelText('Hello').tagName.toLowerCase()).toBe('span');
+      const container = screen.getByLabelText('');
+
+      expect(container.querySelectorAll('span[aria-hidden="true"]').length).toBe(0);
+    });
+
+    it('replaces spaces with non-breaking spaces', () => {
+      render(<TextMotion text="A B" />);
+
+      const spans = getSpans('A B');
+
+      expect(spans[1].textContent).toBe('\u00A0');
+    });
+
+    it('splits into characters by default', () => {
+      render(<TextMotion text={TEXT} />);
+
+      const spans = getSpans(TEXT);
+
+      expect(spans.length).toBe(TEXT.length);
+      expect(Array.from(spans, s => s.textContent)).toEqual([...TEXT]);
+    });
+
+    it('splits into words when split="word"', () => {
+      render(<TextMotion text="Hello World" split="word" />);
+
+      const spans = getSpans('Hello World');
+
+      expect(Array.from(spans, s => s.textContent)).toEqual(['Hello', '\u00A0', 'World']);
+    });
   });
 
-  it('renders custom tag via "as" prop', () => {
-    render(<TextMotion as="div" text="Hello" />);
+  describe('animation styles', () => {
+    it('applies default "fade" animation with proper timing', () => {
+      render(<TextMotion text={TEXT} />);
 
-    expect(screen.getByLabelText('Hello').tagName.toLowerCase()).toBe('div');
-  });
+      const span = getSpans(TEXT)[0];
+      const anim = span.style.animation;
 
-  it('applies the "text-motion" class to the container', () => {
-    render(<TextMotion text="Hello" />);
+      expect(anim).toContain('fade');
+      expect(anim).toContain('0.25s');
+      expect(anim).toContain('0s');
+    });
 
-    expect(screen.getByLabelText('Hello')).toHaveClass('text-motion');
-  });
+    it('applies incremental delay between spans', () => {
+      render(<TextMotion text={TEXT} />);
 
-  it('renders no spans when text is empty', () => {
-    render(<TextMotion text="" />);
+      const spans = getSpans(TEXT);
 
-    expect(getSpans('').length).toBe(0);
-  });
+      expect(Array.from(spans, s => s.style.animation.match(/(\d*\.?\d+s)(?=\s+both)/)?.[1] ?? '')).toEqual([
+        '0s',
+        '0.025s',
+        '0.05s',
+        '0.075s',
+        '0.1s',
+      ]);
+    });
 
-  it('renders non-breaking space for whitespace characters', () => {
-    render(<TextMotion text="A B" />);
+    it.each([
+      [['fade'], ['fade']],
+      [['slide'], ['slide']],
+      [
+        ['fade', 'slide'],
+        ['fade', 'slide'],
+      ],
+    ])('applies custom presets %p', (presets, expected) => {
+      render(<TextMotion text={TEXT} presets={presets as any} />);
 
-    const spans = getSpans('A B');
+      const anim = getSpans(TEXT)[0].style.animation;
 
-    expect(spans[1].textContent).toBe('\u00A0');
-  });
-
-  it('splits text into characters by default', () => {
-    render(<TextMotion text="Hello" />);
-
-    const spans = getSpans('Hello');
-
-    expect(spans.length).toBe(5);
-    expect(spans[0].textContent).toBe('H');
-    expect(spans[1].textContent).toBe('e');
-    expect(spans[2].textContent).toBe('l');
-    expect(spans[3].textContent).toBe('l');
-    expect(spans[4].textContent).toBe('o');
-  });
-
-  it('splits text into words when split="word"', () => {
-    render(<TextMotion text="Hello World" split="word" />);
-
-    const spans = getSpans('Hello World');
-    const contents = Array.from(spans).map(s => s.textContent);
-
-    expect(contents).toEqual(['Hello', '\u00A0', 'World']);
-  });
-
-  it('applies correct animation style (duration, delay)', () => {
-    render(<TextMotion text="Hello" />);
-
-    const spans = getSpans('Hello');
-
-    expect(spans[0].style.getPropertyValue('--duration')).toBe('0.25s');
-    expect(spans[0].style.getPropertyValue('--delay')).toBe('0s');
-    expect(spans[1].style.getPropertyValue('--delay')).toBe('0.025s');
-  });
-
-  it('applies correct style for word-split', () => {
-    render(<TextMotion text="Hello World" split="word" />);
-
-    const spans = getSpans('Hello World');
-
-    expect(spans[0].style.getPropertyValue('--delay')).toBe('0s');
-    expect(spans[1].style.getPropertyValue('--delay')).toBe('0.025s');
-    expect(spans[2].style.getPropertyValue('--delay')).toBe('0.05s');
+      expected.forEach(p => expect(anim).toContain(p));
+    });
   });
 });
 
 describe('splitText utility', () => {
-  it('splits by character', () => {
-    expect(splitText('Hello', 'character')).toEqual(['H', 'e', 'l', 'l', 'o']);
-  });
-
-  it('splits by word (preserving spaces)', () => {
-    expect(splitText('Hello World', 'word')).toEqual(['Hello', ' ', 'World']);
-  });
-
-  it('falls back to character split on invalid input', () => {
-    expect(splitText('Hello', 'invalid' as any)).toEqual(['H', 'e', 'l', 'l', 'o']);
+  it.each([
+    ['character', 'Hello', ['H', 'e', 'l', 'l', 'o']],
+    ['word', 'Hello World', ['Hello', ' ', 'World']],
+    ['invalid' as any, 'Hi', ['H', 'i']],
+  ])('splits "%s" correctly', (split, input, expected) => {
+    expect(splitText(input, split as any)).toEqual(expected);
   });
 });

@@ -1,4 +1,4 @@
-@keyframes fade {
+@keyframes fadeIn {
   from {
     opacity: 0;
   }
@@ -7,8 +7,35 @@
   }
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0.4rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-0.4rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 .text-motion span {
   display: inline-block;
   white-space: pre;
-  animation: fade var(--duration) ease-out var(--delay) both;
+  animation: var(--animation) var(--duration) ease-out var(--delay) both;
 }

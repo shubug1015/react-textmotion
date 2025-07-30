@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react';
 
-import { splitText, TextMotion } from './TextMotion';
+import { TextMotion } from './TextMotion';
 
 afterEach(() => cleanup());
 
@@ -115,15 +115,5 @@ describe('TextMotion component', () => {
 
       expected.forEach(p => expect(anim).toContain(p));
     });
-  });
-});
-
-describe('splitText utility', () => {
-  it.each([
-    ['character', 'Hello', ['H', 'e', 'l', 'l', 'o']],
-    ['word', 'Hello World', ['Hello', ' ', 'World']],
-    ['invalid' as any, 'Hi', ['H', 'i']],
-  ])('splits "%s" correctly', (split, input, expected) => {
-    expect(splitText(input, split as any)).toEqual(expected);
   });
 });

@@ -1,0 +1,5 @@
+.text-motion span {
+  display: inline-block;
+  white-space: pre;
+  animation: var(--animation) var(--duration) ease-out var(--delay) both;
+}

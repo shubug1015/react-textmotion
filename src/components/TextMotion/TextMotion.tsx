@@ -25,7 +25,12 @@ const generateAnimationByPresets = (presets: PresetType[], index: number): React
   return { animation };
 };
 
-export const TextMotion = ({ as = 'span', text, split = 'character', presets = ['fadeIn'] }: TextMotionProps) => {
+export const TextMotion: React.FC<TextMotionProps> = ({
+  as = 'span',
+  text,
+  split = 'character',
+  presets = ['fadeIn'],
+}) => {
   const Tag = as;
   const letters = useMemo(() => splitText(text, split), [text, split]);
 

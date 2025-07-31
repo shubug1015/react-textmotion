@@ -5,42 +5,43 @@ import React, { useMemo } from 'react';
 
 import { splitText } from '../../utils';
 
+type PresetType = 'fade' | 'slide';
+export type MotionType = Partial<Record<PresetType, { duration: number; delay: number }>>;
 export type SplitType = 'character' | 'word';
-type PresetType = 'fadeIn' | 'fadeOut' | 'slideUp' | 'slideDown';
 
 type TextMotionProps = {
   as?: keyof React.JSX.IntrinsicElements;
   text: string;
+  motion?: MotionType;
   split?: SplitType;
-  presets?: PresetType[];
 };
 
-const DEFAULT_DURATION = 0.25;
-const DEFAULT_DELAY = 0.025;
-
-const generateAnimationByPresets = (presets: PresetType[], index: number): React.CSSProperties => {
-  const formattedDelay = parseFloat((index * DEFAULT_DELAY).toFixed(3));
-  const animation = presets.map(preset => `${preset} ${DEFAULT_DURATION}s ease-out ${formattedDelay}s both`).join(', ');
-
-  return { animation };
-};
-
-export const TextMotion: React.FC<TextMotionProps> = ({
-  as = 'span',
-  text,
-  split = 'character',
-  presets = ['fadeIn'],
-}) => {
+export const TextMotion: React.FC<TextMotionProps> = ({ as = 'span', text, motion, split = 'character' }) => {
   const Tag = as;
+
   const letters = useMemo(() => splitText(text, split), [text, split]);
+  const mergedMotion = useMemo(() => {
+    if (motion && Object.keys(motion).length) return motion;
+    return {};
+  }, [motion]);
 
   return (
     <Tag className="text-motion" aria-label={text}>
-      {letters.map((letter, index) => (
-        <span key={`${letter}-${index}`} style={generateAnimationByPresets(presets, index)} aria-hidden="true">
-          {letter === ' ' ? '\u00A0' : letter}
-        </span>
-      ))}
+      {letters.map((letter, index) => {
+        const animation = (Object.keys(mergedMotion) as PresetType[])
+          .map(name => {
+            const { duration, delay } = mergedMotion[name]!;
+            const totalDelay = index * delay;
+            return `${name} ${duration}s ease-out ${totalDelay}s both`;
+          })
+          .join(', ');
+
+        return (
+          <span key={`${letter}-${index}`} style={{ animation }} aria-hidden="true">
+            {letter === ' ' ? '\u00A0' : letter}
+          </span>
+        );
+      })}
     </Tag>
   );
 };

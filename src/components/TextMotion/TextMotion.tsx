@@ -5,8 +5,28 @@ import React, { useMemo } from 'react';
 
 import { mergeMotion, splitText } from '../../utils';
 
-type PresetType = 'fade' | 'slide';
-export type MotionType = Partial<Record<PresetType, { duration: number; delay: number }>>;
+export type PresetType = 'fade' | 'slide';
+
+type FadePreset = 'in' | 'out';
+type SlidePreset = 'up' | 'down' | 'right' | 'left';
+
+type FadeMotion = {
+  preset: FadePreset;
+  duration: number;
+  delay: number;
+};
+
+type SlideMotion = {
+  preset: SlidePreset;
+  duration: number;
+  delay: number;
+};
+
+export type MotionType = {
+  fade?: FadeMotion;
+  slide?: SlideMotion;
+};
+
 export type SplitType = 'character' | 'word';
 
 type TextMotionProps = {
@@ -16,9 +36,7 @@ type TextMotionProps = {
   split?: SplitType;
 };
 
-export const TextMotion: React.FC<TextMotionProps> = ({ as = 'span', text, motion, split = 'character' }) => {
-  const Tag = as;
-
+export const TextMotion: React.FC<TextMotionProps> = ({ as: Tag = 'span', text, motion, split = 'character' }) => {
   const letters = useMemo(() => splitText(text, split), [text, split]);
   const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
 
@@ -27,9 +45,9 @@ export const TextMotion: React.FC<TextMotionProps> = ({ as = 'span', text, motio
       {letters.map((letter, index) => {
         const animation = (Object.keys(mergedMotion) as PresetType[])
           .map(name => {
-            const { duration, delay } = mergedMotion[name]!;
+            const { preset, duration, delay } = mergedMotion[name]!;
             const totalDelay = index * delay;
-            return `${name} ${duration}s ease-out ${totalDelay}s both`;
+            return `${name}-${preset} ${duration}s ease-out ${totalDelay}s both`;
           })
           .join(', ');
 

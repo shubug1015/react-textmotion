@@ -1,4 +1,4 @@
-@keyframes fade {
+@keyframes fade-in {
   from {
     opacity: 0;
   }
@@ -7,11 +7,47 @@
   }
 }
 
-@keyframes slide {
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up {
   from {
     transform: translateY(0.4rem);
   }
   to {
     transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-0.4rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: translateX(-0.4rem);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(0.4rem);
+  }
+  to {
+    transform: translateX(0);
   }
 }

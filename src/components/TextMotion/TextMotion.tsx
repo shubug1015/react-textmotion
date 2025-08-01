@@ -3,7 +3,7 @@ import '../../styles/animations.scss';
 
 import React, { useMemo } from 'react';
 
-import { mergeMotion, splitText } from '../../utils';
+import { generateAnimation, mergeMotion, splitText } from '../../utils';
 
 export type PresetType = 'fade' | 'slide';
 
@@ -43,13 +43,7 @@ export const TextMotion: React.FC<TextMotionProps> = ({ as: Tag = 'span', text, 
   return (
     <Tag className="text-motion" aria-label={text}>
       {letters.map((letter, index) => {
-        const animation = (Object.keys(mergedMotion) as PresetType[])
-          .map(name => {
-            const { preset, duration, delay } = mergedMotion[name]!;
-            const totalDelay = index * delay;
-            return `${name}-${preset} ${duration}s ease-out ${totalDelay}s both`;
-          })
-          .join(', ');
+        const animation = generateAnimation(mergedMotion, index);
 
         return (
           <span key={`${letter}-${index}`} style={{ animation }} aria-hidden="true">

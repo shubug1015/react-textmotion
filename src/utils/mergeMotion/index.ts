@@ -1,2 +1,1 @@
 export { mergeMotion } from './mergeMotion';
-export { splitText } from './spliltText';

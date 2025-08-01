@@ -3,7 +3,7 @@ import '../../styles/animations.scss';
 
 import React, { useMemo } from 'react';
 
-import { splitText } from '../../utils';
+import { mergeMotion, splitText } from '../../utils';
 
 type PresetType = 'fade' | 'slide';
 export type MotionType = Partial<Record<PresetType, { duration: number; delay: number }>>;
@@ -20,10 +20,7 @@ export const TextMotion: React.FC<TextMotionProps> = ({ as = 'span', text, motio
   const Tag = as;
 
   const letters = useMemo(() => splitText(text, split), [text, split]);
-  const mergedMotion = useMemo(() => {
-    if (motion && Object.keys(motion).length) return motion;
-    return {};
-  }, [motion]);
+  const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
 
   return (
     <Tag className="text-motion" aria-label={text}>

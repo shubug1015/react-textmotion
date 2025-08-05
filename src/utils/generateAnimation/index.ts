@@ -1,0 +1,1 @@
+export { generateAnimation } from './generateAnimation';

@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react';
 
-import { TextMotion } from './TextMotion';
+import { MotionType, TextMotion } from './TextMotion';
 
 afterEach(() => cleanup());
 
@@ -76,44 +76,45 @@ describe('TextMotion component', () => {
   });
 
   describe('animation styles', () => {
-    it('applies default "fade" animation with proper timing', () => {
-      render(<TextMotion text={TEXT} />);
-
-      const span = getSpans(TEXT)[0];
-      const anim = span.style.animation;
-
-      expect(anim).toContain('fade');
-      expect(anim).toContain('0.25s');
-      expect(anim).toContain('0s');
-    });
-
-    it('applies incremental delay between spans', () => {
+    it('has no animation style by default', () => {
       render(<TextMotion text={TEXT} />);
 
       const spans = getSpans(TEXT);
 
-      expect(Array.from(spans, s => s.style.animation.match(/(\d*\.?\d+s)(?=\s+both)/)?.[1] ?? '')).toEqual([
-        '0s',
-        '0.025s',
-        '0.05s',
-        '0.075s',
-        '0.1s',
-      ]);
+      spans.forEach(span => {
+        expect(span.style.animation).toBe('');
+      });
     });
 
-    it.each([
-      [['fade'], ['fade']],
-      [['slide'], ['slide']],
-      [
-        ['fade', 'slide'],
-        ['fade', 'slide'],
-      ],
-    ])('applies custom presets %p', (presets, expected) => {
-      render(<TextMotion text={TEXT} presets={presets as any} />);
+    it('applies fade motion with correct timing', () => {
+      const motion: MotionType = { fade: { preset: 'in', duration: 1, delay: 0.5 } };
 
-      const anim = getSpans(TEXT)[0].style.animation;
+      render(<TextMotion text={TEXT} motion={motion} />);
 
-      expected.forEach(p => expect(anim).toContain(p));
+      expect(getSpans(TEXT)[0].style.animation).toBe('fade-in 1s ease-out 0s both');
+      expect(getSpans(TEXT)[1].style.animation).toBe('fade-in 1s ease-out 0.5s both');
+    });
+
+    it('applies slide motion with correct timing', () => {
+      const motion: MotionType = { slide: { preset: 'up', duration: 2, delay: 0.25 } };
+
+      render(<TextMotion text={TEXT} motion={motion} />);
+
+      expect(getSpans(TEXT)[0].style.animation).toBe('slide-up 2s ease-out 0s both');
+      expect(getSpans(TEXT)[1].style.animation).toBe('slide-up 2s ease-out 0.25s both');
+    });
+
+    it('applies multiple motions with correct animation', () => {
+      const motion: MotionType = {
+        fade: { preset: 'out', duration: 1, delay: 0 },
+        slide: { preset: 'left', duration: 1.5, delay: 0.5 },
+      };
+
+      render(<TextMotion text={TEXT} motion={motion} />);
+
+      expect(getSpans(TEXT)[1].style.animation).toBe(
+        'fade-out 1s ease-out 0s both, slide-left 1.5s ease-out 0.5s both'
+      );
     });
   });
 });

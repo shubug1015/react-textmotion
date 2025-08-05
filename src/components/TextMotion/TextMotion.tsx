@@ -3,44 +3,54 @@ import '../../styles/animations.scss';
 
 import React, { useMemo } from 'react';
 
-import { splitText } from '../../utils';
+import { generateAnimation, mergeMotion, splitText } from '../../utils';
+
+export type PresetType = 'fade' | 'slide';
+
+type FadePreset = 'in' | 'out';
+type SlidePreset = 'up' | 'down' | 'right' | 'left';
+
+type FadeMotion = {
+  preset: FadePreset;
+  duration: number;
+  delay: number;
+};
+
+type SlideMotion = {
+  preset: SlidePreset;
+  duration: number;
+  delay: number;
+};
+
+export type MotionType = {
+  fade?: FadeMotion;
+  slide?: SlideMotion;
+};
 
 export type SplitType = 'character' | 'word';
-type PresetType = 'fadeIn' | 'fadeOut' | 'slideUp' | 'slideDown';
 
 type TextMotionProps = {
   as?: keyof React.JSX.IntrinsicElements;
   text: string;
+  motion?: MotionType;
   split?: SplitType;
-  presets?: PresetType[];
 };
 
-const DEFAULT_DURATION = 0.25;
-const DEFAULT_DELAY = 0.025;
-
-const generateAnimationByPresets = (presets: PresetType[], index: number): React.CSSProperties => {
-  const formattedDelay = parseFloat((index * DEFAULT_DELAY).toFixed(3));
-  const animation = presets.map(preset => `${preset} ${DEFAULT_DURATION}s ease-out ${formattedDelay}s both`).join(', ');
-
-  return { animation };
-};
-
-export const TextMotion: React.FC<TextMotionProps> = ({
-  as = 'span',
-  text,
-  split = 'character',
-  presets = ['fadeIn'],
-}) => {
-  const Tag = as;
+export const TextMotion: React.FC<TextMotionProps> = ({ as: Tag = 'span', text, motion, split = 'character' }) => {
   const letters = useMemo(() => splitText(text, split), [text, split]);
+  const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
 
   return (
     <Tag className="text-motion" aria-label={text}>
-      {letters.map((letter, index) => (
-        <span key={`${letter}-${index}`} style={generateAnimationByPresets(presets, index)} aria-hidden="true">
-          {letter === ' ' ? '\u00A0' : letter}
-        </span>
-      ))}
+      {letters.map((letter, index) => {
+        const animation = generateAnimation(mergedMotion, index);
+
+        return (
+          <span key={`${letter}-${index}`} style={{ animation }} aria-hidden="true">
+            {letter === ' ' ? '\u00A0' : letter}
+          </span>
+        );
+      })}
     </Tag>
   );
 };

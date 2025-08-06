@@ -1,4 +1,4 @@
-import { MotionConfig, VariantType } from '../../components/TextMotion/TextMotion';
+import { MotionConfig, VariantType } from '../../types';
 
 export const generateAnimation = (motions: MotionConfig, index: number) =>
   (Object.keys(motions) as VariantType[])

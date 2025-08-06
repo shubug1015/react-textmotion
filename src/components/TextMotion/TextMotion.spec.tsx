@@ -1,6 +1,8 @@
 import { cleanup, render, screen } from '@testing-library/react';
 
-import { MotionConfig, TextMotion } from './TextMotion';
+import { MotionConfig } from '../../types';
+
+import { TextMotion } from './TextMotion';
 
 afterEach(() => cleanup());
 

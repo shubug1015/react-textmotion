@@ -1,4 +1,4 @@
-import { MotionConfig } from '../../components/TextMotion/TextMotion';
+import { MotionConfig } from '../../types';
 
 import { mergeMotion } from './mergeMotion';
 

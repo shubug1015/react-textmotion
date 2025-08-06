@@ -3,24 +3,8 @@ import '../../styles/animations.scss';
 
 import React, { useMemo } from 'react';
 
+import { MotionConfig, SplitType } from '../../types';
 import { generateAnimation, mergeMotion, splitText } from '../../utils';
-
-export type SplitType = 'character' | 'word';
-export type VariantType = 'fade' | 'slide';
-
-type FadeVariant = 'in' | 'out';
-type SlideVariant = 'up' | 'down' | 'right' | 'left';
-
-type Motion<V extends string> = {
-  variant: V;
-  duration: number;
-  delay: number;
-};
-
-export type MotionConfig = {
-  fade?: Motion<FadeVariant>;
-  slide?: Motion<SlideVariant>;
-};
 
 type TextMotionProps = {
   as?: keyof React.JSX.IntrinsicElements;
@@ -29,7 +13,7 @@ type TextMotionProps = {
   motion?: MotionConfig;
 };
 
-export const TextMotion: React.FC<TextMotionProps> = ({ as: Tag = 'span', text, motion, split = 'character' }) => {
+export const TextMotion: React.FC<TextMotionProps> = ({ as: Tag = 'span', text, split = 'character', motion }) => {
   const letters = useMemo(() => splitText(text, split), [text, split]);
   const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
 

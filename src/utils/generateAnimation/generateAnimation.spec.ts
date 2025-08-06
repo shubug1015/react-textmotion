@@ -1,11 +1,11 @@
-import { MotionType } from '../../components/TextMotion/TextMotion';
+import { MotionConfig } from '../../types';
 
 import { generateAnimation } from './generateAnimation';
 
 describe('generateAnimation', () => {
   it('returns correct animation string for single motion at index 0', () => {
-    const motions: MotionType = {
-      fade: { preset: 'in', duration: 2, delay: 1 },
+    const motions: MotionConfig = {
+      fade: { variant: 'in', duration: 2, delay: 1 },
     };
     const result = generateAnimation(motions, 0);
 
@@ -13,8 +13,8 @@ describe('generateAnimation', () => {
   });
 
   it('returns correct string for single motion at non-zero index', () => {
-    const motions: MotionType = {
-      fade: { preset: 'out', duration: 1.5, delay: 0.5 },
+    const motions: MotionConfig = {
+      fade: { variant: 'out', duration: 1.5, delay: 0.5 },
     };
     const result = generateAnimation(motions, 2);
 
@@ -22,9 +22,9 @@ describe('generateAnimation', () => {
   });
 
   it('joins multiple animations with comma and space', () => {
-    const motions: MotionType = {
-      fade: { preset: 'in', duration: 2, delay: 1 },
-      slide: { preset: 'up', duration: 3, delay: 0.5 },
+    const motions: MotionConfig = {
+      fade: { variant: 'in', duration: 2, delay: 1 },
+      slide: { variant: 'up', duration: 3, delay: 0.5 },
     };
     const result = generateAnimation(motions, 2);
 
@@ -32,7 +32,7 @@ describe('generateAnimation', () => {
   });
 
   it('returns empty string when no motions provided', () => {
-    const motions: MotionType = {};
+    const motions: MotionConfig = {};
     const result = generateAnimation(motions, 5);
 
     expect(result).toBe('');

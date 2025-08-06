@@ -1,9 +1,9 @@
-import { MotionType, PresetType } from '../../components/TextMotion/TextMotion';
+import { MotionConfig, VariantType } from '../../types';
 
-export const generateAnimation = (motions: MotionType, index: number) =>
-  (Object.keys(motions) as PresetType[])
+export const generateAnimation = (motions: MotionConfig, index: number) =>
+  (Object.keys(motions) as VariantType[])
     .map(name => {
-      const { preset, duration, delay } = motions[name]!;
-      return `${name}-${preset} ${duration}s ease-out ${index * delay}s both`;
+      const { variant, duration, delay } = motions[name]!;
+      return `${name}-${variant} ${duration}s ease-out ${index * delay}s both`;
     })
     .join(', ');

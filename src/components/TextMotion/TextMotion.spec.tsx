@@ -1,6 +1,8 @@
 import { cleanup, render, screen } from '@testing-library/react';
 
-import { MotionType, TextMotion } from './TextMotion';
+import { MotionConfig } from '../../types';
+
+import { TextMotion } from './TextMotion';
 
 afterEach(() => cleanup());
 
@@ -87,7 +89,7 @@ describe('TextMotion component', () => {
     });
 
     it('applies fade motion with correct timing', () => {
-      const motion: MotionType = { fade: { preset: 'in', duration: 1, delay: 0.5 } };
+      const motion: MotionConfig = { fade: { variant: 'in', duration: 1, delay: 0.5 } };
 
       render(<TextMotion text={TEXT} motion={motion} />);
 
@@ -96,7 +98,7 @@ describe('TextMotion component', () => {
     });
 
     it('applies slide motion with correct timing', () => {
-      const motion: MotionType = { slide: { preset: 'up', duration: 2, delay: 0.25 } };
+      const motion: MotionConfig = { slide: { variant: 'up', duration: 2, delay: 0.25 } };
 
       render(<TextMotion text={TEXT} motion={motion} />);
 
@@ -105,9 +107,9 @@ describe('TextMotion component', () => {
     });
 
     it('applies multiple motions with correct animation', () => {
-      const motion: MotionType = {
-        fade: { preset: 'out', duration: 1, delay: 0 },
-        slide: { preset: 'left', duration: 1.5, delay: 0.5 },
+      const motion: MotionConfig = {
+        fade: { variant: 'out', duration: 1, delay: 0 },
+        slide: { variant: 'left', duration: 1.5, delay: 0.5 },
       };
 
       render(<TextMotion text={TEXT} motion={motion} />);

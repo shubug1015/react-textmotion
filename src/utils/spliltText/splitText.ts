@@ -1,4 +1,4 @@
-import type { SplitType } from '../../components/TextMotion/TextMotion';
+import type { SplitType } from '../../types';
 
 export const splitText = (text: string, split: SplitType): string[] => {
   if (split === 'character') return text.split('');

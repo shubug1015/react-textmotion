@@ -14,17 +14,17 @@ type TextMotionProps = {
 };
 
 export const TextMotion: React.FC<TextMotionProps> = ({ as: Tag = 'span', text, split = 'character', motion }) => {
-  const letters = useMemo(() => splitText(text, split), [text, split]);
+  const textSegments = useMemo(() => splitText(text, split), [text, split]);
   const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
 
   return (
     <Tag className="text-motion" aria-label={text}>
-      {letters.map((letter, index) => {
+      {textSegments.map((segment, index) => {
         const animation = generateAnimation(mergedMotion, index);
 
         return (
-          <span key={`${letter}-${index}`} style={{ animation }} aria-hidden="true">
-            {letter === ' ' ? '\u00A0' : letter}
+          <span key={`${segment}-${index}`} style={{ animation }} aria-hidden="true">
+            {segment === ' ' ? '\u00A0' : segment}
           </span>
         );
       })}

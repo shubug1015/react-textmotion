@@ -5,35 +5,28 @@ import React, { useMemo } from 'react';
 
 import { generateAnimation, mergeMotion, splitText } from '../../utils';
 
-export type PresetType = 'fade' | 'slide';
-
-type FadePreset = 'in' | 'out';
-type SlidePreset = 'up' | 'down' | 'right' | 'left';
-
-type FadeMotion = {
-  preset: FadePreset;
-  duration: number;
-  delay: number;
-};
-
-type SlideMotion = {
-  preset: SlidePreset;
-  duration: number;
-  delay: number;
-};
-
-export type MotionType = {
-  fade?: FadeMotion;
-  slide?: SlideMotion;
-};
-
 export type SplitType = 'character' | 'word';
+export type VariantType = 'fade' | 'slide';
+
+type FadeVariant = 'in' | 'out';
+type SlideVariant = 'up' | 'down' | 'right' | 'left';
+
+type Motion<V extends string> = {
+  variant: V;
+  duration: number;
+  delay: number;
+};
+
+export type MotionConfig = {
+  fade?: Motion<FadeVariant>;
+  slide?: Motion<SlideVariant>;
+};
 
 type TextMotionProps = {
   as?: keyof React.JSX.IntrinsicElements;
   text: string;
-  motion?: MotionType;
   split?: SplitType;
+  motion?: MotionConfig;
 };
 
 export const TextMotion: React.FC<TextMotionProps> = ({ as: Tag = 'span', text, motion, split = 'character' }) => {

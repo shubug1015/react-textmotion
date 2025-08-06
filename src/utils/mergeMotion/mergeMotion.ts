@@ -1,6 +1,6 @@
-import { MotionType } from '../../components/TextMotion/TextMotion';
+import { MotionConfig } from '../../components/TextMotion/TextMotion';
 
-export const mergeMotion = (motion?: MotionType) => {
+export const mergeMotion = (motion?: MotionConfig) => {
   if (motion && Object.keys(motion).length) return motion;
   return {};
 };

@@ -1,4 +1,4 @@
-export type SplitType = 'character' | 'word';
+export type SplitType = 'character' | 'word' | 'line';
 
 export type VariantType = 'fade' | 'slide';
 

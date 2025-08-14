@@ -22,6 +22,9 @@ export const TextMotion: React.FC<TextMotionProps> = ({ as: Tag = 'span', text, 
       {textSegments.map((segment, index) => {
         const animation = generateAnimation(mergedMotion, index);
 
+        if (segment === '\n') {
+          return <br key={`br-${index}`} />;
+        }
         return (
           <span key={`${segment}-${index}`} style={{ animation }} aria-hidden="true">
             {segment === ' ' ? '\u00A0' : segment}

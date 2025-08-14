@@ -75,6 +75,16 @@ describe('TextMotion component', () => {
 
       expect(Array.from(spans, s => s.textContent)).toEqual(['Hello', '\u00A0', 'World']);
     });
+
+    it('splits into lines when split="line"', () => {
+      const { container } = render(<TextMotion text={'Hello\nWorld'} split="line" />);
+      const wrapper = container.querySelector('.text-motion') as HTMLElement;
+      const children = Array.from(wrapper.childNodes) as HTMLElement[];
+
+      expect(children[0].textContent).toBe('Hello');
+      expect(children[1].nodeName).toBe('BR');
+      expect(children[2].textContent).toBe('World');
+    });
   });
 
   describe('animation styles', () => {

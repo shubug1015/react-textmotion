@@ -1,5 +1,5 @@
-import './NodeMotion.scss';
 import '../../styles/animations.scss';
+import '../../styles/motion.scss';
 
 import React, { ElementType, isValidElement, ReactNode, useMemo } from 'react';
 
@@ -39,7 +39,7 @@ export const NodeMotion: React.FC<NodeMotionProps> = ({ as: Tag = 'span', childr
   const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
 
   return (
-    <Tag className="node-motion" aria-label={rawText}>
+    <Tag className="motion" aria-label={rawText}>
       {textSegments.map((segment, index) => {
         const animation = generateAnimation(mergedMotion, index);
 

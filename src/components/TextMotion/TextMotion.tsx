@@ -1,5 +1,5 @@
-import './TextMotion.scss';
 import '../../styles/animations.scss';
+import '../../styles/motion.scss';
 
 import React, { useMemo } from 'react';
 
@@ -18,7 +18,7 @@ export const TextMotion: React.FC<TextMotionProps> = ({ as: Tag = 'span', text, 
   const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
 
   return (
-    <Tag className="text-motion" aria-label={text}>
+    <Tag className="motion" aria-label={text}>
       {textSegments.map((segment, index) => {
         const animation = generateAnimation(mergedMotion, index);
 

@@ -34,10 +34,10 @@ describe('NodeMotion component', () => {
       expect(screen.getByLabelText(TEXT).tagName.toLowerCase()).toBe('div');
     });
 
-    it('applies "node-motion" class', () => {
+    it('applies "motion" class', () => {
       render(<NodeMotion>{TEXT}</NodeMotion>);
 
-      expect(screen.getByLabelText(TEXT)).toHaveClass('node-motion');
+      expect(screen.getByLabelText(TEXT)).toHaveClass('motion');
     });
   });
 

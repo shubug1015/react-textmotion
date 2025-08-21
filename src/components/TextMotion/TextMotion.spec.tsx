@@ -35,10 +35,10 @@ describe('TextMotion component', () => {
       expect(screen.getByLabelText(TEXT).tagName.toLowerCase()).toBe('div');
     });
 
-    it('applies "text-motion" class', () => {
+    it('applies "motion" class', () => {
       render(<TextMotion text={TEXT} />);
 
-      expect(screen.getByLabelText(TEXT)).toHaveClass('text-motion');
+      expect(screen.getByLabelText(TEXT)).toHaveClass('motion');
     });
   });
 
@@ -78,7 +78,7 @@ describe('TextMotion component', () => {
 
     it('splits into lines when split="line"', () => {
       const { container } = render(<TextMotion text={'Hello\nWorld'} split="line" />);
-      const wrapper = container.querySelector('.text-motion') as HTMLElement;
+      const wrapper = container.querySelector('.motion') as HTMLElement;
       const children = Array.from(wrapper.childNodes) as HTMLElement[];
 
       expect(children[0].textContent).toBe('Hello');

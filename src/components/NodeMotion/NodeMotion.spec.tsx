@@ -2,57 +2,93 @@ import { cleanup, render, screen } from '@testing-library/react';
 
 import { MotionConfig } from '../../types';
 
-import { TextMotion } from './TextMotion';
+import { NodeMotion } from './NodeMotion';
 
 afterEach(() => cleanup());
 
-describe('TextMotion component', () => {
+describe('NodeMotion component', () => {
   const TEXT = 'Hello';
 
   const getSpans = (label: string) => {
-    const elements = screen.getAllByLabelText(label);
-    const container = elements[elements.length - 1];
+    const container = screen.getByLabelText(label);
 
     return container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
   };
 
   describe('container rendering', () => {
     it('renders with correct aria-label', () => {
-      render(<TextMotion text={TEXT} />);
+      render(<NodeMotion>{TEXT}</NodeMotion>);
 
       expect(screen.getByLabelText(TEXT)).toBeInTheDocument();
     });
 
     it('renders default as <span> tag', () => {
-      render(<TextMotion text={TEXT} />);
+      render(<NodeMotion>{TEXT}</NodeMotion>);
 
       expect(screen.getByLabelText(TEXT).tagName.toLowerCase()).toBe('span');
     });
 
     it('renders custom tag via "as" prop', () => {
-      render(<TextMotion as="div" text={TEXT} />);
+      render(<NodeMotion as="div">{TEXT}</NodeMotion>);
 
       expect(screen.getByLabelText(TEXT).tagName.toLowerCase()).toBe('div');
     });
 
     it('applies "motion" class', () => {
-      render(<TextMotion text={TEXT} />);
+      render(<NodeMotion>{TEXT}</NodeMotion>);
 
       expect(screen.getByLabelText(TEXT)).toHaveClass('motion');
     });
   });
 
-  describe('text splitting and rendering', () => {
+  describe('text extraction and splitting', () => {
     it('renders no spans for empty text', () => {
-      render(<TextMotion text="" />);
+      render(<NodeMotion>{''}</NodeMotion>);
 
-      const container = screen.getByLabelText('');
+      expect(screen.getByLabelText('').querySelectorAll('span[aria-hidden="true"]').length).toBe(0);
+    });
 
-      expect(container.querySelectorAll('span[aria-hidden="true"]').length).toBe(0);
+    it('handles numbers as children', () => {
+      render(<NodeMotion>{123}</NodeMotion>);
+
+      const spans = getSpans('123');
+
+      expect(Array.from(spans, s => s.textContent)).toEqual(['1', '2', '3']);
+    });
+
+    it('handles nested React elements as children', () => {
+      render(
+        <NodeMotion>
+          <span>
+            A<strong>B</strong>
+          </span>
+        </NodeMotion>
+      );
+
+      const spans = getSpans('AB');
+
+      expect(Array.from(spans, s => s.textContent)).toEqual(['A', 'B']);
+    });
+
+    it('returns empty string when children is null/undefined/boolean', () => {
+      const { rerender } = render(<NodeMotion>{null}</NodeMotion>);
+
+      expect(screen.getByLabelText('')).toBeInTheDocument();
+      expect(getSpans('')).toHaveLength(0);
+
+      rerender(<NodeMotion>{undefined}</NodeMotion>);
+
+      expect(screen.getByLabelText('')).toBeInTheDocument();
+      expect(getSpans('')).toHaveLength(0);
+
+      rerender(<NodeMotion>{false}</NodeMotion>);
+
+      expect(screen.getByLabelText('')).toBeInTheDocument();
+      expect(getSpans('')).toHaveLength(0);
     });
 
     it('replaces spaces with non-breaking spaces', () => {
-      render(<TextMotion text="A B" />);
+      render(<NodeMotion>{'A B'}</NodeMotion>);
 
       const spans = getSpans('A B');
 
@@ -60,7 +96,7 @@ describe('TextMotion component', () => {
     });
 
     it('splits into characters by default', () => {
-      render(<TextMotion text={TEXT} />);
+      render(<NodeMotion>{TEXT}</NodeMotion>);
 
       const spans = getSpans(TEXT);
 
@@ -69,31 +105,19 @@ describe('TextMotion component', () => {
     });
 
     it('splits into words when split="word"', () => {
-      render(<TextMotion text="Hello World" split="word" />);
+      render(<NodeMotion split="word">{'Hello World'}</NodeMotion>);
 
       const spans = getSpans('Hello World');
 
       expect(Array.from(spans, s => s.textContent)).toEqual(['Hello', '\u00A0', 'World']);
     });
-
-    it('splits into lines when split="line"', () => {
-      const { container } = render(<TextMotion text={'Hello\nWorld'} split="line" />);
-      const wrapper = container.querySelector('.motion') as HTMLElement;
-      const children = Array.from(wrapper.childNodes) as HTMLElement[];
-
-      expect(children[0].textContent).toBe('Hello');
-      expect(children[1].nodeName).toBe('BR');
-      expect(children[2].textContent).toBe('World');
-    });
   });
 
   describe('animation styles', () => {
     it('has no animation style by default', () => {
-      render(<TextMotion text={TEXT} />);
+      render(<NodeMotion>{TEXT}</NodeMotion>);
 
-      const spans = getSpans(TEXT);
-
-      spans.forEach(span => {
+      getSpans(TEXT).forEach(span => {
         expect(span.style.animation).toBe('');
       });
     });
@@ -101,7 +125,7 @@ describe('TextMotion component', () => {
     it('applies fade motion with correct timing', () => {
       const motion: MotionConfig = { fade: { variant: 'in', duration: 1, delay: 0.5 } };
 
-      render(<TextMotion text={TEXT} motion={motion} />);
+      render(<NodeMotion motion={motion}>{TEXT}</NodeMotion>);
 
       expect(getSpans(TEXT)[0].style.animation).toBe('fade-in 1s ease-out 0s both');
       expect(getSpans(TEXT)[1].style.animation).toBe('fade-in 1s ease-out 0.5s both');
@@ -110,7 +134,7 @@ describe('TextMotion component', () => {
     it('applies slide motion with correct timing', () => {
       const motion: MotionConfig = { slide: { variant: 'up', duration: 2, delay: 0.25 } };
 
-      render(<TextMotion text={TEXT} motion={motion} />);
+      render(<NodeMotion motion={motion}>{TEXT}</NodeMotion>);
 
       expect(getSpans(TEXT)[0].style.animation).toBe('slide-up 2s ease-out 0s both');
       expect(getSpans(TEXT)[1].style.animation).toBe('slide-up 2s ease-out 0.25s both');
@@ -118,15 +142,13 @@ describe('TextMotion component', () => {
 
     it('applies multiple motions with correct animation', () => {
       const motion: MotionConfig = {
-        fade: { variant: 'out', duration: 1, delay: 0 },
-        slide: { variant: 'left', duration: 1.5, delay: 0.5 },
+        fade: { variant: 'in', duration: 1, delay: 0 },
+        slide: { variant: 'up', duration: 1.5, delay: 0.5 },
       };
 
-      render(<TextMotion text={TEXT} motion={motion} />);
+      render(<NodeMotion motion={motion}>{TEXT}</NodeMotion>);
 
-      expect(getSpans(TEXT)[1].style.animation).toBe(
-        'fade-out 1s ease-out 0s both, slide-left 1.5s ease-out 0.5s both'
-      );
+      expect(getSpans(TEXT)[1].style.animation).toBe('fade-in 1s ease-out 0s both, slide-up 1.5s ease-out 0.5s both');
     });
   });
 });

@@ -1,1 +1,1 @@
-export { TextMotion } from './components';
+export { NodeMotion, TextMotion } from './components';

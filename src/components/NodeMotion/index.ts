@@ -1,2 +1,1 @@
 export { NodeMotion } from './NodeMotion';
-export { TextMotion } from './TextMotion';

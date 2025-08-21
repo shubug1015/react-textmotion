@@ -1,3 +1,3 @@
 export { generateAnimation } from './generateAnimation';
 export { mergeMotion } from './mergeMotion';
-export { splitText } from './spliltText';
+export { splitText } from './splitText';

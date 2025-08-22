@@ -1,36 +1,16 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import React, { ElementType, isValidElement, ReactNode, useMemo } from 'react';
+import React, { ElementType, ReactNode, useMemo } from 'react';
 
 import { MotionConfig, SplitType } from '../../types';
-import { generateAnimation, mergeMotion, splitText } from '../../utils';
+import { extractText, generateAnimation, mergeMotion, splitText } from '../../utils';
 
 type NodeMotionProps = {
   as?: ElementType;
   children: ReactNode;
   split?: SplitType;
   motion?: MotionConfig;
-};
-
-const extractText = (children: ReactNode): string => {
-  if (typeof children === 'string') {
-    return children;
-  }
-
-  if (typeof children === 'number') {
-    return children.toString();
-  }
-
-  if (Array.isArray(children)) {
-    return children.map(extractText).join('');
-  }
-
-  if (isValidElement(children)) {
-    return extractText((children.props as { children?: ReactNode }).children);
-  }
-
-  return '';
 };
 
 export const NodeMotion: React.FC<NodeMotionProps> = ({ as: Tag = 'span', children, split = 'character', motion }) => {

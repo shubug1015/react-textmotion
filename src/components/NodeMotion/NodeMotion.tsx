@@ -24,8 +24,8 @@ export const NodeMotion: React.FC<NodeMotionProps> = ({ as: Tag = 'span', childr
         const animation = generateAnimation(mergedMotion, index);
 
         return (
-          <span key={`${segment}-${index}`} style={{ animation }} aria-hidden="true">
-            {segment === ' ' ? '\u00A0' : segment}
+          <span key={index} style={{ animation }} aria-hidden="true">
+            {segment}
           </span>
         );
       })}

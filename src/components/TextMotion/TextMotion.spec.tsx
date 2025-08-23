@@ -56,7 +56,7 @@ describe('TextMotion component', () => {
 
       const spans = getSpans('A B');
 
-      expect(spans[1].textContent).toBe('\u00A0');
+      expect(spans[1].textContent).toBe(' ');
     });
 
     it('splits into characters by default', () => {
@@ -73,7 +73,7 @@ describe('TextMotion component', () => {
 
       const spans = getSpans('Hello World');
 
-      expect(Array.from(spans, s => s.textContent)).toEqual(['Hello', '\u00A0', 'World']);
+      expect(Array.from(spans, s => s.textContent)).toEqual(['Hello', ' ', 'World']);
     });
 
     it('splits into lines when split="line"', () => {

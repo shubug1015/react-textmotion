@@ -1,3 +1,4 @@
 export { generateAnimation } from './generateAnimation';
+export { getTextFromReactNode } from './getTextFromReactNode';
 export { mergeMotion } from './mergeMotion';
 export { splitText } from './splitText';

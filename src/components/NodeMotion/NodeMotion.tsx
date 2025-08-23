@@ -4,7 +4,7 @@ import '../../styles/motion.scss';
 import React, { ElementType, ReactNode, useMemo } from 'react';
 
 import { MotionConfig, SplitType } from '../../types';
-import { extractText, generateAnimation, mergeMotion, splitText } from '../../utils';
+import { generateAnimation, getTextFromReactNode, mergeMotion, splitText } from '../../utils';
 
 type NodeMotionProps = {
   as?: ElementType;
@@ -14,7 +14,7 @@ type NodeMotionProps = {
 };
 
 export const NodeMotion: React.FC<NodeMotionProps> = ({ as: Tag = 'span', children, split = 'character', motion }) => {
-  const rawText = useMemo(() => extractText(children), [children]);
+  const rawText = useMemo(() => getTextFromReactNode(children), [children]);
   const textSegments = useMemo(() => splitText(rawText, split), [rawText, split]);
   const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
 

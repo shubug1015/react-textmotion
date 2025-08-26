@@ -13,6 +13,16 @@ type NodeMotionProps = {
   motion?: MotionConfig;
 };
 
+const wrapWithAnimation = (text: string, index: number, motion: MotionConfig): React.ReactElement => {
+  const animation = generateAnimation(motion, index);
+
+  return (
+    <span key={index} style={{ animation }} aria-hidden="true">
+      {text}
+    </span>
+  );
+};
+
 export const NodeMotion: React.FC<NodeMotionProps> = ({ as: Tag = 'span', children, split = 'character', motion }) => {
   const rawText = useMemo(() => getTextFromReactNode(children), [children]);
   const textSegments = useMemo(() => splitText(rawText, split), [rawText, split]);
@@ -20,15 +30,7 @@ export const NodeMotion: React.FC<NodeMotionProps> = ({ as: Tag = 'span', childr
 
   return (
     <Tag className="motion" aria-label={rawText}>
-      {textSegments.map((segment, index) => {
-        const animation = generateAnimation(mergedMotion, index);
-
-        return (
-          <span key={index} style={{ animation }} aria-hidden="true">
-            {segment}
-          </span>
-        );
-      })}
+      {textSegments.map((segment, index) => wrapWithAnimation(segment, index, mergedMotion))}
     </Tag>
   );
 };

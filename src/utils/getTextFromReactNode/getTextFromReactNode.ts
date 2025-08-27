@@ -19,12 +19,3 @@ export const getTextFromReactNode = (children: ReactNode): string => {
 
   return '';
 };
-
-// const getTextFromChildren = (children: ReactNode): string => {
-//   if (typeof children === 'string') return children;
-//   if (Array.isArray(children)) return children.map(getTextFromChildren).join('');
-//   if (isValidElement<{ children?: ReactNode }>(children)) {
-//     return getTextFromChildren(children.props.children);
-//   }
-//   return '';
-// };

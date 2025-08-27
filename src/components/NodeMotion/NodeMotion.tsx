@@ -1,7 +1,17 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import React, { cloneElement, ElementType, isValidElement, ReactNode, useMemo } from 'react';
+import {
+  Children,
+  cloneElement,
+  ElementType,
+  FC,
+  isValidElement,
+  ReactElement,
+  ReactNode,
+  useMemo,
+  useRef,
+} from 'react';
 
 import { MotionConfig, SplitType } from '../../types';
 import { generateAnimation, getTextFromReactNode, mergeMotion, splitText } from '../../utils';
@@ -13,61 +23,78 @@ type NodeMotionProps = {
   motion?: MotionConfig;
 };
 
-const wrapWithAnimation = (text: string, index: number, motion: MotionConfig): React.ReactElement => {
-  const animation = generateAnimation(motion, index);
+const createAnimatedSpan = (text: string, sequenceIndex: number, motion: MotionConfig): ReactElement => {
+  const animation = generateAnimation(motion, sequenceIndex);
 
   return (
-    <span key={index} style={{ animation }} aria-hidden="true">
+    <span key={sequenceIndex} style={{ animation }} aria-hidden="true">
       {text}
     </span>
   );
 };
 
-const animateNode = (node: ReactNode, motion: MotionConfig, split: SplitType, startIndex = 0): [ReactNode, number] => {
+const applyAnimationToNode = (
+  node: ReactNode,
+  motion: MotionConfig,
+  split: SplitType,
+  sequenceIndexRef: { current: number }
+): ReactNode => {
   if (typeof node === 'string') {
-    const segments = splitText(node, split);
-    const animated = segments.map((segment, index) => wrapWithAnimation(segment, startIndex + index, motion));
+    const textSegments = splitText(node, split);
 
-    return [animated, startIndex + segments.length];
+    return textSegments.map(segment => createAnimatedSpan(segment, sequenceIndexRef.current++, motion));
   }
 
   if (typeof node === 'number') {
-    const segments = splitText(node.toString(), split);
-    const animated = segments.map((segment, index) => wrapWithAnimation(segment, startIndex + index, motion));
+    const textSegments = splitText(node.toString(), split);
 
-    return [animated, startIndex + segments.length];
+    return textSegments.map(segment => createAnimatedSpan(segment, sequenceIndexRef.current++, motion));
   }
 
   if (Array.isArray(node)) {
-    let index = startIndex;
-    const result = node.map(child => {
-      const [animated, nextIndex] = animateNode(child, motion, split, index);
-
-      index = nextIndex;
-
-      return animated;
-    });
-
-    return [result, index];
+    return Children.map(node, child => applyAnimationToNode(child, motion, split, sequenceIndexRef));
   }
 
   if (isValidElement<{ children?: ReactNode }>(node)) {
-    const [animatedChildren, nextIndex] = animateNode(node.props.children, motion, split, startIndex);
+    const originalElement = node;
+    const animatedChildNodes = applyAnimationToNode(originalElement.props.children, motion, split, sequenceIndexRef);
+    const normalizedChildren = Array.isArray(animatedChildNodes)
+      ? (animatedChildNodes as ReactNode[])
+      : [animatedChildNodes];
 
-    return [cloneElement(node, { key: startIndex }, animatedChildren), nextIndex];
+    return cloneElement(originalElement, { key: sequenceIndexRef.current++ }, ...normalizedChildren);
   }
 
-  return [node, startIndex];
+  return node;
 };
 
-export const NodeMotion: React.FC<NodeMotionProps> = ({ as: Tag = 'span', children, split = 'character', motion }) => {
-  const rawText = useMemo(() => getTextFromReactNode(children), [children]);
+export const NodeMotion: FC<NodeMotionProps> = ({ as: Tag = 'span', children, split = 'character', motion }) => {
+  const accessibleText = useMemo(() => getTextFromReactNode(children), [children]);
   const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
-  const [animatedNode] = useMemo(() => animateNode(children, mergedMotion, split, 0), [children, mergedMotion, split]);
+
+  const sequenceIndexRef = useRef(0);
+
+  const animatedChildren = useMemo(() => {
+    sequenceIndexRef.current = 0;
+
+    const collectedChildren: ReactNode[] = [];
+
+    Children.forEach(children, child => {
+      const childResult = applyAnimationToNode(child, mergedMotion, split, sequenceIndexRef);
+
+      if (Array.isArray(childResult)) {
+        collectedChildren.push(...(childResult as ReactNode[]));
+      } else {
+        collectedChildren.push(childResult);
+      }
+    });
+
+    return collectedChildren;
+  }, [children, mergedMotion, split]);
 
   return (
-    <Tag className="motion" aria-label={rawText}>
-      {animatedNode}
+    <Tag className="motion" aria-label={accessibleText}>
+      {Children.toArray(animatedChildren)}
     </Tag>
   );
 };

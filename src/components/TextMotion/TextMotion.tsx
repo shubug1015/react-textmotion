@@ -1,7 +1,7 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import React, { ElementType, useMemo } from 'react';
+import { ElementType, FC, useMemo } from 'react';
 
 import { MotionConfig, SplitType } from '../../types';
 import { generateAnimation, mergeMotion, splitText } from '../../utils';
@@ -13,7 +13,7 @@ type TextMotionProps = {
   motion?: MotionConfig;
 };
 
-export const TextMotion: React.FC<TextMotionProps> = ({ as: Tag = 'span', text, split = 'character', motion }) => {
+export const TextMotion: FC<TextMotionProps> = ({ as: Tag = 'span', text, split = 'character', motion }) => {
   const textSegments = useMemo(() => splitText(text, split), [text, split]);
   const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
 

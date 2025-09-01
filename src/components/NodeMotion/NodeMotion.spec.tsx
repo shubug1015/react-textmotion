@@ -70,6 +70,60 @@ describe('NodeMotion component', () => {
       expect(Array.from(spans, s => s.textContent)).toEqual(['A', 'B']);
     });
 
+    it('handles React element whose children is an array', () => {
+      render(
+        <NodeMotion>
+          <span>{['A', <b key="b">B</b>, <i key="i">C</i>]}</span>
+        </NodeMotion>
+      );
+
+      const spans = getSpans('ABC');
+
+      expect(spans.length).toBe(3);
+      expect(Array.from(spans, s => s.textContent).join('')).toBe('ABC');
+    });
+
+    it('handles React element whose children is a Fragment', () => {
+      render(
+        <NodeMotion>
+          <span>
+            <>
+              <b>B</b>
+              <i>C</i>
+            </>
+          </span>
+        </NodeMotion>
+      );
+
+      const spans = getSpans('BC');
+
+      expect(spans.length).toBe(2);
+      expect(Array.from(spans, s => s.textContent).join('')).toBe('BC');
+    });
+
+    it('handles array of elements as children (siblings)', () => {
+      render(<NodeMotion>{['A', <b key="b">B</b>, <i key="i">C</i>]}</NodeMotion>);
+
+      const spans = getSpans('ABC');
+
+      expect(spans.length).toBe(3);
+      expect(Array.from(spans, s => s.textContent).join('')).toBe('ABC');
+    });
+
+    it('handles React.Fragment with multiple elements', () => {
+      render(
+        <NodeMotion>
+          <span>A</span>
+          <span>B</span>
+        </NodeMotion>
+      );
+
+      const spans = getSpans('AB');
+
+      expect(spans.length).toBe(2);
+      expect(Array.from(spans, s => s.textContent).join('')).toBe('AB');
+    });
+
     it('returns empty string when children is null/undefined/boolean', () => {
       const { rerender } = render(<NodeMotion>{null}</NodeMotion>);
 

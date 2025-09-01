@@ -1,36 +1,16 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import {
-  Children,
-  cloneElement,
-  ElementType,
-  FC,
-  isValidElement,
-  ReactElement,
-  ReactNode,
-  useMemo,
-  useRef,
-} from 'react';
+import { Children, cloneElement, ElementType, FC, isValidElement, ReactNode, useMemo, useRef } from 'react';
 
 import { MotionConfig, SplitType } from '../../types';
-import { generateAnimation, getTextFromReactNode, mergeMotion, splitText } from '../../utils';
+import { createAnimatedSpan, getTextFromReactNode, mergeMotion, splitText } from '../../utils';
 
 type NodeMotionProps = {
   as?: ElementType;
   children: ReactNode;
   split?: SplitType;
   motion?: MotionConfig;
-};
-
-const createAnimatedSpan = (text: string, sequenceIndex: number, motion: MotionConfig): ReactElement => {
-  const animation = generateAnimation(motion, sequenceIndex);
-
-  return (
-    <span key={sequenceIndex} style={{ animation }} aria-hidden="true">
-      {text}
-    </span>
-  );
 };
 
 const applyAnimationToNode = (

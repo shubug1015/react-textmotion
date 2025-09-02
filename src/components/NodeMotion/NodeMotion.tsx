@@ -19,9 +19,15 @@ type MotionProps =
 
 type NodeMotionProps = BaseNodeMotionProps & MotionProps;
 
-export const NodeMotion: FC<NodeMotionProps> = ({ as: Tag = 'span', children, split = 'character', motion }) => {
+export const NodeMotion: FC<NodeMotionProps> = ({
+  as: Tag = 'span',
+  children,
+  split = 'character',
+  motion,
+  preset,
+}) => {
   const accessibleText = useMemo(() => getTextFromReactNode(children), [children]);
-  const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
+  const mergedMotion = useMemo(() => mergeMotion(motion, preset), [motion, preset]);
 
   const sequenceIndexRef = useRef(0);
 

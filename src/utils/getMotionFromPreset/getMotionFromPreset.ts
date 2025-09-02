@@ -51,7 +51,5 @@ export const getMotionFromPreset = (presetConfig: PresetConfig): MotionConfig =>
     }
   }
 
-  console.log(finalMotion);
-
   return finalMotion;
 };

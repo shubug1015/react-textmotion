@@ -19,9 +19,9 @@ type MotionProps =
 
 type TextMotionProps = BaseTextMotionProps & MotionProps;
 
-export const TextMotion: FC<TextMotionProps> = ({ as: Tag = 'span', text, split = 'character', motion }) => {
+export const TextMotion: FC<TextMotionProps> = ({ as: Tag = 'span', text, split = 'character', motion, preset }) => {
   const textSegments = useMemo(() => splitText(text, split), [text, split]);
-  const mergedMotion = useMemo(() => mergeMotion(motion), [motion]);
+  const mergedMotion = useMemo(() => mergeMotion(motion, preset), [motion, preset]);
 
   return (
     <Tag className="motion" aria-label={text}>

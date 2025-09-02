@@ -25,19 +25,15 @@ export const getMotionFromPreset = (presetConfig: PresetConfig): MotionConfig =>
   const baseMotion = presetToMotionMap[preset];
   const finalMotion: MotionConfig = JSON.parse(JSON.stringify(baseMotion));
 
-  for (const key in finalMotion) {
-    const animation = finalMotion[key];
-
-    if (typeof animation === 'object') {
-      if (duration !== undefined) {
-        animation.duration = duration;
-      }
-
-      if (delay !== undefined) {
-        animation.delay = delay;
-      }
+  Object.values(finalMotion).forEach(animation => {
+    if (duration !== undefined) {
+      animation!.duration = duration;
     }
-  }
+
+    if (delay !== undefined) {
+      animation!.delay = delay;
+    }
+  });
 
   return finalMotion;
 };

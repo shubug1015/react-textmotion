@@ -3,15 +3,21 @@ import '../../styles/motion.scss';
 
 import { Children, ElementType, FC, ReactNode, useMemo, useRef } from 'react';
 
-import { MotionConfig, SplitType } from '../../types';
+import { MotionConfig, PresetConfig, SplitType } from '../../types';
 import { generateAnimatedChildren, getTextFromReactNode, mergeMotion } from '../../utils';
 
-type NodeMotionProps = {
+type BaseNodeMotionProps = {
   as?: ElementType;
   children: ReactNode;
   split?: SplitType;
-  motion?: MotionConfig;
 };
+
+type MotionProps =
+  | { motion: MotionConfig; preset?: never }
+  | { motion?: never; preset: PresetConfig }
+  | { motion?: undefined; preset?: undefined };
+
+type NodeMotionProps = BaseNodeMotionProps & MotionProps;
 
 export const NodeMotion: FC<NodeMotionProps> = ({ as: Tag = 'span', children, split = 'character', motion }) => {
   const accessibleText = useMemo(() => getTextFromReactNode(children), [children]);

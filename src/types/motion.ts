@@ -47,6 +47,10 @@ export type FlipAnimation = BaseAnimation & {
   axis?: 'x' | 'y';
 };
 
+export type AnyAnimation = BaseAnimation & {
+  [key: string]: unknown;
+};
+
 export type MotionConfig = {
   fade?: FadeAnimation;
   slide?: SlideAnimation;
@@ -55,7 +59,30 @@ export type MotionConfig = {
   bounce?: BounceAnimation;
   elastic?: ElasticAnimation;
   flip?: FlipAnimation;
-  [key: string]: BaseAnimation | undefined;
+  [key: string]: AnyAnimation | undefined;
 };
 
 export type AnimationType = keyof MotionConfig;
+
+export type AnimationPreset =
+  | 'fadeIn'
+  | 'fadeOut'
+  | 'slideUp'
+  | 'slideDown'
+  | 'slideLeft'
+  | 'slideRight'
+  | 'scaleIn'
+  | 'scaleOut'
+  | 'rotateIn'
+  | 'rotateOut'
+  | 'bounceIn'
+  | 'bounceOut'
+  | 'elasticIn'
+  | 'elasticOut';
+
+export type PresetConfig = {
+  preset: AnimationPreset;
+  duration?: number;
+  delay?: number;
+  customizations?: Partial<MotionConfig>;
+};

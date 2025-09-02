@@ -65,22 +65,22 @@ export type MotionConfig = {
 export type AnimationType = keyof MotionConfig;
 
 export type AnimationPreset =
-  | 'fadeIn'
-  | 'fadeOut'
-  | 'slideUp'
-  | 'slideDown'
-  | 'slideLeft'
-  | 'slideRight'
-  | 'scaleIn'
-  | 'scaleOut'
-  | 'rotateIn'
-  | 'rotateOut'
-  | 'bounceIn'
-  | 'bounceOut'
-  | 'elasticIn'
-  | 'elasticOut'
-  | 'flipIn'
-  | 'flipOut';
+  | 'fade-in'
+  | 'fade-out'
+  | 'slide-up'
+  | 'slide-down'
+  | 'slide-left'
+  | 'slide-right'
+  | 'scale-in'
+  | 'scale-out'
+  | 'rotate-in'
+  | 'rotate-out'
+  | 'bounce-in'
+  | 'bounce-out'
+  | 'elastic-in'
+  | 'elastic-out'
+  | 'flip-in'
+  | 'flip-out';
 
 export type PresetConfig = {
   preset: AnimationPreset;

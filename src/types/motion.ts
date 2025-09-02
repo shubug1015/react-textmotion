@@ -78,7 +78,9 @@ export type AnimationPreset =
   | 'bounceIn'
   | 'bounceOut'
   | 'elasticIn'
-  | 'elasticOut';
+  | 'elasticOut'
+  | 'flipIn'
+  | 'flipOut';
 
 export type PresetConfig = {
   preset: AnimationPreset;

@@ -20,7 +20,7 @@ const presetToMotionMap: Record<AnimationPreset, MotionConfig> = {
 };
 
 export const getMotionFromPreset = (presetConfig: PresetConfig): MotionConfig => {
-  const { preset, duration, delay, customizations } = presetConfig;
+  const { preset, duration, delay } = presetConfig;
 
   const baseMotion = presetToMotionMap[preset];
   const finalMotion: MotionConfig = JSON.parse(JSON.stringify(baseMotion));
@@ -28,25 +28,13 @@ export const getMotionFromPreset = (presetConfig: PresetConfig): MotionConfig =>
   for (const key in finalMotion) {
     const animation = finalMotion[key];
 
-    if (animation !== null && typeof animation === 'object') {
+    if (typeof animation === 'object') {
       if (duration !== undefined) {
         animation.duration = duration;
       }
 
       if (delay !== undefined) {
         animation.delay = delay;
-      }
-    }
-  }
-
-  if (customizations !== null && typeof customizations === 'object') {
-    for (const key in customizations) {
-      const customAnimation = customizations[key];
-
-      if (customAnimation !== null && typeof customAnimation === 'object') {
-        const baseAnimation = finalMotion[key] || {};
-
-        finalMotion[key] = { ...baseAnimation, ...customAnimation };
       }
     }
   }

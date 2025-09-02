@@ -86,5 +86,4 @@ export type PresetConfig = {
   preset: AnimationPreset;
   duration?: number;
   delay?: number;
-  customizations?: Partial<MotionConfig>;
 };

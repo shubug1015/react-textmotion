@@ -1,0 +1,1 @@
+export { getMotionFromPreset } from './getMotionFromPreset';

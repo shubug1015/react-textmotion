@@ -82,8 +82,4 @@ export type AnimationPreset =
   | 'flip-in'
   | 'flip-out';
 
-export type PresetConfig = {
-  preset: AnimationPreset;
-  duration?: number;
-  delay?: number;
-};
+export type PresetConfig = AnimationPreset[];

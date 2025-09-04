@@ -45,6 +45,6 @@ export type FlipAnimation = BaseAnimation & {
   axis?: 'x' | 'y';
 };
 
-export type AnyAnimation = BaseAnimation & {
+export type CustomAnimation = BaseAnimation & {
   [key: string]: unknown;
 };

@@ -1,6 +1,6 @@
 import {
-  AnyAnimation,
   BounceAnimation,
+  CustomAnimation,
   ElasticAnimation,
   FadeAnimation,
   FlipAnimation,
@@ -19,5 +19,5 @@ export type MotionConfig = {
   bounce?: BounceAnimation;
   elastic?: ElasticAnimation;
   flip?: FlipAnimation;
-  [key: string]: AnyAnimation | undefined;
+  [key: string]: CustomAnimation | undefined;
 };

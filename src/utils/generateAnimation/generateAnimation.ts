@@ -1,8 +1,8 @@
-import { AnimationType, MotionConfig } from '../../types';
+import { MotionConfig } from '../../types';
 
 export const generateAnimation = (motionConfig: MotionConfig, index: number) =>
-  (Object.keys(motionConfig) as AnimationType[])
-    .filter((animationName): animationName is AnimationType => {
+  (Object.keys(motionConfig) as (keyof MotionConfig)[])
+    .filter((animationName): animationName is keyof MotionConfig => {
       const animation = motionConfig[animationName];
       return animation !== undefined && 'variant' in animation;
     })

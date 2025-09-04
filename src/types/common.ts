@@ -21,5 +21,3 @@ export type MotionConfig = {
   flip?: FlipAnimation;
   [key: string]: AnyAnimation | undefined;
 };
-
-export type AnimationType = keyof MotionConfig;

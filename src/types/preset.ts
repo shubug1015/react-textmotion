@@ -15,5 +15,3 @@ export type AnimationPreset =
   | 'elastic-out'
   | 'flip-in'
   | 'flip-out';
-
-export type PresetConfig = AnimationPreset[];

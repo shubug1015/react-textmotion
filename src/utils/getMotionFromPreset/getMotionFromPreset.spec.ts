@@ -1,10 +1,10 @@
-import { PresetConfig } from '../../types';
+import { AnimationPreset } from '../../types';
 
 import { delay, duration, getMotionFromPreset } from './getMotionFromPreset';
 
 describe('getMotionFromPreset', () => {
   it('should return the correct motion config for a given single preset', () => {
-    const preset: PresetConfig = ['fade-in'];
+    const preset: AnimationPreset[] = ['fade-in'];
     const result = getMotionFromPreset(preset);
 
     expect(result).toEqual({
@@ -13,7 +13,7 @@ describe('getMotionFromPreset', () => {
   });
 
   it('should return the correct motion config for a given multiple preset', () => {
-    const preset: PresetConfig = ['fade-in', 'slide-up', 'scale-out'];
+    const preset: AnimationPreset[] = ['fade-in', 'slide-up', 'scale-out'];
     const result = getMotionFromPreset(preset);
 
     expect(result).toEqual({

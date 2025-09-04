@@ -3,7 +3,7 @@ import '../../styles/motion.scss';
 
 import { ElementType, FC, useMemo } from 'react';
 
-import { MotionConfig, PresetConfig, SplitType } from '../../types';
+import { AnimationPreset, MotionConfig, SplitType } from '../../types';
 import { generateAnimation, mergeMotion, splitText } from '../../utils';
 
 type BaseTextMotionProps = {
@@ -14,7 +14,7 @@ type BaseTextMotionProps = {
 
 type MotionProps =
   | { motion: MotionConfig; preset?: never }
-  | { motion?: never; preset: PresetConfig }
+  | { motion?: never; preset: AnimationPreset[] }
   | { motion?: undefined; preset?: undefined };
 
 type TextMotionProps = BaseTextMotionProps & MotionProps;

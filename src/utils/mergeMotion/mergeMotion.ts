@@ -1,7 +1,7 @@
-import { MotionConfig, PresetConfig } from '../../types';
+import { AnimationPreset, MotionConfig } from '../../types';
 import { getMotionFromPreset } from '../getMotionFromPreset';
 
-export const mergeMotion = (motion?: MotionConfig, preset?: PresetConfig): MotionConfig => {
+export const mergeMotion = (motion?: MotionConfig, preset?: AnimationPreset[]): MotionConfig => {
   if (preset) {
     return getMotionFromPreset(preset);
   }

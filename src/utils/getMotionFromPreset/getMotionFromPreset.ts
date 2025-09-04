@@ -1,4 +1,4 @@
-import { AnimationPreset, MotionConfig, PresetConfig } from '../../types';
+import { AnimationPreset, MotionConfig } from '../../types';
 
 export const duration = 0.25;
 export const delay = 0.025;
@@ -22,7 +22,7 @@ const presetToMotionMap: Record<AnimationPreset, MotionConfig> = {
   'flip-out': { flip: { variant: 'out', duration, delay } },
 };
 
-export const getMotionFromPreset = (preset: PresetConfig): MotionConfig => {
+export const getMotionFromPreset = (preset: AnimationPreset[]): MotionConfig => {
   const motion = {};
 
   preset.forEach(preset => {

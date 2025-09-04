@@ -3,7 +3,7 @@ import '../../styles/motion.scss';
 
 import { Children, ElementType, FC, ReactNode, useMemo, useRef } from 'react';
 
-import { MotionConfig, PresetConfig, SplitType } from '../../types';
+import { AnimationPreset, MotionConfig, SplitType } from '../../types';
 import { generateAnimatedChildren, getTextFromReactNode, mergeMotion } from '../../utils';
 
 type BaseNodeMotionProps = {
@@ -14,7 +14,7 @@ type BaseNodeMotionProps = {
 
 type MotionProps =
   | { motion: MotionConfig; preset?: never }
-  | { motion?: never; preset: PresetConfig }
+  | { motion?: never; preset: AnimationPreset[] }
   | { motion?: undefined; preset?: undefined };
 
 type NodeMotionProps = BaseNodeMotionProps & MotionProps;

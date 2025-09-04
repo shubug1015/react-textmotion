@@ -1,5 +1,3 @@
-export type SplitType = 'character' | 'word' | 'line';
-
 export type BaseAnimation = {
   duration: number;
   delay: number;
@@ -47,39 +45,6 @@ export type FlipAnimation = BaseAnimation & {
   axis?: 'x' | 'y';
 };
 
-export type AnyAnimation = BaseAnimation & {
+export type CustomAnimation = BaseAnimation & {
   [key: string]: unknown;
 };
-
-export type MotionConfig = {
-  fade?: FadeAnimation;
-  slide?: SlideAnimation;
-  scale?: ScaleAnimation;
-  rotate?: RotateAnimation;
-  bounce?: BounceAnimation;
-  elastic?: ElasticAnimation;
-  flip?: FlipAnimation;
-  [key: string]: AnyAnimation | undefined;
-};
-
-export type AnimationType = keyof MotionConfig;
-
-export type AnimationPreset =
-  | 'fade-in'
-  | 'fade-out'
-  | 'slide-up'
-  | 'slide-down'
-  | 'slide-left'
-  | 'slide-right'
-  | 'scale-in'
-  | 'scale-out'
-  | 'rotate-in'
-  | 'rotate-out'
-  | 'bounce-in'
-  | 'bounce-out'
-  | 'elastic-in'
-  | 'elastic-out'
-  | 'flip-in'
-  | 'flip-out';
-
-export type PresetConfig = AnimationPreset[];

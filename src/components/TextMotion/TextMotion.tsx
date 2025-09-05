@@ -3,8 +3,9 @@ import '../../styles/motion.scss';
 
 import { ElementType, FC, useMemo } from 'react';
 
+import { useSplitText } from '../../hooks';
 import { AnimationPreset, MotionConfig, SplitType } from '../../types';
-import { generateAnimation, mergeMotion, splitText } from '../../utils';
+import { generateAnimation, mergeMotion } from '../../utils';
 
 type BaseTextMotionProps = {
   as?: ElementType;
@@ -20,20 +21,20 @@ type MotionProps =
 type TextMotionProps = BaseTextMotionProps & MotionProps;
 
 export const TextMotion: FC<TextMotionProps> = ({ as: Tag = 'span', text, split = 'character', motion, preset }) => {
-  const textSegments = useMemo(() => splitText(text, split), [text, split]);
+  const splittedTexts = useSplitText(text, split);
   const mergedMotion = useMemo(() => mergeMotion(motion, preset), [motion, preset]);
 
   return (
     <Tag className="motion" aria-label={text}>
-      {textSegments.map((segment, index) => {
+      {splittedTexts.map((splittedText, index) => {
         const animation = generateAnimation(mergedMotion, index);
 
-        if (segment === '\n') {
+        if (splittedText === '\n') {
           return <br key={index} />;
         }
         return (
           <span key={index} style={{ animation }} aria-hidden="true">
-            {segment}
+            {splittedText}
           </span>
         );
       })}

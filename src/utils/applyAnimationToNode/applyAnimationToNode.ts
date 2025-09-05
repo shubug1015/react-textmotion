@@ -11,15 +11,15 @@ export const applyAnimationToNode = (
   sequenceIndexRef: { current: number }
 ): ReactNode => {
   if (typeof node === 'string') {
-    const textSegments = splitText(node, split);
+    const splittedText = splitText(node, split);
 
-    return textSegments.map(segment => createAnimatedSpan(segment, sequenceIndexRef.current++, motion));
+    return splittedText.map(splittedText => createAnimatedSpan(splittedText, sequenceIndexRef.current++, motion));
   }
 
   if (typeof node === 'number') {
-    const textSegments = splitText(node.toString(), split);
+    const splittedText = splitText(node.toString(), split);
 
-    return textSegments.map(segment => createAnimatedSpan(segment, sequenceIndexRef.current++, motion));
+    return splittedText.map(splittedText => createAnimatedSpan(splittedText, sequenceIndexRef.current++, motion));
   }
 
   if (Array.isArray(node)) {
@@ -27,13 +27,9 @@ export const applyAnimationToNode = (
   }
 
   if (isValidElement<{ children?: ReactNode }>(node)) {
-    const originalElement = node;
-    const animatedChildNodes = applyAnimationToNode(originalElement.props.children, motion, split, sequenceIndexRef);
-    const normalizedChildren = Array.isArray(animatedChildNodes)
-      ? (animatedChildNodes as ReactNode[])
-      : [animatedChildNodes];
+    const animatedChildren = applyAnimationToNode(node.props.children, motion, split, sequenceIndexRef);
 
-    return cloneElement(originalElement, { key: sequenceIndexRef.current++ }, ...normalizedChildren);
+    return cloneElement(node, { key: sequenceIndexRef.current++, children: animatedChildren });
   }
 
   return node;

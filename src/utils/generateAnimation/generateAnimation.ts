@@ -1,18 +1,21 @@
 import { MotionConfig } from '../../types';
 
-export const generateAnimation = (motionConfig: MotionConfig, index: number) =>
-  (Object.keys(motionConfig) as (keyof MotionConfig)[])
-    .filter((animationName): animationName is keyof MotionConfig => {
-      const animation = motionConfig[animationName];
-      return animation !== undefined && 'variant' in animation;
-    })
-    .map(animationName => {
-      const animation = motionConfig[animationName]!;
-      if ('variant' in animation) {
+export const generateAnimation = (motionConfig: MotionConfig, index: number): string => {
+  const animations: string[] = [];
+
+  for (const name in motionConfig) {
+    if (Object.prototype.hasOwnProperty.call(motionConfig, name)) {
+      const animation = motionConfig[name as keyof MotionConfig];
+
+      if (animation && 'variant' in animation) {
         const { variant, duration, delay } = animation;
-        return `${animationName}-${variant} ${duration}s ease-out ${index * delay}s both`;
+        const calculatedDelay = index * delay;
+        const animationString = `${name}-${variant} ${duration}s ease-out ${calculatedDelay}s both`;
+
+        animations.push(animationString);
       }
-      return '';
-    })
-    .filter(Boolean)
-    .join(', ');
+    }
+  }
+
+  return animations.join(', ');
+};

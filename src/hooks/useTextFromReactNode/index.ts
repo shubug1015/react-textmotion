@@ -1,0 +1,1 @@
+export { useTextFromReactNode } from './useTextFromReactNode';

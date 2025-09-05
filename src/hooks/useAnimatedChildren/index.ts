@@ -1,0 +1,1 @@
+export { useAnimatedChildren } from './useAnimatedChildren';

@@ -1,30 +1,24 @@
-import { render } from '@testing-library/react';
+import { render, renderHook } from '@testing-library/react';
 
 import { MotionConfig } from '../../types';
 
-import { generateAnimatedChildren } from './generateAnimatedChildren';
+import { useAnimatedChildren } from './useAnimatedChildren';
 
-describe('generateAnimatedChildren utility', () => {
+describe('useAnimatedChildren hook', () => {
   const motion: MotionConfig = {};
   const split = 'character';
 
-  let sequenceIndexRef: { current: number };
-
-  beforeEach(() => {
-    sequenceIndexRef = { current: 0 };
-  });
-
   it('returns empty array for no children', () => {
-    const result = generateAnimatedChildren('', motion, split, sequenceIndexRef);
+    const { result } = renderHook(() => useAnimatedChildren('', motion, split));
 
-    expect(result).toEqual([]);
+    expect(result.current).toEqual([]);
   });
 
   it('generates animated spans for string children', () => {
     const children = 'Hey';
-    const result = generateAnimatedChildren(children, motion, split, sequenceIndexRef);
+    const { result } = renderHook(() => useAnimatedChildren(children, motion, split));
 
-    const { container } = render(<>{result}</>);
+    const { container } = render(<>{result.current}</>);
     const spans = container.querySelectorAll('span');
 
     expect(spans.length).toBe(children.length);
@@ -33,9 +27,9 @@ describe('generateAnimatedChildren utility', () => {
 
   it('handles nested React elements with text', () => {
     const children = <p>Hello</p>;
-    const result = generateAnimatedChildren(children, motion, split, sequenceIndexRef);
+    const { result } = renderHook(() => useAnimatedChildren(children, motion, split));
 
-    const { container } = render(<>{result}</>);
+    const { container } = render(<>{result.current}</>);
     const paragraph = container.querySelector('p') as HTMLElement;
     const spans = paragraph.querySelectorAll('span');
 
@@ -45,9 +39,9 @@ describe('generateAnimatedChildren utility', () => {
 
   it('resets sequenceIndexRef for each call', () => {
     const children = 'Hi';
-    const result = generateAnimatedChildren(children, motion, split, sequenceIndexRef);
+    const { result } = renderHook(() => useAnimatedChildren(children, motion, split));
 
-    const { container } = render(<>{result}</>);
+    const { container } = render(<>{result.current}</>);
     const spans = container.querySelectorAll('span');
 
     expect(spans.length).toBe(children.length);

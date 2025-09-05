@@ -1,10 +1,10 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { Children, ElementType, FC, ReactNode, useMemo, useRef } from 'react';
+import { Children, ElementType, FC, ReactNode } from 'react';
 
+import { useAnimatedChildren, useResolvedMotion, useTextFromReactNode } from '../../hooks';
 import { AnimationPreset, MotionConfig, SplitType } from '../../types';
-import { generateAnimatedChildren, getTextFromReactNode, mergeMotion } from '../../utils';
 
 type BaseNodeMotionProps = {
   as?: ElementType;
@@ -26,15 +26,9 @@ export const NodeMotion: FC<NodeMotionProps> = ({
   motion,
   preset,
 }) => {
-  const accessibleText = useMemo(() => getTextFromReactNode(children), [children]);
-  const mergedMotion = useMemo(() => mergeMotion(motion, preset), [motion, preset]);
-
-  const sequenceIndexRef = useRef(0);
-
-  const animatedChildren = useMemo(
-    () => generateAnimatedChildren(children, mergedMotion, split, sequenceIndexRef),
-    [children, mergedMotion, split]
-  );
+  const accessibleText = useTextFromReactNode(children);
+  const resolvedMotion = useResolvedMotion(motion, preset);
+  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
 
   return (
     <Tag className="motion" aria-label={accessibleText}>

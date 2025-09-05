@@ -2,27 +2,21 @@ import { render } from '@testing-library/react';
 
 import { MotionConfig } from '../../types';
 
-import { useGenerateAnimatedChildren } from './useGenerateAnimatedChildren';
+import { useAnimatedChildren } from './useAnimatedChildren';
 
-describe('useGenerateAnimatedChildren hook', () => {
+describe('useAnimatedChildren hook', () => {
   const motion: MotionConfig = {};
   const split = 'character';
 
-  let sequenceIndexRef: { current: number };
-
-  beforeEach(() => {
-    sequenceIndexRef = { current: 0 };
-  });
-
   it('returns empty array for no children', () => {
-    const result = useGenerateAnimatedChildren('', motion, split, sequenceIndexRef);
+    const result = useAnimatedChildren('', motion, split);
 
     expect(result).toEqual([]);
   });
 
   it('generates animated spans for string children', () => {
     const children = 'Hey';
-    const result = useGenerateAnimatedChildren(children, motion, split, sequenceIndexRef);
+    const result = useAnimatedChildren(children, motion, split);
 
     const { container } = render(<>{result}</>);
     const spans = container.querySelectorAll('span');
@@ -33,7 +27,7 @@ describe('useGenerateAnimatedChildren hook', () => {
 
   it('handles nested React elements with text', () => {
     const children = <p>Hello</p>;
-    const result = useGenerateAnimatedChildren(children, motion, split, sequenceIndexRef);
+    const result = useAnimatedChildren(children, motion, split);
 
     const { container } = render(<>{result}</>);
     const paragraph = container.querySelector('p') as HTMLElement;
@@ -45,7 +39,7 @@ describe('useGenerateAnimatedChildren hook', () => {
 
   it('resets sequenceIndexRef for each call', () => {
     const children = 'Hi';
-    const result = useGenerateAnimatedChildren(children, motion, split, sequenceIndexRef);
+    const result = useAnimatedChildren(children, motion, split);
 
     const { container } = render(<>{result}</>);
     const spans = container.querySelectorAll('span');

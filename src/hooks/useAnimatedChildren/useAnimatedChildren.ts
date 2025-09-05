@@ -3,7 +3,7 @@ import { Children, ReactNode, useMemo, useRef } from 'react';
 import { MotionConfig, SplitType } from '../../types';
 import { applyAnimationToNode } from '../../utils';
 
-export const useGenerateAnimatedChildren = (children: ReactNode, mergedMotion: MotionConfig, split: SplitType) => {
+export const useAnimatedChildren = (children: ReactNode, mergedMotion: MotionConfig, split: SplitType) => {
   const sequenceIndexRef = useRef(0);
 
   const animatedChildren = useMemo(() => {

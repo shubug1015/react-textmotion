@@ -1,11 +1,11 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { ElementType, FC, useMemo } from 'react';
+import { ElementType, FC } from 'react';
 
-import { useSplitText } from '../../hooks';
+import { useMergeMotion, useSplitText } from '../../hooks';
 import { AnimationPreset, MotionConfig, SplitType } from '../../types';
-import { generateAnimation, mergeMotion } from '../../utils';
+import { generateAnimation } from '../../utils';
 
 type BaseTextMotionProps = {
   as?: ElementType;
@@ -22,7 +22,7 @@ type TextMotionProps = BaseTextMotionProps & MotionProps;
 
 export const TextMotion: FC<TextMotionProps> = ({ as: Tag = 'span', text, split = 'character', motion, preset }) => {
   const splittedTexts = useSplitText(text, split);
-  const mergedMotion = useMemo(() => mergeMotion(motion, preset), [motion, preset]);
+  const mergedMotion = useMergeMotion(motion, preset);
 
   return (
     <Tag className="motion" aria-label={text}>

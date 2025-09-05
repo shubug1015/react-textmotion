@@ -3,8 +3,9 @@ import '../../styles/motion.scss';
 
 import { Children, ElementType, FC, ReactNode, useMemo, useRef } from 'react';
 
+import { useMergeMotion } from '../../hooks';
 import { AnimationPreset, MotionConfig, SplitType } from '../../types';
-import { generateAnimatedChildren, getTextFromReactNode, mergeMotion } from '../../utils';
+import { generateAnimatedChildren, getTextFromReactNode } from '../../utils';
 
 type BaseNodeMotionProps = {
   as?: ElementType;
@@ -27,7 +28,7 @@ export const NodeMotion: FC<NodeMotionProps> = ({
   preset,
 }) => {
   const accessibleText = useMemo(() => getTextFromReactNode(children), [children]);
-  const mergedMotion = useMemo(() => mergeMotion(motion, preset), [motion, preset]);
+  const mergedMotion = useMergeMotion(motion, preset);
 
   const sequenceIndexRef = useRef(0);
 

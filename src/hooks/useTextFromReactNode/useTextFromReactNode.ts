@@ -20,7 +20,7 @@ const getTextFromReactNode = (node: ReactNode): string => {
   return '';
 };
 
-export const useGetTextFromReactNode = (children: ReactNode): string => {
+export const useTextFromReactNode = (children: ReactNode): string => {
   const textFromReactNode = useMemo(() => getTextFromReactNode(children), [children]);
 
   return textFromReactNode;

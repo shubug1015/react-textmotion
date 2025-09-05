@@ -3,7 +3,7 @@ import '../../styles/motion.scss';
 
 import { Children, ElementType, FC, ReactNode } from 'react';
 
-import { useGenerateAnimatedChildren, useGetTextFromReactNode, useResolvedMotion } from '../../hooks';
+import { useAnimatedChildren, useResolvedMotion, useTextFromReactNode } from '../../hooks';
 import { AnimationPreset, MotionConfig, SplitType } from '../../types';
 
 type BaseNodeMotionProps = {
@@ -26,9 +26,9 @@ export const NodeMotion: FC<NodeMotionProps> = ({
   motion,
   preset,
 }) => {
-  const accessibleText = useGetTextFromReactNode(children);
+  const accessibleText = useTextFromReactNode(children);
   const resolvedMotion = useResolvedMotion(motion, preset);
-  const animatedChildren = useGenerateAnimatedChildren(children, resolvedMotion, split);
+  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
 
   return (
     <Tag className="motion" aria-label={accessibleText}>

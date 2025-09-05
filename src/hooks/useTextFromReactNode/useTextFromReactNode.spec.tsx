@@ -1,29 +1,29 @@
-import { useGetTextFromReactNode } from './useGetTextFromReactNode';
+import { useTextFromReactNode } from './useTextFromReactNode';
 
-describe('useGetTextFromReactNode hook', () => {
+describe('useTextFromReactNode hook', () => {
   it('should return string as is', () => {
-    expect(useGetTextFromReactNode('Hello')).toBe('Hello');
+    expect(useTextFromReactNode('Hello')).toBe('Hello');
   });
 
   it('should convert number to string', () => {
-    expect(useGetTextFromReactNode(123)).toBe('123');
+    expect(useTextFromReactNode(123)).toBe('123');
   });
 
   it('should ignore null, undefined, and boolean', () => {
-    expect(useGetTextFromReactNode(null)).toBe('');
-    expect(useGetTextFromReactNode(undefined)).toBe('');
-    expect(useGetTextFromReactNode(true)).toBe('');
-    expect(useGetTextFromReactNode(false)).toBe('');
+    expect(useTextFromReactNode(null)).toBe('');
+    expect(useTextFromReactNode(undefined)).toBe('');
+    expect(useTextFromReactNode(true)).toBe('');
+    expect(useTextFromReactNode(false)).toBe('');
   });
 
   it('should concatenate array of nodes', () => {
-    expect(useGetTextFromReactNode(['Hello', ' ', 'World'])).toBe('Hello World');
+    expect(useTextFromReactNode(['Hello', ' ', 'World'])).toBe('Hello World');
   });
 
   it('should extract text from simple React element', () => {
     const element = <span>Hello</span>;
 
-    expect(useGetTextFromReactNode(element)).toBe('Hello');
+    expect(useTextFromReactNode(element)).toBe('Hello');
   });
 
   it('should extract text from nested React elements', () => {
@@ -34,7 +34,7 @@ describe('useGetTextFromReactNode hook', () => {
       </div>
     );
 
-    expect(useGetTextFromReactNode(element)).toBe('HelloWorld');
+    expect(useTextFromReactNode(element)).toBe('HelloWorld');
   });
 
   it('should handle mixed children (string, number, element)', () => {
@@ -44,13 +44,13 @@ describe('useGetTextFromReactNode hook', () => {
       </div>
     );
 
-    expect(useGetTextFromReactNode(element)).toBe('Hello 123 World');
+    expect(useTextFromReactNode(element)).toBe('Hello 123 World');
   });
 
   it('should return empty string for React fragments without text', () => {
     const element = <></>;
 
-    expect(useGetTextFromReactNode(element)).toBe('');
+    expect(useTextFromReactNode(element)).toBe('');
   });
 
   it('should extract text from React fragments with text', () => {
@@ -60,6 +60,6 @@ describe('useGetTextFromReactNode hook', () => {
       </>
     );
 
-    expect(useGetTextFromReactNode(element)).toBe('Hello World');
+    expect(useTextFromReactNode(element)).toBe('Hello World');
   });
 });

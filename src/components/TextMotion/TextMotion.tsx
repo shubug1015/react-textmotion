@@ -3,7 +3,7 @@ import '../../styles/motion.scss';
 
 import { ElementType, FC } from 'react';
 
-import { useMergeMotion } from '../../hooks';
+import { useResolvedMotion } from '../../hooks';
 import { AnimationPreset, MotionConfig, SplitType } from '../../types';
 import { generateAnimation, splitText } from '../../utils';
 
@@ -22,12 +22,12 @@ type TextMotionProps = BaseTextMotionProps & MotionProps;
 
 export const TextMotion: FC<TextMotionProps> = ({ as: Tag = 'span', text, split = 'character', motion, preset }) => {
   const splittedTexts = splitText(text, split);
-  const mergedMotion = useMergeMotion(motion, preset);
+  const resolvedMotion = useResolvedMotion(motion, preset);
 
   return (
     <Tag className="motion" aria-label={text}>
       {splittedTexts.map((splittedText, index) => {
-        const animation = generateAnimation(mergedMotion, index);
+        const animation = generateAnimation(resolvedMotion, index);
 
         if (splittedText === '\n') {
           return <br key={index} />;

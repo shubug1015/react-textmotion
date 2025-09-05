@@ -1,24 +1,24 @@
 import { MotionConfig } from '../../types';
 
-import { useMergeMotion } from './useMergeMotion';
+import { useResolvedMotion } from './useResolvedMotion';
 
-describe('useMergeMotion hook', () => {
+describe('useResolvedMotion hook', () => {
   it('returns empty object when motion is undefined', () => {
-    const result = useMergeMotion(undefined);
+    const result = useResolvedMotion(undefined);
 
     expect(result).toEqual({});
   });
 
   it('returns empty object when motion has no keys', () => {
     const motions: MotionConfig = {};
-    const result = useMergeMotion(motions);
+    const result = useResolvedMotion(motions);
 
     expect(result).toEqual({});
   });
 
   it('returns same content when motion has values (deep copy)', () => {
     const motion: MotionConfig = { fade: { variant: 'in', duration: 1, delay: 0 } };
-    const result = useMergeMotion(motion);
+    const result = useResolvedMotion(motion);
 
     expect(result).toStrictEqual(motion);
     expect(result).not.toBe(motion);
@@ -29,7 +29,7 @@ describe('useMergeMotion hook', () => {
       fade: { variant: 'out', duration: 1, delay: 0.5 },
       slide: { variant: 'up', duration: 2, delay: 1 },
     };
-    const result = useMergeMotion(motion);
+    const result = useResolvedMotion(motion);
 
     expect(result).toStrictEqual(motion);
   });
@@ -40,7 +40,7 @@ describe('useMergeMotion hook', () => {
 
     mock.mockReturnValueOnce({ fade: { variant: 'in', duration: 0.25, delay: 0.025 } });
 
-    const result = useMergeMotion(undefined, { preset: 'fade-in' } as any);
+    const result = useResolvedMotion(undefined, { preset: 'fade-in' } as any);
 
     expect(result).toEqual({ fade: { variant: 'in', duration: 0.25, delay: 0.025 } });
 

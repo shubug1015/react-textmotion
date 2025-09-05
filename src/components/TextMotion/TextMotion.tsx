@@ -3,9 +3,9 @@ import '../../styles/motion.scss';
 
 import { ElementType, FC } from 'react';
 
-import { useMergeMotion, useSplitText } from '../../hooks';
+import { useMergeMotion } from '../../hooks';
 import { AnimationPreset, MotionConfig, SplitType } from '../../types';
-import { generateAnimation } from '../../utils';
+import { generateAnimation, splitText } from '../../utils';
 
 type BaseTextMotionProps = {
   as?: ElementType;
@@ -21,7 +21,7 @@ type MotionProps =
 type TextMotionProps = BaseTextMotionProps & MotionProps;
 
 export const TextMotion: FC<TextMotionProps> = ({ as: Tag = 'span', text, split = 'character', motion, preset }) => {
-  const splittedTexts = useSplitText(text, split);
+  const splittedTexts = splitText(text, split);
   const mergedMotion = useMergeMotion(motion, preset);
 
   return (

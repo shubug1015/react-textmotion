@@ -2,77 +2,74 @@ import { MotionConfig } from '../../types';
 
 import { generateAnimation } from './generateAnimation';
 
-describe('generateAnimation', () => {
-  it('generates single motion string at index 0', () => {
-    const motions: MotionConfig = {
-      fade: { variant: 'in', duration: 2, delay: 1 },
-    };
-    const result = generateAnimation(motions, 0);
+describe('generateAnimation utility', () => {
+  describe('when given a valid motion configuration', () => {
+    it('should generate a single motion string correctly for index 0', () => {
+      const motion: MotionConfig = {
+        fade: { variant: 'in', duration: 2, delay: 1 },
+      };
+      const result = generateAnimation(motion, 0);
 
-    expect(result).toBe('fade-in 2s ease-out 0s both');
+      expect(result).toBe('fade-in 2s ease-out 0s both');
+    });
+
+    it('should apply the correct staggered delay for a non-zero index', () => {
+      const motion: MotionConfig = {
+        fade: { variant: 'out', duration: 1.5, delay: 0.5 },
+      };
+      const result = generateAnimation(motion, 2);
+
+      expect(result).toBe('fade-out 1.5s ease-out 1s both');
+    });
+
+    it('should join multiple animation strings with a comma', () => {
+      const motion: MotionConfig = {
+        fade: { variant: 'in', duration: 2, delay: 1 },
+        slide: { variant: 'up', duration: 3, delay: 0.5 },
+      };
+      const result = generateAnimation(motion, 2);
+
+      expect(result).toBe('fade-in 2s ease-out 2s both, slide-up 3s ease-out 1s both');
+    });
   });
 
-  it('applies correct delay at non-zero index', () => {
-    const motions: MotionConfig = {
-      fade: { variant: 'out', duration: 1.5, delay: 0.5 },
-    };
-    const result = generateAnimation(motions, 2);
+  describe('when given an invalid or empty motion configuration', () => {
+    const testCases: [string, MotionConfig, string][] = [
+      ['an empty motion object', {}, ''],
+      [
+        'a motion object with all invalid values',
+        {
+          fade: undefined as any,
+          slide: { duration: 1, delay: 1 } as any, // missing variant
+        },
+        '',
+      ],
+      [
+        'a motion object with mixed valid and invalid values',
+        {
+          fade: undefined as any,
+          slide: { duration: 1, delay: 1 } as any,
+          scale: { variant: 'in', duration: 1, delay: 1 },
+        },
+        'scale-in 1s ease-out 0s both',
+      ],
+    ];
 
-    expect(result).toBe('fade-out 1.5s ease-out 1s both');
-  });
+    it.each(testCases)('should handle %s correctly', (_, motion, expected) => {
+      const result = generateAnimation(motion, 0);
+      expect(result).toBe(expected);
+    });
 
-  it('joins multiple animations with comma and space', () => {
-    const motions: MotionConfig = {
-      fade: { variant: 'in', duration: 2, delay: 1 },
-      slide: { variant: 'up', duration: 3, delay: 0.5 },
-    };
-    const result = generateAnimation(motions, 2);
+    it('should ignore enumerable properties from the prototype chain', () => {
+      const motionPrototype = {
+        inheritedMotion: { variant: 'in', duration: 1, delay: 1 },
+      };
+      const motionsWithPrototype = Object.create(motionPrototype);
+      motionsWithPrototype.ownMotion = { variant: 'out', duration: 2, delay: 0.5 };
 
-    expect(result).toBe('fade-in 2s ease-out 2s both, slide-up 3s ease-out 1s both');
-  });
+      const result = generateAnimation(motionsWithPrototype, 1);
 
-  it('returns empty string when no motions provided', () => {
-    const motions: MotionConfig = {};
-    const result = generateAnimation(motions, 5);
-
-    expect(result).toBe('');
-  });
-
-  it('skips motions without a valid variant', () => {
-    const motions: MotionConfig = {
-      fade: undefined as any,
-      slide: { duration: 1, delay: 1 } as any,
-      scale: { variant: 'in', duration: 1, delay: 1 },
-    };
-    const result = generateAnimation(motions, 0);
-
-    expect(result).toBe('scale-in 1s ease-out 0s both');
-  });
-
-  it('returns empty string if all motions are invalid', () => {
-    const motions: MotionConfig = {
-      fade: undefined as any,
-      slide: { duration: 1, delay: 1 } as any,
-    };
-    const result = generateAnimation(motions, 0);
-
-    expect(result).toBe('');
-  });
-
-  it('covers map else branch when filter is bypassed', () => {
-    const motions: MotionConfig = {
-      invalid: { duration: 1, delay: 1 } as any,
-    } as any;
-    const originalFilter = Array.prototype.filter;
-
-    (Array.prototype.filter as any) = function (this: any[]) {
-      return this;
-    };
-
-    const result = generateAnimation(motions, 0);
-
-    Array.prototype.filter = originalFilter;
-
-    expect(result).toBe('');
+      expect(result).toBe('ownMotion-out 2s ease-out 0.5s both');
+    });
   });
 });

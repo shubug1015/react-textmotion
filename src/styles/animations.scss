@@ -144,18 +144,18 @@
 
 @keyframes flip-in {
   from {
-    transform: var(perspective(--flip-perspective) rotateY(--flip-from), perspective(40rem) rotateY(90deg));
+    transform: perspective(40rem) rotateY(var(--flip-from, 90deg));
   }
   to {
-    transform: var(perspective(--flip-perspective) rotateY(--flip-to), perspective(40rem) rotateY(0deg));
+    transform: perspective(40rem) rotateY(var(--flip-to, 0deg));
   }
 }
 
 @keyframes flip-out {
   from {
-    transform: var(perspective(--flip-perspective) rotateY(--flip-from), perspective(40rem) rotateY(0deg));
+    transform: perspective(40rem) rotateY(var(--flip-from, 0deg));
   }
   to {
-    transform: var(perspective(--flip-perspective) rotateY(--flip-to), perspective(40rem) rotateY(90deg));
+    transform: perspective(40rem) rotateY(var(--flip-to, 90deg));
   }
 }

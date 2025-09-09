@@ -47,7 +47,6 @@ export type FlipAnimation = BaseAnimation & {
   variant: 'in' | 'out';
   from?: string;
   to?: string;
-  perspective?: string;
   // axis?: 'x' | 'y';
 };
 

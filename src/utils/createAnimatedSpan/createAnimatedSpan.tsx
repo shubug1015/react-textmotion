@@ -4,10 +4,10 @@ import { MotionConfig } from '../../types';
 import { generateAnimation } from '../generateAnimation';
 
 export const createAnimatedSpan = (text: string, sequenceIndex: number, motion: MotionConfig): ReactElement => {
-  const animation = generateAnimation(motion, sequenceIndex);
+  const { style } = generateAnimation(motion, sequenceIndex);
 
   return (
-    <span key={sequenceIndex} style={{ animation }} aria-hidden="true">
+    <span key={sequenceIndex} style={style} aria-hidden="true">
       {text}
     </span>
   );

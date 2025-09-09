@@ -27,13 +27,13 @@ export const TextMotion: FC<TextMotionProps> = ({ as: Tag = 'span', text, split 
   return (
     <Tag className="motion" aria-label={text}>
       {splittedTexts.map((splittedText, index) => {
-        const animation = generateAnimation(resolvedMotion, index);
+        const { style } = generateAnimation(resolvedMotion, index);
 
         if (splittedText === '\n') {
           return <br key={index} />;
         }
         return (
-          <span key={index} style={{ animation }} aria-hidden="true">
+          <span key={index} style={style} aria-hidden="true">
             {splittedText}
           </span>
         );

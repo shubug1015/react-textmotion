@@ -23,12 +23,10 @@ export const generateAnimation = (motionConfig: MotionConfig, index: number): { 
         animations.push(animationString);
 
         for (const key in rest) {
-          if (Object.prototype.hasOwnProperty.call(rest, key)) {
-            const value = rest[key as keyof typeof rest];
+          const value = rest[key as keyof typeof rest];
 
-            if (value !== undefined) {
-              style[`--${name}-${key}`] = value as string | number;
-            }
+          if (value !== undefined) {
+            style[`--${name}-${key}`] = value as string | number;
           }
         }
       }

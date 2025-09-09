@@ -1,7 +1,7 @@
 export type BaseAnimation = {
   duration: number;
   delay: number;
-  easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'cubic-bezier';
+  easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'step-start' | 'step-end';
 };
 
 export type FadeAnimation = BaseAnimation & {

@@ -43,7 +43,7 @@ type NodeMotionProps = BaseNodeMotionProps & MotionProps;
  *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
  *       }}
  *     >
- *       Hello <strong>World</strong> and <em>React</em>
+ *       Hello <strong>World</strong>
  *     </NodeMotion>
  *   );
  * }

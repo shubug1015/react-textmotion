@@ -4,6 +4,18 @@ import { MotionConfig, SplitType } from '../../types';
 import { createAnimatedSpan } from '../createAnimatedSpan';
 import { splitText } from '../splitText';
 
+/**
+ * @description
+ * `applyAnimationToNode` is a recursive function that traverses a React node and its children,
+ * applying animations to text nodes and cloning React elements with animated children.
+ *
+ * @param {ReactNode} node - The React node to process.
+ * @param {MotionConfig} motion - The motion configuration to apply.
+ * @param {SplitType} split - The split type for text animations (`character`, `word`, or `line`).
+ * @param {{ current: number }} sequenceIndexRef - A mutable ref object to keep track of the animation sequence index.
+ *
+ * @returns {ReactNode} The processed React node with animations applied.
+ */
 export const applyAnimationToNode = (
   node: ReactNode,
   motion: MotionConfig,

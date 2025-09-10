@@ -1,7 +1,7 @@
 export type BaseAnimation = {
   duration: number;
   delay: number;
-  easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'cubic-bezier';
+  easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'step-start' | 'step-end';
 };
 
 export type FadeAnimation = BaseAnimation & {
@@ -23,26 +23,31 @@ export type ScaleAnimation = BaseAnimation & {
 
 export type RotateAnimation = BaseAnimation & {
   variant: 'clockwise' | 'counterclockwise';
-  from?: number;
-  to?: number;
-  axis?: 'x' | 'y' | 'z';
+  from?: string;
+  to?: string;
+  // axis?: 'x' | 'y' | 'z';
 };
 
 export type BounceAnimation = BaseAnimation & {
   variant: 'in' | 'out';
-  intensity?: 'low' | 'medium' | 'high';
+  from?: number;
+  mid?: number;
+  to?: number;
 };
 
 export type ElasticAnimation = BaseAnimation & {
   variant: 'in' | 'out';
-  tension?: number;
-  friction?: number;
+  from?: number;
+  mid1?: number;
+  mid2?: number;
+  to?: number;
 };
 
 export type FlipAnimation = BaseAnimation & {
   variant: 'in' | 'out';
-  perspective?: string;
-  axis?: 'x' | 'y';
+  from?: string;
+  to?: string;
+  // axis?: 'x' | 'y';
 };
 
 export type CustomAnimation = BaseAnimation & {

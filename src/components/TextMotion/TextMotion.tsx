@@ -1,24 +1,8 @@
-import '../../styles/animations.scss';
-import '../../styles/motion.scss';
-
-import { ElementType, FC, memo } from 'react';
+import { FC, memo } from 'react';
 
 import { useResolvedMotion } from '../../hooks';
-import { AnimationPreset, MotionConfig, SplitType } from '../../types';
+import { TextMotionProps } from '../../types';
 import { createAnimatedSpan, splitText } from '../../utils';
-
-type BaseTextMotionProps = {
-  as?: ElementType;
-  text: string;
-  split?: SplitType;
-};
-
-type MotionProps =
-  | { motion: MotionConfig; preset?: never }
-  | { motion?: never; preset: AnimationPreset[] }
-  | { motion?: undefined; preset?: undefined };
-
-type TextMotionProps = BaseTextMotionProps & MotionProps;
 
 /**
  * @description

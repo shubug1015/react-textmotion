@@ -1,23 +1,10 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { Children, ElementType, FC, memo, ReactNode } from 'react';
+import { Children, FC, memo } from 'react';
 
 import { useAnimatedChildren, useResolvedMotion, useTextFromReactNode } from '../../hooks';
-import { AnimationPreset, MotionConfig, SplitType } from '../../types';
-
-type BaseNodeMotionProps = {
-  as?: ElementType;
-  children: ReactNode;
-  split?: Exclude<SplitType, 'line'>;
-};
-
-type MotionProps =
-  | { motion: MotionConfig; preset?: never }
-  | { motion?: never; preset: AnimationPreset[] }
-  | { motion?: undefined; preset?: undefined };
-
-type NodeMotionProps = BaseNodeMotionProps & MotionProps;
+import { NodeMotionProps } from '../../types';
 
 /**
  * @description

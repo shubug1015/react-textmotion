@@ -42,3 +42,8 @@ export type MotionConfig = {
   flip?: FlipAnimation;
   [key: string]: CustomAnimation | undefined;
 };
+
+export type ValidationResult = {
+  errors: string[];
+  warnings: string[];
+};

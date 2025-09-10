@@ -1,3 +1,8 @@
+/**
+ * @description
+ * A list of predefined animation presets that can be used with the `TextMotion` and `NodeMotion` components.
+ * Each preset corresponds to a specific animation configuration.
+ */
 export type AnimationPreset =
   | 'fade-in'
   | 'fade-out'

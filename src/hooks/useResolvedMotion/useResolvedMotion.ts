@@ -24,7 +24,7 @@ export const useResolvedMotion = (motion?: MotionConfig, preset?: AnimationPrese
     }
 
     if (motion && Object.keys(motion).length > 0) {
-      return JSON.parse(JSON.stringify(motion));
+      return motion;
     }
 
     return {};

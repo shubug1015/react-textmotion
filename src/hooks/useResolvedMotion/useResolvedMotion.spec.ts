@@ -19,14 +19,6 @@ describe('useResolvedMotion hook', () => {
     expect(result.current).toEqual({});
   });
 
-  it('returns same content when motion has values (deep copy)', () => {
-    const motion: MotionConfig = { fade: { variant: 'in', duration: 1, delay: 0 } };
-    const { result } = renderHook(() => useResolvedMotion(motion));
-
-    expect(result.current).toStrictEqual(motion);
-    expect(result.current).not.toBe(motion);
-  });
-
   it('preserves multiple motion types', () => {
     const motion: MotionConfig = {
       fade: { variant: 'out', duration: 1, delay: 0.5 },

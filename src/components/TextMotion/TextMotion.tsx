@@ -5,7 +5,7 @@ import { ElementType, FC, memo } from 'react';
 
 import { useResolvedMotion } from '../../hooks';
 import { AnimationPreset, MotionConfig, SplitType } from '../../types';
-import { generateAnimation, splitText } from '../../utils';
+import { createAnimatedSpan, splitText } from '../../utils';
 
 type BaseTextMotionProps = {
   as?: ElementType;
@@ -69,18 +69,7 @@ export const TextMotion: FC<TextMotionProps> = memo(
 
     return (
       <Tag className="motion" aria-label={text}>
-        {splittedTexts.map((splittedText, index) => {
-          const { style } = generateAnimation(resolvedMotion, index);
-
-          if (splittedText === '\n') {
-            return <br key={index} />;
-          }
-          return (
-            <span key={index} style={style} aria-hidden="true">
-              {splittedText}
-            </span>
-          );
-        })}
+        {splittedTexts.map((splittedText, index) => createAnimatedSpan(splittedText, index, resolvedMotion))}
       </Tag>
     );
   }

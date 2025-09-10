@@ -16,6 +16,10 @@ import { generateAnimation } from '../generateAnimation';
 export const createAnimatedSpan = (text: string, sequenceIndex: number, motion: MotionConfig): ReactElement => {
   const { style } = generateAnimation(motion, sequenceIndex);
 
+  if (text === '\n') {
+    return <br key={sequenceIndex} />;
+  }
+
   return (
     <span key={sequenceIndex} style={style} aria-hidden="true">
       {text}

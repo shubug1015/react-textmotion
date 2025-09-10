@@ -6,6 +6,16 @@ type StyleWithCustomProperties = CSSProperties & {
   [key: `--${string}`]: string | number;
 };
 
+/**
+ * @description
+ * `generateAnimation` is a utility function that generates CSS animation styles from a motion configuration object.
+ * It creates the `animation` property and any custom CSS properties needed for the animations.
+ *
+ * @param {MotionConfig} motionConfig - The motion configuration object.
+ * @param {number} index - The index of the element in the animation sequence, used to calculate the animation delay.
+ *
+ * @returns {{ style: StyleWithCustomProperties }} An object containing the generated CSS styles.
+ */
 export const generateAnimation = (motionConfig: MotionConfig, index: number): { style: StyleWithCustomProperties } => {
   const animations: string[] = [];
   const style: StyleWithCustomProperties = {};

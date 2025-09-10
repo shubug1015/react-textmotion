@@ -1,7 +1,7 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { Children, ElementType, FC, ReactNode } from 'react';
+import { Children, ElementType, FC, memo, ReactNode } from 'react';
 
 import { useAnimatedChildren, useResolvedMotion, useTextFromReactNode } from '../../hooks';
 import { AnimationPreset, MotionConfig, SplitType } from '../../types';
@@ -61,20 +61,16 @@ type NodeMotionProps = BaseNodeMotionProps & MotionProps;
  *   );
  * }
  */
-export const NodeMotion: FC<NodeMotionProps> = ({
-  as: Tag = 'span',
-  children,
-  split = 'character',
-  motion,
-  preset,
-}) => {
-  const accessibleText = useTextFromReactNode(children);
-  const resolvedMotion = useResolvedMotion(motion, preset);
-  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
+export const NodeMotion: FC<NodeMotionProps> = memo(
+  ({ as: Tag = 'span', children, split = 'character', motion, preset }) => {
+    const accessibleText = useTextFromReactNode(children);
+    const resolvedMotion = useResolvedMotion(motion, preset);
+    const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
 
-  return (
-    <Tag className="motion" aria-label={accessibleText}>
-      {Children.toArray(animatedChildren)}
-    </Tag>
-  );
-};
+    return (
+      <Tag className="motion" aria-label={accessibleText}>
+        {Children.toArray(animatedChildren)}
+      </Tag>
+    );
+  }
+);

@@ -1,1 +1,1 @@
-export { TextMotion } from './TextMotion';
+export * from './TextMotion';

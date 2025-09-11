@@ -1,4 +1,4 @@
-import { Children, cloneElement, isValidElement, ReactNode } from 'react';
+import { cloneElement, isValidElement, ReactNode } from 'react';
 
 import { MotionConfig, SplitType } from '../../types';
 import { createAnimatedSpan } from '../createAnimatedSpan';
@@ -6,43 +6,66 @@ import { splitText } from '../splitText';
 
 /**
  * @description
- * `applyAnimationToNode` is a recursive function that traverses a React node and its children,
+ * `applyAnimationToNode` is a recursive pure function that traverses a React node and its children,
  * applying animations to text nodes and cloning React elements with animated children.
  *
  * @param {ReactNode} node - The React node to process.
  * @param {MotionConfig} motion - The motion configuration to apply.
- * @param {SplitType} split - The split type for text animations (`character`, `word`, or `line`).
- * @param {{ current: number }} sequenceIndexRef - A mutable ref object to keep track of the animation sequence index.
+ * @param {SplitType} split - The split type for text animations (`character` or `word`).
+ * @param {number} sequenceIndex - The starting sequence index for the animation.
  *
- * @returns {ReactNode} The processed React node with animations applied.
+ * @returns {{ nodes: ReactNode[]; nextSequenceIndex: number }} An object containing the array of animated nodes and the next available sequence index.
  */
 export const applyAnimationToNode = (
   node: ReactNode,
   motion: MotionConfig,
   split: SplitType,
-  sequenceIndexRef: { current: number }
-): ReactNode => {
-  if (typeof node === 'string') {
-    const splittedText = splitText(node, split);
+  sequenceIndex: number
+): { nodes: ReactNode[]; nextSequenceIndex: number } => {
+  let currentIndex = sequenceIndex;
 
-    return splittedText.map(splittedText => createAnimatedSpan(splittedText, sequenceIndexRef.current++, motion));
-  }
+  if (typeof node === 'string' || typeof node === 'number') {
+    const text = typeof node === 'number' ? node.toString() : node;
+    const splittedText = splitText(text, split);
 
-  if (typeof node === 'number') {
-    const splittedText = splitText(node.toString(), split);
+    const animatedNodes = splittedText.map(textSegment => {
+      const animatedSpan = createAnimatedSpan(textSegment, currentIndex, motion);
+      currentIndex++;
+      return animatedSpan;
+    });
 
-    return splittedText.map(splittedText => createAnimatedSpan(splittedText, sequenceIndexRef.current++, motion));
+    return { nodes: animatedNodes, nextSequenceIndex: currentIndex };
   }
 
   if (Array.isArray(node)) {
-    return Children.map(node, child => applyAnimationToNode(child, motion, split, sequenceIndexRef));
+    const collectedNodes: ReactNode[] = [];
+
+    for (const child of node) {
+      const result = applyAnimationToNode(child, motion, split, currentIndex);
+      collectedNodes.push(...result.nodes);
+      currentIndex = result.nextSequenceIndex;
+    }
+
+    return { nodes: collectedNodes, nextSequenceIndex: currentIndex };
   }
 
   if (isValidElement<{ children?: ReactNode }>(node)) {
-    const animatedChildren = applyAnimationToNode(node.props.children, motion, split, sequenceIndexRef);
+    const childrenResult = applyAnimationToNode(node.props.children, motion, split, currentIndex);
+    const parentKeyIndex = childrenResult.nextSequenceIndex;
 
-    return cloneElement(node, { key: sequenceIndexRef.current++, children: animatedChildren });
+    const animatedElement = cloneElement(node, {
+      key: parentKeyIndex,
+      children: childrenResult.nodes,
+    });
+
+    const nextIndex = parentKeyIndex + 1;
+
+    return { nodes: [animatedElement], nextSequenceIndex: nextIndex };
   }
 
-  return node;
+  if (node === null || typeof node === 'undefined' || typeof node === 'boolean') {
+    return { nodes: [], nextSequenceIndex: sequenceIndex };
+  }
+
+  return { nodes: [node], nextSequenceIndex: sequenceIndex };
 };

@@ -9,6 +9,8 @@ import { MotionConfig, NodeMotionProps, TextMotionProps, ValidationResult } from
  * @returns {ValidationResult} An object containing arrays of errors and warnings.
  */
 const validateMotionConfig = (motion: MotionConfig): ValidationResult => {
+  const MAX_RECOMMENDED_DURATION = 10;
+
   const errors: string[] = [];
   const warnings: string[] = [];
 
@@ -23,7 +25,7 @@ const validateMotionConfig = (motion: MotionConfig): ValidationResult => {
       errors.push(`${key}.delay must be non-negative`);
     }
 
-    if (config.duration > 10) {
+    if (config.duration > MAX_RECOMMENDED_DURATION) {
       warnings.push(`${key}.duration is very long (${config.duration}s)`);
     }
   });

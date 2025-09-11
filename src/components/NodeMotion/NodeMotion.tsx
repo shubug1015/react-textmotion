@@ -5,6 +5,7 @@ import { Children, FC, memo } from 'react';
 
 import { useAnimatedChildren, useResolvedMotion, useTextFromReactNode } from '../../hooks';
 import { NodeMotionProps } from '../../types';
+import { handleValidationErrors, validateNodeMotionProps } from '../../utils';
 
 /**
  * @description
@@ -48,16 +49,19 @@ import { NodeMotionProps } from '../../types';
  *   );
  * }
  */
-export const NodeMotion: FC<NodeMotionProps> = memo(
-  ({ as: Tag = 'span', children, split = 'character', motion, preset }) => {
-    const accessibleText = useTextFromReactNode(children);
-    const resolvedMotion = useResolvedMotion(motion, preset);
-    const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
+export const NodeMotion: FC<NodeMotionProps> = memo(props => {
+  const { as: Tag = 'span', children, split = 'character', motion, preset } = props;
 
-    return (
-      <Tag className="motion" aria-label={accessibleText}>
-        {Children.toArray(animatedChildren)}
-      </Tag>
-    );
-  }
-);
+  const { errors, warnings } = validateNodeMotionProps(props);
+  handleValidationErrors(errors, warnings);
+
+  const accessibleText = useTextFromReactNode(children);
+  const resolvedMotion = useResolvedMotion(motion, preset);
+  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
+
+  return (
+    <Tag className="motion" aria-label={accessibleText}>
+      {Children.toArray(animatedChildren)}
+    </Tag>
+  );
+});

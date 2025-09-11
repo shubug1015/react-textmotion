@@ -1,5 +1,5 @@
 export const handleValidation = (errors: string[], warnings: string[]) => {
-  if (__DEV__) {
+  if (process.env.NODE_ENV !== 'production') {
     if (errors.length > 0) {
       console.error('TextMotion validation errors:', errors);
 

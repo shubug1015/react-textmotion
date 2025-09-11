@@ -1,24 +1,8 @@
-import '../../styles/animations.scss';
-import '../../styles/motion.scss';
-
-import { ElementType, FC, memo } from 'react';
+import { FC, memo } from 'react';
 
 import { useResolvedMotion } from '../../hooks';
-import { AnimationPreset, MotionConfig, SplitType } from '../../types';
-import { createAnimatedSpan, splitText } from '../../utils';
-
-type BaseTextMotionProps = {
-  as?: ElementType;
-  text: string;
-  split?: SplitType;
-};
-
-type MotionProps =
-  | { motion: MotionConfig; preset?: never }
-  | { motion?: never; preset: AnimationPreset[] }
-  | { motion?: undefined; preset?: undefined };
-
-type TextMotionProps = BaseTextMotionProps & MotionProps;
+import { TextMotionProps } from '../../types';
+import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProps } from '../../utils';
 
 /**
  * @description
@@ -62,15 +46,18 @@ type TextMotionProps = BaseTextMotionProps & MotionProps;
  * }
  */
 
-export const TextMotion: FC<TextMotionProps> = memo(
-  ({ as: Tag = 'span', text, split = 'character', motion, preset }) => {
-    const splittedTexts = splitText(text, split);
-    const resolvedMotion = useResolvedMotion(motion, preset);
+export const TextMotion: FC<TextMotionProps> = memo(props => {
+  const { as: Tag = 'span', text, split = 'character', motion, preset } = props;
 
-    return (
-      <Tag className="motion" aria-label={text}>
-        {splittedTexts.map((splittedText, index) => createAnimatedSpan(splittedText, index, resolvedMotion))}
-      </Tag>
-    );
-  }
-);
+  const { errors, warnings } = validateTextMotionProps(props);
+  handleValidation(errors, warnings);
+
+  const splittedTexts = splitText(text, split);
+  const resolvedMotion = useResolvedMotion(motion, preset);
+
+  return (
+    <Tag className="text-motion" aria-label={text}>
+      {splittedTexts.map((splittedText, index) => createAnimatedSpan(splittedText, index, resolvedMotion))}
+    </Tag>
+  );
+});

@@ -1,0 +1,98 @@
+import { MotionConfig, NodeMotionProps, TextMotionProps, ValidationResult } from '../../types';
+
+/**
+ * @description
+ * Validates the motion configuration object.
+ * It checks for positive duration, non-negative delay, and warns if the duration is too long.
+ *
+ * @param {MotionConfig} motion - The motion configuration to validate.
+ * @returns {ValidationResult} An object containing arrays of errors and warnings.
+ */
+const validateMotionConfig = (motion: MotionConfig): ValidationResult => {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+
+  Object.entries(motion).forEach(([key, config]) => {
+    if (!config) return;
+
+    if (config.duration <= 0) {
+      errors.push(`${key}.duration must be greater than 0`);
+    }
+
+    if (config.delay < 0) {
+      errors.push(`${key}.delay must be non-negative`);
+    }
+
+    if (config.duration > 10) {
+      warnings.push(`${key}.duration is very long (${config.duration}s)`);
+    }
+  });
+
+  return { errors, warnings };
+};
+
+/**
+ * @description
+ * Validates the props for the TextMotion component.
+ * It checks for the presence and type of the 'text' prop, the value of the 'split' prop,
+ * and runs validation on the 'motion' prop.
+ *
+ * @param {TextMotionProps} props - The props of the TextMotion component to validate.
+ * @returns {ValidationResult} An object containing arrays of errors and warnings.
+ */
+export const validateTextMotionProps = (props: TextMotionProps): ValidationResult => {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+
+  if (props.text === undefined || props.text === null) {
+    errors.push('text prop is required');
+  } else if (typeof props.text !== 'string') {
+    errors.push('text prop must be a string');
+  } else if (props.text.trim() === '') {
+    warnings.push('text prop is empty or contains only whitespace');
+  }
+
+  if (props.split !== undefined && !['character', 'word', 'line'].includes(props.split)) {
+    errors.push('split prop must be one of: character, word, line');
+  }
+
+  if (props.motion !== undefined) {
+    const motionValidation = validateMotionConfig(props.motion);
+
+    errors.push(...motionValidation.errors);
+    warnings.push(...motionValidation.warnings);
+  }
+
+  return { errors, warnings };
+};
+
+/**
+ * @description
+ * Validates the props for the NodeMotion component.
+ * It warns if the 'children' prop is empty, checks the value of the 'split' prop,
+ * and runs validation on the 'motion' prop.
+ *
+ * @param {NodeMotionProps} props - The props of the NodeMotion component to validate.
+ * @returns {ValidationResult} An object containing arrays of errors and warnings.
+ */
+export const validateNodeMotionProps = (props: NodeMotionProps): ValidationResult => {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+
+  if (props.children === undefined || props.children === null) {
+    warnings.push('children prop is empty');
+  }
+
+  if (props.split !== undefined && !['character', 'word'].includes(props.split)) {
+    errors.push('split prop must be one of: character, word');
+  }
+
+  if (props.motion !== undefined) {
+    const motionValidation = validateMotionConfig(props.motion);
+
+    errors.push(...motionValidation.errors);
+    warnings.push(...motionValidation.warnings);
+  }
+
+  return { errors, warnings };
+};

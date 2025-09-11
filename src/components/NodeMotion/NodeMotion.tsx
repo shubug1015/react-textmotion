@@ -1,23 +1,11 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { Children, ElementType, FC, memo, ReactNode } from 'react';
+import { Children, FC, memo } from 'react';
 
 import { useAnimatedChildren, useResolvedMotion, useTextFromReactNode } from '../../hooks';
-import { AnimationPreset, MotionConfig, SplitType } from '../../types';
-
-type BaseNodeMotionProps = {
-  as?: ElementType;
-  children: ReactNode;
-  split?: Exclude<SplitType, 'line'>;
-};
-
-type MotionProps =
-  | { motion: MotionConfig; preset?: never }
-  | { motion?: never; preset: AnimationPreset[] }
-  | { motion?: undefined; preset?: undefined };
-
-type NodeMotionProps = BaseNodeMotionProps & MotionProps;
+import { NodeMotionProps } from '../../types';
+import { handleValidation, validateNodeMotionProps } from '../../utils';
 
 /**
  * @description
@@ -61,16 +49,19 @@ type NodeMotionProps = BaseNodeMotionProps & MotionProps;
  *   );
  * }
  */
-export const NodeMotion: FC<NodeMotionProps> = memo(
-  ({ as: Tag = 'span', children, split = 'character', motion, preset }) => {
-    const accessibleText = useTextFromReactNode(children);
-    const resolvedMotion = useResolvedMotion(motion, preset);
-    const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
+export const NodeMotion: FC<NodeMotionProps> = memo(props => {
+  const { as: Tag = 'span', children, split = 'character', motion, preset } = props;
 
-    return (
-      <Tag className="motion" aria-label={accessibleText}>
-        {Children.toArray(animatedChildren)}
-      </Tag>
-    );
-  }
-);
+  const { errors, warnings } = validateNodeMotionProps(props);
+  handleValidation(errors, warnings);
+
+  const accessibleText = useTextFromReactNode(children);
+  const resolvedMotion = useResolvedMotion(motion, preset);
+  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
+
+  return (
+    <Tag className="node-motion" aria-label={accessibleText}>
+      {Children.toArray(animatedChildren)}
+    </Tag>
+  );
+});

@@ -8,6 +8,7 @@ afterEach(() => cleanup());
 
 describe('TextMotion component', () => {
   const TEXT = 'Hello';
+  const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
   const getSpans = (label: string) => {
     const elements = screen.getAllByLabelText(label);
@@ -35,10 +36,10 @@ describe('TextMotion component', () => {
       expect(screen.getByLabelText(TEXT).tagName.toLowerCase()).toBe('div');
     });
 
-    it('applies "motion" class', () => {
+    it('applies "text-motion" class', () => {
       render(<TextMotion text={TEXT} />);
 
-      expect(screen.getByLabelText(TEXT)).toHaveClass('motion');
+      expect(screen.getByLabelText(TEXT)).toHaveClass('text-motion');
     });
   });
 
@@ -49,6 +50,7 @@ describe('TextMotion component', () => {
       const container = screen.getByLabelText('');
 
       expect(container.querySelectorAll('span[aria-hidden="true"]').length).toBe(0);
+      expect(consoleWarnSpy).toHaveBeenCalled();
     });
 
     it('replaces spaces with non-breaking spaces', () => {
@@ -78,7 +80,7 @@ describe('TextMotion component', () => {
 
     it('splits into lines when split="line"', () => {
       const { container } = render(<TextMotion text={'Hello\nWorld'} split="line" />);
-      const wrapper = container.querySelector('.motion') as HTMLElement;
+      const wrapper = container.querySelector('.text-motion') as HTMLElement;
       const children = Array.from(wrapper.childNodes) as HTMLElement[];
 
       expect(children[0].textContent).toBe('Hello');

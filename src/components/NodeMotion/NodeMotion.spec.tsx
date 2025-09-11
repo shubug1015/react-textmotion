@@ -8,6 +8,7 @@ afterEach(() => cleanup());
 
 describe('NodeMotion component', () => {
   const TEXT = 'Hello';
+  const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
   const getSpans = (label: string) => {
     const container = screen.getByLabelText(label);
@@ -34,10 +35,10 @@ describe('NodeMotion component', () => {
       expect(screen.getByLabelText(TEXT).tagName.toLowerCase()).toBe('div');
     });
 
-    it('applies "motion" class', () => {
+    it('applies "node-motion" class', () => {
       render(<NodeMotion>{TEXT}</NodeMotion>);
 
-      expect(screen.getByLabelText(TEXT)).toHaveClass('motion');
+      expect(screen.getByLabelText(TEXT)).toHaveClass('node-motion');
     });
   });
 
@@ -129,11 +130,13 @@ describe('NodeMotion component', () => {
 
       expect(screen.getByLabelText('')).toBeInTheDocument();
       expect(getSpans('')).toHaveLength(0);
+      expect(consoleWarnSpy).toHaveBeenCalled();
 
       rerender(<NodeMotion>{undefined}</NodeMotion>);
 
       expect(screen.getByLabelText('')).toBeInTheDocument();
       expect(getSpans('')).toHaveLength(0);
+      expect(consoleWarnSpy).toHaveBeenCalled();
 
       rerender(<NodeMotion>{false}</NodeMotion>);
 

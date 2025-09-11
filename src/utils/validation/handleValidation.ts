@@ -1,3 +1,11 @@
+/**
+ * @description
+ * Handles validation errors and warnings by logging them to the console.
+ * In a non-production environment, it will throw an error if there are any validation errors.
+ *
+ * @param {string[]} errors - A list of validation error messages.
+ * @param {string[]} warnings - A list of validation warning messages.
+ */
 export const handleValidation = (errors: string[], warnings: string[]) => {
   if (process.env.NODE_ENV !== 'production') {
     if (errors.length > 0) {

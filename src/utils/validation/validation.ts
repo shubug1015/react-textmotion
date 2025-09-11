@@ -1,5 +1,13 @@
 import { MotionConfig, NodeMotionProps, TextMotionProps, ValidationResult } from '../../types';
 
+/**
+ * @description
+ * Validates the motion configuration object.
+ * It checks for positive duration, non-negative delay, and warns if the duration is too long.
+ *
+ * @param {MotionConfig} motion - The motion configuration to validate.
+ * @returns {ValidationResult} An object containing arrays of errors and warnings.
+ */
 const validateMotionConfig = (motion: MotionConfig): ValidationResult => {
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -23,6 +31,15 @@ const validateMotionConfig = (motion: MotionConfig): ValidationResult => {
   return { errors, warnings };
 };
 
+/**
+ * @description
+ * Validates the props for the TextMotion component.
+ * It checks for the presence and type of the 'text' prop, the value of the 'split' prop,
+ * and runs validation on the 'motion' prop.
+ *
+ * @param {TextMotionProps} props - The props of the TextMotion component to validate.
+ * @returns {ValidationResult} An object containing arrays of errors and warnings.
+ */
 export const validateTextMotionProps = (props: TextMotionProps): ValidationResult => {
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -49,6 +66,15 @@ export const validateTextMotionProps = (props: TextMotionProps): ValidationResul
   return { errors, warnings };
 };
 
+/**
+ * @description
+ * Validates the props for the NodeMotion component.
+ * It warns if the 'children' prop is empty, checks the value of the 'split' prop,
+ * and runs validation on the 'motion' prop.
+ *
+ * @param {NodeMotionProps} props - The props of the NodeMotion component to validate.
+ * @returns {ValidationResult} An object containing arrays of errors and warnings.
+ */
 export const validateNodeMotionProps = (props: NodeMotionProps): ValidationResult => {
   const errors: string[] = [];
   const warnings: string[] = [];

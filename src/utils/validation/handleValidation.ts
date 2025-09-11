@@ -1,4 +1,4 @@
-export const handleValidationErrors = (errors: string[], warnings: string[]) => {
+export const handleValidation = (errors: string[], warnings: string[]) => {
   if (__DEV__) {
     if (errors.length > 0) {
       console.error('TextMotion validation errors:', errors);

@@ -2,7 +2,7 @@ import { FC, memo } from 'react';
 
 import { useResolvedMotion } from '../../hooks';
 import { TextMotionProps } from '../../types';
-import { createAnimatedSpan, handleValidationErrors, splitText, validateTextMotionProps } from '../../utils';
+import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProps } from '../../utils';
 
 /**
  * @description
@@ -50,13 +50,13 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const { as: Tag = 'span', text, split = 'character', motion, preset } = props;
 
   const { errors, warnings } = validateTextMotionProps(props);
-  handleValidationErrors(errors, warnings);
+  handleValidation(errors, warnings);
 
   const splittedTexts = splitText(text, split);
   const resolvedMotion = useResolvedMotion(motion, preset);
 
   return (
-    <Tag className="motion" aria-label={text}>
+    <Tag className="text-motion" aria-label={text}>
       {splittedTexts.map((splittedText, index) => createAnimatedSpan(splittedText, index, resolvedMotion))}
     </Tag>
   );

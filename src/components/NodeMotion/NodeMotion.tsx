@@ -5,7 +5,7 @@ import { Children, FC, memo } from 'react';
 
 import { useAnimatedChildren, useResolvedMotion, useTextFromReactNode } from '../../hooks';
 import { NodeMotionProps } from '../../types';
-import { handleValidationErrors, validateNodeMotionProps } from '../../utils';
+import { handleValidation, validateNodeMotionProps } from '../../utils';
 
 /**
  * @description
@@ -53,14 +53,14 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const { as: Tag = 'span', children, split = 'character', motion, preset } = props;
 
   const { errors, warnings } = validateNodeMotionProps(props);
-  handleValidationErrors(errors, warnings);
+  handleValidation(errors, warnings);
 
   const accessibleText = useTextFromReactNode(children);
   const resolvedMotion = useResolvedMotion(motion, preset);
   const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
 
   return (
-    <Tag className="motion" aria-label={accessibleText}>
+    <Tag className="node-motion" aria-label={accessibleText}>
       {Children.toArray(animatedChildren)}
     </Tag>
   );

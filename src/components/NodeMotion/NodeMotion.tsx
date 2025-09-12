@@ -41,15 +41,15 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const { errors, warnings } = validateNodeMotionProps(props);
   handleValidation(errors, warnings);
 
-  const [ref, isIntersecting] = useIntersectionObserver<HTMLSpanElement>();
+  const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>();
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const accessibleText = useTextFromReactNode(children);
   const resolvedMotion = useResolvedMotion(motion, preset);
-  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
+  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split, shouldAnimate);
 
   return (
-    <Tag ref={ref} className="node-motion" aria-label={accessibleText}>
+    <Tag ref={targetRef} className="node-motion" aria-label={accessibleText}>
       {Children.toArray(animatedChildren)}
     </Tag>
   );

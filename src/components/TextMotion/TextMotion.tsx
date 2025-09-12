@@ -38,16 +38,16 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const { errors, warnings } = validateTextMotionProps(props);
   handleValidation(errors, warnings);
 
-  const [ref, isIntersecting] = useIntersectionObserver<HTMLSpanElement>();
+  const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>();
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const resolvedMotion = useResolvedMotion(motion, preset);
 
-  const splittedTexts = splitText(text, split);
-
   return (
-    <Tag ref={ref} className="text-motion" aria-label={text}>
-      {splittedTexts.map((splittedText, index) => createAnimatedSpan(splittedText, index, resolvedMotion))}
+    <Tag ref={targetRef} className="text-motion" aria-label={text}>
+      {shouldAnimate
+        ? splitText(text, split).map((splittedText, index) => createAnimatedSpan(splittedText, index, resolvedMotion))
+        : text}
     </Tag>
   );
 });

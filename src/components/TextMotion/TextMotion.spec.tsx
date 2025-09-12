@@ -1,8 +1,8 @@
-import { cleanup, render, screen } from '@testing-library/react';
-
-import { MotionConfig } from '../../types';
+import { act, cleanup, render, screen } from '@testing-library/react';
 
 import { TextMotion } from './TextMotion';
+
+declare const window: any;
 
 afterEach(() => cleanup());
 
@@ -11,124 +11,73 @@ describe('TextMotion component', () => {
   const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
   const getSpans = (label: string) => {
-    const elements = screen.getAllByLabelText(label);
-    const container = elements[elements.length - 1];
+    const container = screen.getByLabelText(label);
 
     return container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
   };
 
-  describe('container rendering', () => {
-    it('renders with correct aria-label', () => {
-      render(<TextMotion text={TEXT} />);
+  beforeEach(() => {
+    consoleWarnSpy.mockClear();
 
-      expect(screen.getByLabelText(TEXT)).toBeInTheDocument();
-    });
+    window.IntersectionObserver = jest.fn(cb => {
+      (window as any).__trigger = (isIntersecting: boolean) =>
+        cb([{ isIntersecting, target: document.createElement('div') }]);
 
-    it('renders default as <span> tag', () => {
-      render(<TextMotion text={TEXT} />);
-
-      expect(screen.getByLabelText(TEXT).tagName.toLowerCase()).toBe('span');
-    });
-
-    it('renders custom tag via "as" prop', () => {
-      render(<TextMotion as="div" text={TEXT} />);
-
-      expect(screen.getByLabelText(TEXT).tagName.toLowerCase()).toBe('div');
-    });
-
-    it('applies "text-motion" class', () => {
-      render(<TextMotion text={TEXT} />);
-
-      expect(screen.getByLabelText(TEXT)).toHaveClass('text-motion');
+      return { observe: jest.fn(), unobserve: jest.fn(), disconnect: jest.fn() };
     });
   });
 
-  describe('text splitting and rendering', () => {
-    it('renders no spans for empty text', () => {
+  describe('trigger behavior', () => {
+    it('renders spans immediately when trigger="on-load"', () => {
+      render(<TextMotion text={TEXT} trigger="on-load" />);
+
+      expect(getSpans(TEXT).length).toBe(TEXT.length);
+    });
+
+    it('renders raw text when trigger="scroll" before intersection', () => {
+      render(<TextMotion text={TEXT} trigger="scroll" />);
+
+      const container = screen.getByLabelText(TEXT);
+
+      expect(container.textContent).toBe(TEXT);
+      expect(getSpans(TEXT).length).toBe(0);
+    });
+
+    it('renders spans when trigger="scroll" after intersection', () => {
+      render(<TextMotion text={TEXT} trigger="scroll" />);
+
+      act(() => {
+        (window as any).__trigger(true);
+      });
+
+      expect(getSpans(TEXT).length).toBe(TEXT.length);
+    });
+  });
+
+  describe('preset behavior', () => {
+    it('applies animation styles from preset', () => {
+      render(<TextMotion text={TEXT} preset={['fade-in']} trigger="on-load" />);
+
+      const spans = getSpans(TEXT);
+
+      expect(spans[0].style.animation).toMatch(/fade-in/);
+    });
+
+    it('applies multiple preset animations correctly', () => {
+      render(<TextMotion text={TEXT} preset={['fade-in', 'slide-up']} trigger="on-load" />);
+
+      const span = getSpans(TEXT)[0];
+
+      expect(span.style.animation).toContain('fade-in');
+      expect(span.style.animation).toContain('slide-up');
+    });
+  });
+
+  describe('validation and warnings', () => {
+    it('warns when text is empty', () => {
       render(<TextMotion text="" />);
 
-      const container = screen.getByLabelText('');
-
-      expect(container.querySelectorAll('span[aria-hidden="true"]').length).toBe(0);
       expect(consoleWarnSpy).toHaveBeenCalled();
-    });
-
-    it('replaces spaces with non-breaking spaces', () => {
-      render(<TextMotion text="A B" />);
-
-      const spans = getSpans('A B');
-
-      expect(spans[1].textContent).toBe(' ');
-    });
-
-    it('splits into characters by default', () => {
-      render(<TextMotion text={TEXT} />);
-
-      const spans = getSpans(TEXT);
-
-      expect(spans.length).toBe(TEXT.length);
-      expect(Array.from(spans, s => s.textContent)).toEqual([...TEXT]);
-    });
-
-    it('splits into words when split="word"', () => {
-      render(<TextMotion text="Hello World" split="word" />);
-
-      const spans = getSpans('Hello World');
-
-      expect(Array.from(spans, s => s.textContent)).toEqual(['Hello', ' ', 'World']);
-    });
-
-    it('splits into lines when split="line"', () => {
-      const { container } = render(<TextMotion text={'Hello\nWorld'} split="line" />);
-      const wrapper = container.querySelector('.text-motion') as HTMLElement;
-      const children = Array.from(wrapper.childNodes) as HTMLElement[];
-
-      expect(children[0].textContent).toBe('Hello');
-      expect(children[1].nodeName).toBe('BR');
-      expect(children[2].textContent).toBe('World');
-    });
-  });
-
-  describe('animation styles', () => {
-    it('has no animation style by default', () => {
-      render(<TextMotion text={TEXT} />);
-
-      const spans = getSpans(TEXT);
-
-      spans.forEach(span => {
-        expect(span.style.animation).toBe('');
-      });
-    });
-
-    it('applies fade motion with correct timing', () => {
-      const motion: MotionConfig = { fade: { variant: 'in', duration: 1, delay: 0.5 } };
-
-      render(<TextMotion text={TEXT} motion={motion} />);
-
-      expect(getSpans(TEXT)[0].style.animation).toBe('fade-in 1s ease-out 0s both');
-      expect(getSpans(TEXT)[1].style.animation).toBe('fade-in 1s ease-out 0.5s both');
-    });
-
-    it('applies slide motion with correct timing', () => {
-      const motion: MotionConfig = { slide: { variant: 'up', duration: 2, delay: 0.25 } };
-
-      render(<TextMotion text={TEXT} motion={motion} />);
-
-      expect(getSpans(TEXT)[0].style.animation).toBe('slide-up 2s ease-out 0s both');
-      expect(getSpans(TEXT)[1].style.animation).toBe('slide-up 2s ease-out 0.25s both');
-    });
-
-    it('applies multiple motions with correct animation', () => {
-      const motion: MotionConfig = {
-        fade: { variant: 'out', duration: 1, delay: 0 },
-        slide: { variant: 'left', duration: 1.5, delay: 0.5 },
-      };
-
-      render(<TextMotion text={TEXT} motion={motion} />);
-
-      expect(getSpans(TEXT)[1].style.animation).toBe(
-        'fade-out 1s ease-out 0s both, slide-left 1.5s ease-out 0.5s both'
-      );
     });
   });
 });

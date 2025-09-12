@@ -2,7 +2,7 @@ import { NodeMotionProps, TextMotionProps } from '../../types';
 
 import { validateNodeMotionProps, validateTextMotionProps } from './validation';
 
-describe('validation', () => {
+describe('validation utility', () => {
   describe('validateTextMotionProps', () => {
     it('should return no errors or warnings for valid props', () => {
       const props: TextMotionProps = {

@@ -1,6 +1,6 @@
 import { handleValidation } from './handleValidation';
 
-describe('handleValidation', () => {
+describe('handleValidation utility', () => {
   const originalNodeEnv = process.env.NODE_ENV;
   const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
   const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});

@@ -1,20 +1,20 @@
-import { RefObject, useEffect, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 
 type IntersectionObserverOptions = {
   triggerOnce?: boolean;
 } & IntersectionObserverInit;
 
-export const useIntersectionObserver = (
-  ref: RefObject<Element>,
+export const useIntersectionObserver = <T extends Element>(
   options: IntersectionObserverOptions = {}
-): boolean => {
+): [RefObject<T | null>, boolean] => {
   const { threshold = 0, root = null, rootMargin = '0%', triggerOnce = true } = options;
+  const ref = useRef<T>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
 
   useEffect(() => {
     const element = ref.current;
 
-    if (element === undefined || element === null) {
+    if (!element) {
       return;
     }
 
@@ -42,5 +42,5 @@ export const useIntersectionObserver = (
     };
   }, [ref, threshold, root, rootMargin, triggerOnce]);
 
-  return isIntersecting;
+  return [ref, isIntersecting];
 };

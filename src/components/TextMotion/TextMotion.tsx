@@ -1,6 +1,6 @@
 import { FC, memo } from 'react';
 
-import { useResolvedMotion } from '../../hooks';
+import { useIntersectionObserver, useResolvedMotion } from '../../hooks';
 import { TextMotionProps } from '../../types';
 import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProps } from '../../utils';
 
@@ -13,33 +13,19 @@ import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProp
  * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
  * @param {string} text - The text content to animate.
  * @param {SplitType} [split='character'] - Defines how the text is split for animation (`character`, `word`, or `line`). Defaults to `'character'`.
+ * @param {'on-load' | 'scroll'} [trigger='on-load'] - When to trigger the animation. Defaults to `'on-load'`.
  * @param {MotionConfig} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {AnimationPreset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  *
  * @returns {JSX.Element} A React element that renders animated `<span>`s for each split unit of text.
  *
  * @example
- * // Using custom motion configuration
+ * // Using scroll trigger
  * function App() {
  *   return (
  *     <TextMotion
  *       text="Hello World!"
- *       split="character"
- *       motion={{
- *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
- *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
- *       }}
- *     />
- *   );
- * }
- *
- * @example
- * // Using predefined animation presets
- * function App() {
- *   return (
- *     <TextMotion
- *       text="Hello World!"
- *       split="word"
+ *       trigger="scroll"
  *       preset={['fade-in', 'slide-up']}
  *     />
  *   );
@@ -47,16 +33,20 @@ import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProp
  */
 
 export const TextMotion: FC<TextMotionProps> = memo(props => {
-  const { as: Tag = 'span', text, split = 'character', motion, preset } = props;
+  const { as: Tag = 'span', text, split = 'character', trigger = 'on-load', motion, preset } = props;
 
   const { errors, warnings } = validateTextMotionProps(props);
   handleValidation(errors, warnings);
 
-  const splittedTexts = splitText(text, split);
+  const [ref, isIntersecting] = useIntersectionObserver<HTMLSpanElement>();
+  const shouldAnimate = trigger === 'on-load' || isIntersecting;
+
   const resolvedMotion = useResolvedMotion(motion, preset);
 
+  const splittedTexts = splitText(text, split);
+
   return (
-    <Tag className="text-motion" aria-label={text}>
+    <Tag ref={ref} className="text-motion" aria-label={text}>
       {splittedTexts.map((splittedText, index) => createAnimatedSpan(splittedText, index, resolvedMotion))}
     </Tag>
   );

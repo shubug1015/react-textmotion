@@ -3,7 +3,7 @@ import '../../styles/motion.scss';
 
 import { Children, FC, memo } from 'react';
 
-import { useAnimatedChildren, useResolvedMotion, useTextFromReactNode } from '../../hooks';
+import { useAnimatedChildren, useIntersectionObserver, useResolvedMotion, useTextFromReactNode } from '../../hooks';
 import { NodeMotionProps } from '../../types';
 import { handleValidation, validateNodeMotionProps } from '../../utils';
 
@@ -15,32 +15,18 @@ import { handleValidation, validateNodeMotionProps } from '../../utils';
  * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
  * @param {ReactNode} children - The content to animate. Can be a string, a number, or any React element.
  * @param {SplitType} [split='character'] - Defines how the text is split for animation (`character` or `word`). Defaults to `'character'`.
+ * @param {'on-load' | 'scroll'} [trigger='on-load'] - When to trigger the animation. Defaults to `'on-load'`.
  * @param {MotionConfig} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {AnimationPreset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  *
  * @returns {JSX.Element} A React element that renders animated children.
  *
  * @example
- * // Using custom motion configuration with text
+ * // Using scroll trigger with mixed children
  * function App() {
  *   return (
  *     <NodeMotion
- *       split="character"
- *       motion={{
- *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
- *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
- *       }}
- *     >
- *       Hello <strong>World</strong>
- *     </NodeMotion>
- *   );
- * }
- *
- * @example
- * // Using predefined animation presets with mixed children
- * function App() {
- *   return (
- *     <NodeMotion
+ *       trigger="scroll"
  *       split="word"
  *       preset={['fade-in', 'slide-up']}
  *     >
@@ -50,17 +36,20 @@ import { handleValidation, validateNodeMotionProps } from '../../utils';
  * }
  */
 export const NodeMotion: FC<NodeMotionProps> = memo(props => {
-  const { as: Tag = 'span', children, split = 'character', motion, preset } = props;
+  const { as: Tag = 'span', children, split = 'character', trigger = 'on-load', motion, preset } = props;
 
   const { errors, warnings } = validateNodeMotionProps(props);
   handleValidation(errors, warnings);
+
+  const [ref, isIntersecting] = useIntersectionObserver<HTMLSpanElement>();
+  const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const accessibleText = useTextFromReactNode(children);
   const resolvedMotion = useResolvedMotion(motion, preset);
   const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
 
   return (
-    <Tag className="node-motion" aria-label={accessibleText}>
+    <Tag ref={ref} className="node-motion" aria-label={accessibleText}>
       {Children.toArray(animatedChildren)}
     </Tag>
   );

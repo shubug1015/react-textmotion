@@ -8,6 +8,7 @@ export type BaseTextMotionProps = {
   as?: ElementType;
   text: string;
   split?: SplitType;
+  trigger?: 'on-load' | 'scroll';
 };
 
 export type MotionProps =
@@ -22,6 +23,7 @@ export type BaseNodeMotionProps = {
   as?: ElementType;
   children: ReactNode;
   split?: Exclude<SplitType, 'line'>;
+  trigger?: 'on-load' | 'scroll';
 };
 
 export type NodeMotionProps = BaseNodeMotionProps & MotionProps;

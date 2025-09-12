@@ -3,12 +3,11 @@ import { ElementType, ReactNode } from 'react';
 import { MotionConfig, SplitType } from './common';
 import { AnimationPreset } from './preset';
 
-// TextMotion
-export type BaseTextMotionProps = {
+export type BaseMotionProps = {
   as?: ElementType;
-  text: string;
   split?: SplitType;
   trigger?: 'on-load' | 'scroll';
+  repeat?: boolean;
 };
 
 export type MotionProps =
@@ -16,14 +15,8 @@ export type MotionProps =
   | { motion?: never; preset: AnimationPreset[] }
   | { motion?: undefined; preset?: undefined };
 
-export type TextMotionProps = BaseTextMotionProps & MotionProps;
+// TextMotion
+export type TextMotionProps = BaseMotionProps & MotionProps & { text: string };
 
 // NodeMotion
-export type BaseNodeMotionProps = {
-  as?: ElementType;
-  children: ReactNode;
-  split?: Exclude<SplitType, 'line'>;
-  trigger?: 'on-load' | 'scroll';
-};
-
-export type NodeMotionProps = BaseNodeMotionProps & MotionProps;
+export type NodeMotionProps = BaseMotionProps & MotionProps & { children: ReactNode };

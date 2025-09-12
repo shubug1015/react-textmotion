@@ -92,6 +92,7 @@ describe('useIntersectionObserver', () => {
     act(() => {
       render(<TestComponent onIntersect={val => (initialIsIntersecting = val)} />);
     });
+
     expect(initialIsIntersecting).toBe(false);
   });
 

@@ -15,7 +15,7 @@ import { handleValidation, validateNodeMotionProps } from '../../utils';
  * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
  * @param {ReactNode} children - The content to animate. Can be a string, a number, or any React element.
  * @param {SplitType} [split='character'] - Defines how the text is split for animation (`character` or `word`). Defaults to `'character'`.
- * @param {'on-load' | 'scroll'} [trigger='on-load'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'on-load'`.
+ * @param {'on-load' | 'scroll'} [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
  * @param {MotionConfig} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {AnimationPreset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  *
@@ -36,7 +36,7 @@ import { handleValidation, validateNodeMotionProps } from '../../utils';
  * }
  */
 export const NodeMotion: FC<NodeMotionProps> = memo(props => {
-  const { as: Tag = 'span', children, split = 'character', trigger = 'on-load', motion, preset } = props;
+  const { as: Tag = 'span', children, split = 'character', trigger = 'scroll', motion, preset } = props;
 
   const { errors, warnings } = validateNodeMotionProps(props);
   handleValidation(errors, warnings);

@@ -73,4 +73,12 @@ describe('applyAnimationToNode utility', () => {
     expect(booleanResult.nodes).toEqual([]);
     expect(booleanResult.nextSequenceIndex).toBe(sequenceIndex);
   });
+
+  it('handles unknown node types by returning the node as-is', () => {
+    const unknownNode = Symbol('test');
+    const result = applyAnimationToNode(unknownNode as any, {}, 'character', 0);
+
+    expect(result.nodes).toEqual([unknownNode]);
+    expect(result.nextSequenceIndex).toBe(0);
+  });
 });

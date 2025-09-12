@@ -13,7 +13,7 @@ import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProp
  * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
  * @param {string} text - The text content to animate.
  * @param {SplitType} [split='character'] - Defines how the text is split for animation (`character`, `word`, or `line`). Defaults to `'character'`.
- * @param {'on-load' | 'scroll'} [trigger='on-load'] - When to trigger the animation. Defaults to `'on-load'`.
+ * @param {'on-load' | 'scroll'} [trigger='on-load'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'on-load'`.
  * @param {MotionConfig} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {AnimationPreset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  *

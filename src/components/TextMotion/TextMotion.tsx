@@ -33,7 +33,15 @@ import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProp
  */
 
 export const TextMotion: FC<TextMotionProps> = memo(props => {
-  const { as: Tag = 'span', text, split = 'character', trigger = 'scroll', motion, preset } = props;
+  const {
+    as: Tag = 'span',
+    text,
+    split = 'character',
+    trigger = 'scroll',
+    motion,
+    preset,
+    repeat = trigger === 'scroll',
+  } = props;
 
   const { errors, warnings } = validateTextMotionProps(props);
   handleValidation(errors, warnings);

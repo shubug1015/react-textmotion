@@ -46,7 +46,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const { errors, warnings } = validateTextMotionProps(props);
   handleValidation(errors, warnings);
 
-  const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>();
+  const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const resolvedMotion = useResolvedMotion(motion, preset);

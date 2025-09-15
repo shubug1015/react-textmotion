@@ -1,2 +1,2 @@
-export { NodeMotion } from './NodeMotion';
-export { TextMotion } from './TextMotion';
+export * from './NodeMotion';
+export * from './TextMotion';

@@ -1,1 +1,1 @@
-export { useAnimatedChildren } from './useAnimatedChildren';
+export * from './useAnimatedChildren';

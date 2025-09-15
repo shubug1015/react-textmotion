@@ -1,1 +1,1 @@
-export { generateAnimation } from './generateAnimation';
+export * from './generateAnimation';

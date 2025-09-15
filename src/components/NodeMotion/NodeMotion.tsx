@@ -36,15 +36,7 @@ import { handleValidation, validateNodeMotionProps } from '../../utils';
  * }
  */
 export const NodeMotion: FC<NodeMotionProps> = memo(props => {
-  const {
-    as: Tag = 'span',
-    children,
-    split = 'character',
-    trigger = 'scroll',
-    motion,
-    preset,
-    repeat = trigger === 'scroll',
-  } = props;
+  const { as: Tag = 'span', children, split = 'character', trigger = 'scroll', motion, preset, repeat = true } = props;
 
   const { errors, warnings } = validateNodeMotionProps(props);
   handleValidation(errors, warnings);

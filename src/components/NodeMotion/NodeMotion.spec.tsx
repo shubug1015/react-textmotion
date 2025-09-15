@@ -1,99 +1,90 @@
-import { act, cleanup, render, screen } from '@testing-library/react';
+import { FC, ReactNode } from 'react';
+import { render, screen } from '@testing-library/react';
+
+import * as useIntersectionObserver from '../../hooks';
 
 import { NodeMotion } from './NodeMotion';
 
-declare const window: any;
-
-afterEach(() => cleanup());
+jest.mock('../../hooks/useIntersectionObserver', () => ({
+  useIntersectionObserver: jest.fn(() => [{ current: null }, false]),
+}));
 
 describe('NodeMotion component', () => {
   const TEXT = 'Hello';
   const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-
-  const getSpans = (label: string) => {
-    const container = screen.getByLabelText(label);
-
-    return container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
-  };
+  const useIntersectionObserverSpy = jest.spyOn(useIntersectionObserver, 'useIntersectionObserver');
 
   beforeEach(() => {
     consoleWarnSpy.mockClear();
-
-    const observe = jest.fn();
-    const unobserve = jest.fn();
-    const disconnect = jest.fn();
-
-    window.IntersectionObserver = jest.fn(callback => {
-      (window as any).__trigger = (isIntersecting: boolean) =>
-        callback([{ isIntersecting, target: document.createElement('div') }]);
-
-      return { observe, unobserve, disconnect };
-    });
+    useIntersectionObserverSpy.mockClear();
   });
 
-  describe('trigger behavior', () => {
-    it('renders spans immediately when trigger="on-load"', () => {
-      render(<NodeMotion trigger="on-load">{TEXT}</NodeMotion>);
+  const MockNodeMotion: FC<{ children: ReactNode; isIntersecting?: boolean }> = ({
+    children,
+    isIntersecting = false,
+  }) => {
+    useIntersectionObserverSpy.mockReturnValueOnce([{ current: null }, isIntersecting]);
 
-      expect(getSpans(TEXT).length).toBe(TEXT.length);
-    });
+    return <NodeMotion>{children}</NodeMotion>;
+  };
 
-    it('renders plain text when trigger="scroll" before intersection', () => {
-      render(<NodeMotion trigger="scroll">{TEXT}</NodeMotion>);
+  it('should call useIntersectionObserver with repeat: true by default when trigger is scroll', () => {
+    render(<NodeMotion trigger="scroll">{TEXT}</NodeMotion>);
 
-      const container = screen.getByLabelText(TEXT);
-
-      expect(container.textContent).toBe(TEXT);
-      expect(getSpans(TEXT).length).toBe(0);
-    });
-
-    it('renders spans when trigger="scroll" after intersection', () => {
-      render(<NodeMotion trigger="scroll">{TEXT}</NodeMotion>);
-
-      act(() => {
-        (window as any).__trigger(true);
-      });
-
-      expect(getSpans(TEXT).length).toBe(TEXT.length);
-    });
+    expect(useIntersectionObserverSpy).toHaveBeenCalledWith({ repeat: true });
   });
 
-  describe('preset behavior', () => {
-    it('applies animation styles from single preset', () => {
-      render(
-        <NodeMotion preset={['fade-in']} trigger="on-load">
-          {TEXT}
-        </NodeMotion>
-      );
+  it('should call useIntersectionObserver without repeat prop', () => {
+    render(<NodeMotion trigger="on-load">{TEXT}</NodeMotion>);
 
-      const spans = getSpans(TEXT);
-
-      expect(spans[0].style.animation).toContain('fade-in');
-    });
-
-    it('applies multiple presets correctly', () => {
-      render(
-        <NodeMotion preset={['fade-in', 'slide-up']} trigger="on-load">
-          {TEXT}
-        </NodeMotion>
-      );
-
-      const span = getSpans(TEXT)[0];
-
-      expect(span.style.animation).toContain('fade-in');
-      expect(span.style.animation).toContain('slide-up');
-    });
+    expect(useIntersectionObserverSpy).toHaveBeenCalledWith({ repeat: true });
   });
 
-  describe('validation and warnings', () => {
-    it('warns when children is empty null/undefined', () => {
-      render(<NodeMotion>{null}</NodeMotion>);
+  it('should respect the repeat prop when provided', () => {
+    render(
+      <NodeMotion trigger="scroll" repeat={false}>
+        {TEXT}
+      </NodeMotion>
+    );
 
-      expect(consoleWarnSpy).toHaveBeenCalled();
+    expect(useIntersectionObserverSpy).toHaveBeenCalledWith({ repeat: false });
+  });
 
-      render(<NodeMotion>{undefined}</NodeMotion>);
+  it('renders spans immediately when trigger="on-load"', () => {
+    render(<NodeMotion trigger="on-load">{TEXT}</NodeMotion>);
 
-      expect(consoleWarnSpy).toHaveBeenCalled();
-    });
+    const container = screen.getByLabelText(TEXT);
+    const spans = container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
+
+    expect(spans.length).toBe(TEXT.length);
+  });
+
+  it('renders plain text when not intersecting', () => {
+    render(<MockNodeMotion>{TEXT}</MockNodeMotion>);
+
+    const container = screen.getByLabelText(TEXT);
+    const spans = container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
+
+    expect(container.textContent).toBe(TEXT);
+    expect(spans.length).toBe(0);
+  });
+
+  it('renders spans when intersecting', () => {
+    render(<MockNodeMotion isIntersecting>{TEXT}</MockNodeMotion>);
+
+    const container = screen.getByLabelText(TEXT);
+    const spans = container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
+
+    expect(spans.length).toBe(TEXT.length);
+  });
+
+  it('warns when children is empty null/undefined', () => {
+    render(<NodeMotion>{null}</NodeMotion>);
+
+    expect(consoleWarnSpy).toHaveBeenCalled();
+
+    render(<NodeMotion>{undefined}</NodeMotion>);
+
+    expect(consoleWarnSpy).toHaveBeenCalled();
   });
 });

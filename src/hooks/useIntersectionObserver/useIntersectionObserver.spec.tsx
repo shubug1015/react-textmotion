@@ -111,33 +111,30 @@ describe('useIntersectionObserver', () => {
     expect(intersected).toBe(true);
   });
 
-  it('should unobserve the element when triggerOnce is true and it intersects', () => {
+  it('should unobserve and not toggle back when repeat is false', () => {
     let intersected = false;
 
     act(() => {
-      render(<TestComponent options={{ triggerOnce: true }} onIntersect={val => (intersected = val)} />);
+      render(<TestComponent options={{ repeat: false }} onIntersect={val => (intersected = val)} />);
     });
 
     const targetElement = screen.getByTestId('target-element');
-
     const observerInstance = mockIntersectionObserver.mock.results[0].value;
     const unobserveSpy = jest.spyOn(observerInstance, 'unobserve');
 
     observerInstance.trigger([{ isIntersecting: true, target: targetElement }]);
-
     expect(intersected).toBe(true);
     expect(unobserveSpy).toHaveBeenCalledWith(targetElement);
 
-    intersected = false;
-    observerInstance.trigger([{ isIntersecting: true, target: targetElement }]);
-    expect(intersected).toBe(false);
+    observerInstance.trigger([{ isIntersecting: false, target: targetElement }]);
+    expect(intersected).toBe(true);
   });
 
-  it('should toggle isIntersecting when triggerOnce is false', () => {
+  it('should toggle isIntersecting when repeat is true', () => {
     let intersected = false;
 
     act(() => {
-      render(<TestComponent options={{ triggerOnce: false }} onIntersect={val => (intersected = val)} />);
+      render(<TestComponent options={{ repeat: true }} onIntersect={val => (intersected = val)} />);
     });
 
     const targetElement = screen.getByTestId('target-element');
@@ -174,7 +171,7 @@ describe('useIntersectionObserver', () => {
     const options = {
       threshold: 0.5,
       rootMargin: '10px',
-      triggerOnce: false,
+      repeat: true,
     };
 
     act(() => {

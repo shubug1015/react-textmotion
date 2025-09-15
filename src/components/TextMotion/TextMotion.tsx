@@ -14,6 +14,7 @@ import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProp
  * @param {string} text - The text content to animate.
  * @param {SplitType} [split='character'] - Defines how the text is split for animation (`character`, `word`, or `line`). Defaults to `'character'`.
  * @param {'on-load' | 'scroll' } [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
+ * @param {boolean} [repeat=true] - Determines if the animation should repeat every time it enters the viewport. Only applicable when `trigger` is `'scroll'`. Defaults to `true`.
  * @param {MotionConfig} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {AnimationPreset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  *
@@ -33,12 +34,12 @@ import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProp
  */
 
 export const TextMotion: FC<TextMotionProps> = memo(props => {
-  const { as: Tag = 'span', text, split = 'character', trigger = 'scroll', motion, preset } = props;
+  const { as: Tag = 'span', text, split = 'character', trigger = 'scroll', motion, preset, repeat = true } = props;
 
   const { errors, warnings } = validateTextMotionProps(props);
   handleValidation(errors, warnings);
 
-  const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>();
+  const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const resolvedMotion = useResolvedMotion(motion, preset);

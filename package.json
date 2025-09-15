@@ -1,7 +1,7 @@
 {
   "name": "react-textmotion",
-  "version": "0.0.1",
-  "description": "A reusable React component for text animations with customizable motion presets and character/word splitting.",
+  "version": "0.0.2",
+  "description": "Lightweight yet powerful library that provides variable animation effects for React applications.",
   "type": "module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

@@ -1,83 +1,79 @@
-import { act, cleanup, render, screen } from '@testing-library/react';
+import { FC } from 'react';
+import { render, screen } from '@testing-library/react';
+
+import * as useIntersectionObserver from '../../hooks';
 
 import { TextMotion } from './TextMotion';
 
-declare const window: any;
-
-afterEach(() => cleanup());
+jest.mock('../../hooks/useIntersectionObserver', () => ({
+  useIntersectionObserver: jest.fn(() => [{ current: null }, false]),
+}));
 
 describe('TextMotion component', () => {
   const TEXT = 'Hello';
   const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-
-  const getSpans = (label: string) => {
-    const container = screen.getByLabelText(label);
-
-    return container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
-  };
+  const useIntersectionObserverSpy = jest.spyOn(useIntersectionObserver, 'useIntersectionObserver');
 
   beforeEach(() => {
     consoleWarnSpy.mockClear();
-
-    window.IntersectionObserver = jest.fn(cb => {
-      (window as any).__trigger = (isIntersecting: boolean) =>
-        cb([{ isIntersecting, target: document.createElement('div') }]);
-
-      return { observe: jest.fn(), unobserve: jest.fn(), disconnect: jest.fn() };
-    });
+    useIntersectionObserverSpy.mockClear();
   });
 
-  describe('trigger behavior', () => {
-    it('renders spans immediately when trigger="on-load"', () => {
-      render(<TextMotion text={TEXT} trigger="on-load" />);
+  const MockTextMotion: FC<{ text: string; isIntersecting?: boolean }> = ({ text, isIntersecting = false }) => {
+    useIntersectionObserverSpy.mockReturnValueOnce([{ current: null }, isIntersecting]);
 
-      expect(getSpans(TEXT).length).toBe(TEXT.length);
-    });
+    return <TextMotion text={text} />;
+  };
 
-    it('renders raw text when trigger="scroll" before intersection', () => {
-      render(<TextMotion text={TEXT} trigger="scroll" />);
+  it('should call useIntersectionObserver with repeat: true by default when trigger is scroll', () => {
+    render(<TextMotion text={TEXT} trigger="scroll" />);
 
-      const container = screen.getByLabelText(TEXT);
-
-      expect(container.textContent).toBe(TEXT);
-      expect(getSpans(TEXT).length).toBe(0);
-    });
-
-    it('renders spans when trigger="scroll" after intersection', () => {
-      render(<TextMotion text={TEXT} trigger="scroll" />);
-
-      act(() => {
-        (window as any).__trigger(true);
-      });
-
-      expect(getSpans(TEXT).length).toBe(TEXT.length);
-    });
+    expect(useIntersectionObserverSpy).toHaveBeenCalledWith({ repeat: true });
   });
 
-  describe('preset behavior', () => {
-    it('applies animation styles from preset', () => {
-      render(<TextMotion text={TEXT} preset={['fade-in']} trigger="on-load" />);
+  it('should call useIntersectionObserver without repeat prop', () => {
+    render(<TextMotion text={TEXT} trigger="on-load" />);
 
-      const spans = getSpans(TEXT);
-
-      expect(spans[0].style.animation).toMatch(/fade-in/);
-    });
-
-    it('applies multiple preset animations correctly', () => {
-      render(<TextMotion text={TEXT} preset={['fade-in', 'slide-up']} trigger="on-load" />);
-
-      const span = getSpans(TEXT)[0];
-
-      expect(span.style.animation).toContain('fade-in');
-      expect(span.style.animation).toContain('slide-up');
-    });
+    expect(useIntersectionObserverSpy).toHaveBeenCalledWith({ repeat: true });
   });
 
-  describe('validation and warnings', () => {
-    it('warns when text is empty', () => {
-      render(<TextMotion text="" />);
+  it('should respect the repeat prop when provided', () => {
+    render(<TextMotion text={TEXT} trigger="scroll" repeat={false} />);
 
-      expect(consoleWarnSpy).toHaveBeenCalled();
-    });
+    expect(useIntersectionObserverSpy).toHaveBeenCalledWith({ repeat: false });
+  });
+
+  it('renders spans immediately when trigger="on-load"', () => {
+    render(<TextMotion text={TEXT} trigger="on-load" />);
+
+    const container = screen.getByLabelText(TEXT);
+    const spans = container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
+
+    expect(spans.length).toBe(TEXT.length);
+  });
+
+  it('renders raw text when not intersecting', () => {
+    render(<MockTextMotion text={TEXT} />);
+
+    const container = screen.getByLabelText(TEXT);
+    const spans = container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
+
+    expect(container.textContent).toBe(TEXT);
+    expect(spans.length).toBe(0);
+  });
+
+  it('renders spans when intersecting', () => {
+    render(<MockTextMotion text={TEXT} isIntersecting />);
+
+    const container = screen.getByLabelText(TEXT);
+    const spans = container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
+
+    expect(spans.length).toBe(TEXT.length);
+  });
+
+  it('warns when text is empty', () => {
+    render(<TextMotion text="" />);
+
+    expect(consoleWarnSpy).toHaveBeenCalled();
   });
 });

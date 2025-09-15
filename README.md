@@ -1,4 +1,4 @@
-# react-textmotion · [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) <!-- > [![npm version](https://img.shields.io/npm/v/react-textmotion.svg)](https://www.npmjs.com/package/react-textmotion) [![Bundle Size](https://img.shields.io/bundlephobia/minzip/react-textmotion)](https://bundlephobia.com/package/react-textmotion) --> [![codecov](https://codecov.io/gh/shubug1015/react-textmotion/graph/badge.svg?token=S6CPN2KSCX)](https://codecov.io/gh/shubug1015/react-textmotion)
+# react-textmotion · [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![codecov](https://codecov.io/gh/shubug1015/react-textmotion/graph/badge.svg?token=S6CPN2KSCX)](https://codecov.io/gh/shubug1015/react-textmotion) [![npm version](https://img.shields.io/npm/v/react-textmotion.svg)](https://www.npmjs.com/package/react-textmotion) <!-- > [![Bundle Size](https://img.shields.io/bundlephobia/minzip/react-textmotion)](https://bundlephobia.com/package/react-textmotion) -->
 
 > 🚀 Animate text and UI elements effortlessly in React.
 > Lightweight, fully tested, and production-ready.
@@ -88,6 +88,7 @@ Animate **any React children** (mixed tags, custom components, blocks).
 <NodeMotion
   split="character"
   trigger="scroll"
+  repeat={false}
   motion={{
     fade: {
       variant: 'in',

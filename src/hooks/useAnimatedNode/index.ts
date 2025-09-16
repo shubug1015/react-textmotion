@@ -1,1 +1,1 @@
-export { useAnimatedNode } from './useAnimateNode';
+export { useAnimatedNode } from './useAnimatedNode';

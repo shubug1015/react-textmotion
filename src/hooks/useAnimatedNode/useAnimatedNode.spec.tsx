@@ -2,7 +2,7 @@ import { render, renderHook } from '@testing-library/react';
 
 import { AnimationPreset, MotionConfig } from '../../types';
 
-import { useAnimatedNode } from './useAnimateNode';
+import { useAnimatedNode } from './useAnimatedNode';
 
 describe('useAnimatedNode hook', () => {
   const motion: MotionConfig = {};

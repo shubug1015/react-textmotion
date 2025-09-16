@@ -29,11 +29,11 @@ export const AnimatedSpan: FC<AnimatedSpanProps> = ({ splittedText, motion, pres
     const { style } = generateAnimation(resolvedMotion, index + sequenceIndex);
 
     if (text === '\n') {
-      return <br key={index} />;
+      return <br key={`${text}-${index}`} />;
     }
 
     return (
-      <span key={index} style={style} aria-hidden="true">
+      <span key={`${text}-${index}`} style={style} aria-hidden="true">
         {text}
       </span>
     );

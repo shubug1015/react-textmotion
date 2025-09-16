@@ -6,7 +6,7 @@ import { splitText } from '../../utils/splitText';
 
 /**
  * @description
- * `applyAnimationToNode` is a recursive pure function that traverses a React node and its children,
+ * `animateNode` is a recursive pure function that traverses a React node and its children,
  * applying animations to text nodes and cloning React elements with animated children.
  *
  * @param {ReactNode} node - The React node to process.
@@ -17,7 +17,7 @@ import { splitText } from '../../utils/splitText';
  *
  * @returns {{ nodes: ReactNode[]; count: number }} An object containing the array of animated nodes and the count of index.
  */
-export const applyAnimationToNode = (
+export const animateNode = (
   node: ReactNode,
   split: SplitType,
   motion?: MotionConfig,
@@ -28,48 +28,44 @@ export const applyAnimationToNode = (
     const text = String(node);
     const splittedText = splitText(text, split);
 
-    const animatedNode = (
-      <AnimatedSpan
-        key={sequenceIndex}
-        splittedText={splittedText}
-        motion={motion}
-        preset={preset}
-        sequenceIndex={sequenceIndex}
-      />
-    );
-
-    return { nodes: [animatedNode], count: splittedText.length };
+    return {
+      nodes: [
+        <AnimatedSpan
+          key={`${text}-${sequenceIndex}`}
+          splittedText={splittedText}
+          motion={motion}
+          preset={preset}
+          sequenceIndex={sequenceIndex}
+        />,
+      ],
+      count: splittedText.length,
+    };
   }
 
   if (Array.isArray(node)) {
-    const collected: ReactNode[] = [];
-    let total = 0;
+    return node.reduce(
+      (acc, child) => {
+        const { nodes: childNodes, count } = animateNode(child, split, motion, preset, sequenceIndex + acc.count);
 
-    node.forEach(child => {
-      const { nodes, count } = applyAnimationToNode(child, split, motion, preset, sequenceIndex + total);
+        acc.nodes.push(...childNodes);
+        acc.count += count;
 
-      collected.push(...nodes);
-      total += count;
-    });
-
-    return { nodes: collected, count: total };
+        return acc;
+      },
+      { nodes: [] as ReactNode[], count: 0 }
+    );
   }
 
   if (isValidElement<{ children?: ReactNode }>(node)) {
-    const { nodes, count } = applyAnimationToNode(node.props.children, split, motion, preset, sequenceIndex);
+    const { nodes: childrenNodes, count } = animateNode(node.props.children, split, motion, preset, sequenceIndex);
 
     return {
-      nodes: [
-        cloneElement(node, {
-          key: sequenceIndex,
-          children: nodes,
-        }),
-      ],
+      nodes: [cloneElement(node, { key: sequenceIndex, children: childrenNodes })],
       count,
     };
   }
 
-  if (node === null || typeof node === 'undefined' || typeof node === 'boolean') {
+  if (node == null || typeof node === 'boolean') {
     return { nodes: [], count: 0 };
   }
 

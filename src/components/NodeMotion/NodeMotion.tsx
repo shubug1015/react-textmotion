@@ -1,9 +1,9 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { Children, FC, memo } from 'react';
+import { FC, memo } from 'react';
 
-import { useAnimatedChildren } from '../../hooks/useAnimatedChildren';
+import { useAnimatedNode } from '../../hooks/useAnimatedNode';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useTextFromReactNode } from '../../hooks/useTextFromReactNode';
 import { NodeMotionProps } from '../../types';
@@ -66,11 +66,11 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const accessibleText = useTextFromReactNode(children);
-  const animatedChildren = useAnimatedChildren(children, split, motion, preset);
+  const animatedNode = useAnimatedNode(children, split, motion, preset);
 
   return (
     <Tag ref={targetRef} className="node-motion" aria-label={accessibleText}>
-      {shouldAnimate ? Children.toArray(animatedChildren) : children}
+      {shouldAnimate ? animatedNode : children}
     </Tag>
   );
 });

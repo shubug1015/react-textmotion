@@ -1,11 +1,12 @@
 import { Children, ReactNode, useMemo } from 'react';
 
 import { AnimationPreset, MotionConfig, SplitType } from '../../types';
-import { applyAnimationToNode } from '../../utils/applyAnimationToNode';
+
+import { animateNode } from './animateNode';
 
 /**
  * @description
- * `useAnimatedChildren` is a custom hook that traverses through the children of a component,
+ * `useAnimatedNode` is a custom hook that traverses through the children of a component,
  * applying animations to them based on the provided motion configuration.
  * It manages the animation sequence index to apply delays correctly.
  *
@@ -16,25 +17,25 @@ import { applyAnimationToNode } from '../../utils/applyAnimationToNode';
  *
  * @returns {ReactNode[]} An array of animated React nodes.
  */
-export const useAnimatedChildren = (
+export const useAnimatedNode = (
   children: ReactNode,
   split: SplitType,
   motion?: MotionConfig,
   preset?: AnimationPreset[]
 ) => {
-  const animatedChildren = useMemo(() => {
+  const animatedNode = useMemo(() => {
     let sequenceIndex = 0;
-    const collectedChildren: ReactNode[] = [];
+    const collectedNodes: ReactNode[] = [];
 
     Children.forEach(children, child => {
-      const { nodes, count } = applyAnimationToNode(child, split, motion, preset, sequenceIndex);
+      const { nodes, count } = animateNode(child, split, motion, preset, sequenceIndex);
 
-      collectedChildren.push(...nodes);
+      collectedNodes.push(...nodes);
       sequenceIndex += count;
     });
 
-    return collectedChildren;
+    return collectedNodes;
   }, [children, split, motion, preset]);
 
-  return animatedChildren;
+  return animatedNode;
 };

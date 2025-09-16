@@ -1,1 +1,1 @@
-export * from './useTextFromReactNode';
+export { useTextFromReactNode } from './useTextFromReactNode';

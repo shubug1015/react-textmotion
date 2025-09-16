@@ -1,1 +1,1 @@
-export * from './NodeMotion';
+export { NodeMotion } from './NodeMotion';

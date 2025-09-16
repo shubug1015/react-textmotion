@@ -1,0 +1,1 @@
+export { AnimatedSpan } from './AnimatedSpan';

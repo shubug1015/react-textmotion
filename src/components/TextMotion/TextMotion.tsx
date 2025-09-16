@@ -1,8 +1,13 @@
+import '../../styles/animations.scss';
+import '../../styles/motion.scss';
+
 import { FC, memo } from 'react';
 
-import { useIntersectionObserver, useResolvedMotion } from '../../hooks';
+import { AnimatedSpan } from '../../components/AnimatedSpan';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { TextMotionProps } from '../../types';
-import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProps } from '../../utils';
+import { splitText } from '../../utils/splitText';
+import { handleValidation, validateTextMotionProps } from '../../utils/validation';
 
 /**
  * @description
@@ -21,12 +26,30 @@ import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProp
  * @returns {JSX.Element} A React element that renders animated `<span>`s for each split unit of text.
  *
  * @example
- * // Using scroll trigger
+ * // Using custom motion configuration
  * function App() {
  *   return (
  *     <TextMotion
  *       text="Hello World!"
+ *       split="character"
  *       trigger="scroll"
+ *       repeat={false}
+ *       motion={{
+ *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
+ *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
+ *       }}
+ *     />
+ *   );
+ * }
+ *
+ * @example
+ * // Using predefined animation presets
+ * function App() {
+ *   return (
+ *     <TextMotion
+ *       text="Hello World!"
+ *       split="word"
+ *       trigger="on-load"
  *       preset={['fade-in', 'slide-up']}
  *     />
  *   );
@@ -42,13 +65,11 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
-  const resolvedMotion = useResolvedMotion(motion, preset);
+  const splittedText = splitText(text, split);
 
   return (
     <Tag ref={targetRef} className="text-motion" aria-label={text}>
-      {shouldAnimate
-        ? splitText(text, split).map((splittedText, index) => createAnimatedSpan(splittedText, index, resolvedMotion))
-        : text}
+      {shouldAnimate ? <AnimatedSpan splittedText={splittedText} motion={motion} preset={preset} /> : text}
     </Tag>
   );
 });

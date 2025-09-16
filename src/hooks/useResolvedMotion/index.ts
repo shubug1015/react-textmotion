@@ -1,2 +1,2 @@
-export * from './motionMap';
-export * from './useResolvedMotion';
+export { motionMap } from './motionMap';
+export { useResolvedMotion } from './useResolvedMotion';

@@ -1,11 +1,13 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { Children, FC, memo } from 'react';
+import { FC, memo } from 'react';
 
-import { useAnimatedChildren, useIntersectionObserver, useResolvedMotion, useTextFromReactNode } from '../../hooks';
+import { useAnimatedNode } from '../../hooks/useAnimatedNode';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
+import { useTextFromReactNode } from '../../hooks/useTextFromReactNode';
 import { NodeMotionProps } from '../../types';
-import { handleValidation, validateNodeMotionProps } from '../../utils';
+import { handleValidation, validateNodeMotionProps } from '../../utils/validation';
 
 /**
  * @description
@@ -23,12 +25,30 @@ import { handleValidation, validateNodeMotionProps } from '../../utils';
  * @returns {JSX.Element} A React element that renders animated children.
  *
  * @example
- * // Using scroll trigger with mixed children
+ * // Using custom motion configuration with text
  * function App() {
  *   return (
  *     <NodeMotion
+ *       split="character"
  *       trigger="scroll"
+ *       repeat={false}
+ *       motion={{
+ *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
+ *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
+ *       }}
+ *     >
+ *       Hello <strong>World</strong>
+ *     </NodeMotion>
+ *   );
+ * }
+ *
+ * @example
+ * // Using predefined animation presets with mixed children
+ * function App() {
+ *   return (
+ *     <NodeMotion
  *       split="word"
+ *       trigger="on-load"
  *       preset={['fade-in', 'slide-up']}
  *     >
  *       <span>Hello</span> <b>World!</b>
@@ -46,12 +66,11 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const accessibleText = useTextFromReactNode(children);
-  const resolvedMotion = useResolvedMotion(motion, preset);
-  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split, shouldAnimate);
+  const animatedNode = useAnimatedNode(children, split, motion, preset);
 
   return (
     <Tag ref={targetRef} className="node-motion" aria-label={accessibleText}>
-      {Children.toArray(animatedChildren)}
+      {shouldAnimate ? animatedNode : children}
     </Tag>
   );
 });

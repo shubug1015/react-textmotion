@@ -1,16 +1,17 @@
 import { render } from '@testing-library/react';
 
 import { MotionConfig } from '../../types';
-import { createAnimatedSpan } from '../createAnimatedSpan';
+import { splitText } from '../../utils/splitText';
 
-describe('createAnimatedSpan utility', () => {
+import { AnimatedSpan } from './AnimatedSpan';
+
+describe('AnimatedSpan component', () => {
   const TEXT = 'Hi';
+  const splittedText = splitText(TEXT, 'character');
 
   it('renders a <span> element with aria-hidden="true"', () => {
     const motion: MotionConfig = {};
-    const element = createAnimatedSpan(TEXT, 0, motion);
-
-    const { container } = render(element);
+    const { container } = render(<AnimatedSpan splittedText={splittedText} motion={motion} sequenceIndex={0} />);
     const span = container.querySelector('span') as HTMLSpanElement;
 
     expect(span).toBeInTheDocument();
@@ -19,18 +20,15 @@ describe('createAnimatedSpan utility', () => {
 
   it('renders span with correct text content', () => {
     const motion: MotionConfig = {};
-    const element = createAnimatedSpan(TEXT, 0, motion);
+    const { getByText } = render(<AnimatedSpan splittedText={splittedText} motion={motion} sequenceIndex={0} />);
 
-    const { getByText } = render(element);
-
-    expect(getByText(TEXT)).toBeInTheDocument();
+    expect(getByText('H')).toBeInTheDocument();
+    expect(getByText('i')).toBeInTheDocument();
   });
 
   it('applies animation style from motion config', () => {
     const motion: MotionConfig = { fade: { variant: 'in', duration: 1, delay: 0.2 } };
-    const element = createAnimatedSpan(TEXT, 1, motion);
-
-    const { container } = render(element);
+    const { container } = render(<AnimatedSpan splittedText={splittedText} motion={motion} sequenceIndex={1} />);
     const span = container.querySelector('span') as HTMLSpanElement;
 
     expect(span.style.animation).toContain('fade-in 1s ease-out 0.2s both');
@@ -38,9 +36,7 @@ describe('createAnimatedSpan utility', () => {
 
   it('renders <br> when text is newline character', () => {
     const motion: MotionConfig = {};
-    const element = createAnimatedSpan('\n', 0, motion);
-
-    const { container } = render(element);
+    const { container } = render(<AnimatedSpan splittedText={['\n']} motion={motion} sequenceIndex={0} />);
     const br = container.querySelector('br');
 
     expect(br).toBeInTheDocument();
@@ -48,20 +44,15 @@ describe('createAnimatedSpan utility', () => {
 
   it('renders span with unique key for sequence index', () => {
     const motion: MotionConfig = {};
-    const element1 = createAnimatedSpan('A', 0, motion);
-    const element2 = createAnimatedSpan('B', 1, motion);
-
-    const { container: c1 } = render(element1);
-    const { container: c2 } = render(element2);
+    const { container: c1 } = render(<AnimatedSpan splittedText={['A']} motion={motion} sequenceIndex={0} />);
+    const { container: c2 } = render(<AnimatedSpan splittedText={['B']} motion={motion} sequenceIndex={1} />);
 
     expect(c1.innerHTML).not.toEqual(c2.innerHTML);
   });
 
   it('does not apply animation style when motion config is empty', () => {
     const motion: MotionConfig = {};
-    const element = createAnimatedSpan(TEXT, 0, motion);
-
-    const { container } = render(element);
+    const { container } = render(<AnimatedSpan splittedText={splittedText} motion={motion} sequenceIndex={0} />);
     const span = container.querySelector('span') as HTMLSpanElement;
 
     expect(span.style.animation).toBe('');
@@ -73,9 +64,7 @@ describe('createAnimatedSpan utility', () => {
       slide: { variant: 'up', duration: 1.5, delay: 0.5 },
     };
 
-    const element = createAnimatedSpan(TEXT, 1, motion);
-
-    const { container } = render(element);
+    const { container } = render(<AnimatedSpan splittedText={splittedText} motion={motion} sequenceIndex={1} />);
     const span = container.querySelector('span') as HTMLSpanElement;
 
     expect(span.style.animation).toContain('fade-in 1s ease-out 0s both');

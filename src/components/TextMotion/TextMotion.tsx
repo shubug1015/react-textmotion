@@ -1,10 +1,12 @@
+import '../../styles/animations.scss';
+import '../../styles/motion.scss';
+
 import { FC, memo } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { TextMotionProps } from '../../types';
-import { splitText } from '../../utils/splitText';
 import { handleValidation, validateTextMotionProps } from '../../utils/validation';
 
 /**
@@ -24,12 +26,30 @@ import { handleValidation, validateTextMotionProps } from '../../utils/validatio
  * @returns {JSX.Element} A React element that renders animated `<span>`s for each split unit of text.
  *
  * @example
- * // Using scroll trigger
+ * // Using custom motion configuration
  * function App() {
  *   return (
  *     <TextMotion
  *       text="Hello World!"
+ *       split="character"
  *       trigger="scroll"
+ *       repeat={false}
+ *       motion={{
+ *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
+ *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
+ *       }}
+ *     />
+ *   );
+ * }
+ *
+ * @example
+ * // Using predefined animation presets
+ * function App() {
+ *   return (
+ *     <TextMotion
+ *       text="Hello World!"
+ *       split="word"
+ *       trigger="on-load"
  *       preset={['fade-in', 'slide-up']}
  *     />
  *   );
@@ -50,9 +70,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   if (shouldAnimate) {
     return (
       <Tag ref={targetRef} className="text-motion" aria-label={text}>
-        {splitText(text, split).map((splittedText, index) => (
-          <AnimatedSpan key={index} text={splittedText} sequenceIndex={index} motion={resolvedMotion} />
-        ))}
+        <AnimatedSpan text={text} split={split} motion={resolvedMotion} />
       </Tag>
     );
   }

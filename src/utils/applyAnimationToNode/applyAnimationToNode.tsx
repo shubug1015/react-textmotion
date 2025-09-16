@@ -2,7 +2,6 @@ import { cloneElement, isValidElement, ReactNode } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
 import { MotionConfig, SplitType } from '../../types';
-import { splitText } from '../../utils/splitText';
 
 /**
  * @description
@@ -22,25 +21,18 @@ export const applyAnimationToNode = (
   split: SplitType,
   sequenceIndex: number
 ): { nodes: ReactNode[]; nextSequenceIndex: number } => {
-  let currentIndex = sequenceIndex;
-
   if (typeof node === 'string' || typeof node === 'number') {
-    const text = typeof node === 'number' ? node.toString() : node;
-    const animatedNodes = splitText(text, split).map(textSegment => {
-      const animatedSpan = (
-        <AnimatedSpan key={currentIndex} text={textSegment} sequenceIndex={currentIndex} motion={motion} />
-      );
+    const text = String(node);
+    const animatedNode = (
+      <AnimatedSpan key={sequenceIndex} text={text} split={split} motion={motion} sequenceIndex={sequenceIndex} />
+    );
 
-      currentIndex++;
-
-      return animatedSpan;
-    });
-
-    return { nodes: animatedNodes, nextSequenceIndex: currentIndex };
+    return { nodes: [animatedNode], nextSequenceIndex: sequenceIndex + text.length };
   }
 
   if (Array.isArray(node)) {
     const collectedNodes: ReactNode[] = [];
+    let currentIndex = sequenceIndex;
 
     for (const child of node) {
       const result = applyAnimationToNode(child, motion, split, currentIndex);
@@ -54,7 +46,7 @@ export const applyAnimationToNode = (
   }
 
   if (isValidElement<{ children?: ReactNode }>(node)) {
-    const childrenResult = applyAnimationToNode(node.props.children, motion, split, currentIndex);
+    const childrenResult = applyAnimationToNode(node.props.children, motion, split, sequenceIndex);
     const parentKeyIndex = childrenResult.nextSequenceIndex;
 
     const animatedElement = cloneElement(node, {

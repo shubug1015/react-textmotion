@@ -26,12 +26,30 @@ import { handleValidation, validateNodeMotionProps } from '../../utils/validatio
  * @returns {JSX.Element} A React element that renders animated children.
  *
  * @example
- * // Using scroll trigger with mixed children
+ * // Using custom motion configuration with text
  * function App() {
  *   return (
  *     <NodeMotion
+ *       split="character"
  *       trigger="scroll"
+ *       repeat={false}
+ *       motion={{
+ *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
+ *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
+ *       }}
+ *     >
+ *       Hello <strong>World</strong>
+ *     </NodeMotion>
+ *   );
+ * }
+ *
+ * @example
+ * // Using predefined animation presets with mixed children
+ * function App() {
+ *   return (
+ *     <NodeMotion
  *       split="word"
+ *       trigger="on-load"
  *       preset={['fade-in', 'slide-up']}
  *     >
  *       <span>Hello</span> <b>World!</b>

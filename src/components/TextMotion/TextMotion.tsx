@@ -2,7 +2,8 @@ import { FC, memo } from 'react';
 
 import { useIntersectionObserver, useResolvedMotion } from '../../hooks';
 import { TextMotionProps } from '../../types';
-import { createAnimatedSpan, handleValidation, splitText, validateTextMotionProps } from '../../utils';
+import { handleValidation, splitText, validateTextMotionProps } from '../../utils';
+import { AnimatedSpan } from '../AnimatedSpan';
 
 /**
  * @description
@@ -44,11 +45,19 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
 
   const resolvedMotion = useResolvedMotion(motion, preset);
 
+  if (shouldAnimate) {
+    return (
+      <Tag ref={targetRef} className="text-motion" aria-label={text}>
+        {splitText(text, split).map((splittedText, index) => (
+          <AnimatedSpan key={index} text={splittedText} sequenceIndex={index} motion={resolvedMotion} />
+        ))}
+      </Tag>
+    );
+  }
+
   return (
-    <Tag ref={targetRef} className="text-motion" aria-label={text}>
-      {shouldAnimate
-        ? splitText(text, split).map((splittedText, index) => createAnimatedSpan(splittedText, index, resolvedMotion))
-        : text}
+    <Tag ref={targetRef} aria-label={text}>
+      {text}
     </Tag>
   );
 });

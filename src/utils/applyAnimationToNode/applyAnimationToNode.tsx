@@ -2,7 +2,7 @@ import { cloneElement, isValidElement, ReactNode } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
 import { MotionConfig, SplitType } from '../../types';
-import { splitText } from '../splitText';
+import { splitText } from '../../utils/splitText';
 
 /**
  * @description

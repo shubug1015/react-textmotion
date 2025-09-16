@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
 
 import { MotionConfig } from '../../types';
-import { AnimatedSpan } from '../AnimatedSpan';
+
+import { AnimatedSpan } from './AnimatedSpan';
 
 describe('AnimatedSpan component', () => {
   const TEXT = 'Hi';

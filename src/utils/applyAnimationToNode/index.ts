@@ -1,1 +1,1 @@
-export * from './applyAnimationToNode';
+export { applyAnimationToNode } from './applyAnimationToNode';

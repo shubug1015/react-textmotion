@@ -8,7 +8,7 @@ import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { useTextFromReactNode } from '../../hooks/useTextFromReactNode';
 import { NodeMotionProps } from '../../types';
-import { handleValidation, validateNodeMotionProps } from '../../utils';
+import { handleValidation, validateNodeMotionProps } from '../../utils/validation';
 
 /**
  * @description

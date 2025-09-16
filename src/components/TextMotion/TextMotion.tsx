@@ -3,7 +3,8 @@ import { FC, memo } from 'react';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { TextMotionProps } from '../../types';
-import { handleValidation, splitText, validateTextMotionProps } from '../../utils';
+import { splitText } from '../../utils/splitText';
+import { handleValidation, validateTextMotionProps } from '../../utils/validation';
 import { AnimatedSpan } from '../AnimatedSpan';
 
 /**

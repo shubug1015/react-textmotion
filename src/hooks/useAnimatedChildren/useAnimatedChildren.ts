@@ -1,7 +1,7 @@
 import { Children, ReactNode, useMemo } from 'react';
 
 import { MotionConfig, SplitType } from '../../types';
-import { applyAnimationToNode } from '../../utils';
+import { applyAnimationToNode } from '../../utils/applyAnimationToNode';
 
 /**
  * @description

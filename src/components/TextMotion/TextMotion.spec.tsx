@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { render, screen } from '@testing-library/react';
 
-import * as useIntersectionObserver from '../../hooks';
+import * as useIntersectionObserver from '../../hooks/useIntersectionObserver';
 
 import { TextMotion } from './TextMotion';
 

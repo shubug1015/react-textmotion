@@ -1,6 +1,7 @@
 import { FC, memo } from 'react';
 
-import { useIntersectionObserver, useResolvedMotion } from '../../hooks';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
+import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { TextMotionProps } from '../../types';
 import { handleValidation, splitText, validateTextMotionProps } from '../../utils';
 import { AnimatedSpan } from '../AnimatedSpan';

@@ -3,7 +3,10 @@ import '../../styles/motion.scss';
 
 import { Children, FC, memo } from 'react';
 
-import { useAnimatedChildren, useIntersectionObserver, useResolvedMotion, useTextFromReactNode } from '../../hooks';
+import { useAnimatedChildren } from '../../hooks/useAnimatedChildren';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
+import { useResolvedMotion } from '../../hooks/useResolvedMotion';
+import { useTextFromReactNode } from '../../hooks/useTextFromReactNode';
 import { NodeMotionProps } from '../../types';
 import { handleValidation, validateNodeMotionProps } from '../../utils';
 

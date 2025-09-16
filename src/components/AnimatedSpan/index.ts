@@ -1,1 +1,1 @@
-export * from './AnimatedSpan';
+export { AnimatedSpan } from './AnimatedSpan';

@@ -1,7 +1,7 @@
 import { cloneElement, isValidElement, ReactNode } from 'react';
 
+import { AnimatedSpan } from '../../components/AnimatedSpan';
 import { MotionConfig, SplitType } from '../../types';
-import { createAnimatedSpan } from '../createAnimatedSpan';
 import { splitText } from '../splitText';
 
 /**
@@ -26,11 +26,13 @@ export const applyAnimationToNode = (
 
   if (typeof node === 'string' || typeof node === 'number') {
     const text = typeof node === 'number' ? node.toString() : node;
-    const splittedText = splitText(text, split);
+    const animatedNodes = splitText(text, split).map(textSegment => {
+      const animatedSpan = (
+        <AnimatedSpan key={currentIndex} text={textSegment} sequenceIndex={currentIndex} motion={motion} />
+      );
 
-    const animatedNodes = splittedText.map(textSegment => {
-      const animatedSpan = createAnimatedSpan(textSegment, currentIndex, motion);
       currentIndex++;
+
       return animatedSpan;
     });
 
@@ -42,7 +44,9 @@ export const applyAnimationToNode = (
 
     for (const child of node) {
       const result = applyAnimationToNode(child, motion, split, currentIndex);
+
       collectedNodes.push(...result.nodes);
+
       currentIndex = result.nextSequenceIndex;
     }
 

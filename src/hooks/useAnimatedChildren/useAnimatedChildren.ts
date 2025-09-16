@@ -12,21 +12,11 @@ import { applyAnimationToNode } from '../../utils';
  * @param {ReactNode} children - The React children to be animated.
  * @param {MotionConfig} mergedMotion - The motion configuration object, which is a result of merging custom motion and presets.
  * @param {SplitType} split - The split type for text animations (`character` or `word`).
- * @param {boolean} enabled - Whether the animation is enabled.
  *
  * @returns {ReactNode[]} An array of animated React nodes.
  */
-export const useAnimatedChildren = (
-  children: ReactNode,
-  mergedMotion: MotionConfig,
-  split: SplitType,
-  enabled: boolean
-) => {
+export const useAnimatedChildren = (children: ReactNode, mergedMotion: MotionConfig, split: SplitType) => {
   const animatedChildren = useMemo(() => {
-    if (!enabled) {
-      return Children.toArray(children);
-    }
-
     let sequenceIndex = 0;
     const collectedChildren: ReactNode[] = [];
 
@@ -38,7 +28,7 @@ export const useAnimatedChildren = (
     });
 
     return collectedChildren;
-  }, [children, mergedMotion, split, enabled]);
+  }, [children, mergedMotion, split]);
 
   return animatedChildren;
 };

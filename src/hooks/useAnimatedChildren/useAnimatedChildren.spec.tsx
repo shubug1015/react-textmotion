@@ -9,14 +9,14 @@ describe('useAnimatedChildren hook', () => {
   const split = 'character';
 
   it('returns empty array for no children', () => {
-    const { result } = renderHook(() => useAnimatedChildren('', motion, split, true));
+    const { result } = renderHook(() => useAnimatedChildren('', motion, split));
 
     expect(result.current).toEqual([]);
   });
 
   it('generates animated spans for string children', () => {
     const children = 'Hey';
-    const { result } = renderHook(() => useAnimatedChildren(children, motion, split, true));
+    const { result } = renderHook(() => useAnimatedChildren(children, motion, split));
 
     const { container } = render(<>{result.current}</>);
     const spans = container.querySelectorAll('span');
@@ -27,7 +27,7 @@ describe('useAnimatedChildren hook', () => {
 
   it('handles nested React elements with text', () => {
     const children = <p>Hello</p>;
-    const { result } = renderHook(() => useAnimatedChildren(children, motion, split, true));
+    const { result } = renderHook(() => useAnimatedChildren(children, motion, split));
 
     const { container } = render(<>{result.current}</>);
     const paragraph = container.querySelector('p') as HTMLElement;
@@ -39,22 +39,11 @@ describe('useAnimatedChildren hook', () => {
 
   it('resets sequenceIndexRef for each call', () => {
     const children = 'Hi';
-    const { result } = renderHook(() => useAnimatedChildren(children, motion, split, true));
+    const { result } = renderHook(() => useAnimatedChildren(children, motion, split));
 
     const { container } = render(<>{result.current}</>);
     const spans = container.querySelectorAll('span');
 
     expect(spans.length).toBe(children.length);
-  });
-
-  it('returns original children when not enabled', () => {
-    const children = <p>Hello</p>;
-    const { result } = renderHook(() => useAnimatedChildren(children, motion, split, false));
-
-    const { container } = render(<>{result.current}</>);
-    const spans = container.querySelectorAll('span');
-
-    expect(spans.length).toBe(0);
-    expect(container.textContent).toBe('Hello');
   });
 });

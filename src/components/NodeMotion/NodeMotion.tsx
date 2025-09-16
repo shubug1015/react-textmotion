@@ -47,11 +47,19 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
 
   const accessibleText = useTextFromReactNode(children);
   const resolvedMotion = useResolvedMotion(motion, preset);
-  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split, shouldAnimate);
+  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
+
+  if (shouldAnimate) {
+    return (
+      <Tag ref={targetRef} className="node-motion" aria-label={accessibleText}>
+        {Children.toArray(animatedChildren)}
+      </Tag>
+    );
+  }
 
   return (
-    <Tag ref={targetRef} className="node-motion" aria-label={accessibleText}>
-      {Children.toArray(animatedChildren)}
+    <Tag ref={targetRef} aria-label={accessibleText}>
+      {children}
     </Tag>
   );
 });

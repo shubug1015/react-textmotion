@@ -5,7 +5,6 @@ import { Children, FC, memo } from 'react';
 
 import { useAnimatedChildren } from '../../hooks/useAnimatedChildren';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
-import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { useTextFromReactNode } from '../../hooks/useTextFromReactNode';
 import { NodeMotionProps } from '../../types';
 import { handleValidation, validateNodeMotionProps } from '../../utils/validation';
@@ -67,20 +66,11 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const accessibleText = useTextFromReactNode(children);
-  const resolvedMotion = useResolvedMotion(motion, preset);
-  const animatedChildren = useAnimatedChildren(children, resolvedMotion, split);
-
-  if (shouldAnimate) {
-    return (
-      <Tag ref={targetRef} className="node-motion" aria-label={accessibleText}>
-        {Children.toArray(animatedChildren)}
-      </Tag>
-    );
-  }
+  const animatedChildren = useAnimatedChildren(children, split, motion, preset);
 
   return (
-    <Tag ref={targetRef} aria-label={accessibleText}>
-      {children}
+    <Tag ref={targetRef} className="node-motion" aria-label={accessibleText}>
+      {shouldAnimate ? Children.toArray(animatedChildren) : children}
     </Tag>
   );
 });

@@ -12,9 +12,9 @@ import type { SplitType } from '../../types';
 export const splitText = (text: string, split: SplitType): string[] => {
   switch (split) {
     case 'word':
-      return text.split(/(\s+)/);
+      return text.split(/(\s+)/).filter(Boolean);
     case 'line':
-      return text.split(/(\n)/);
+      return text.split(/(\n)/).filter(Boolean);
     case 'character':
     default:
       return text.split('');

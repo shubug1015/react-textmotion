@@ -1,13 +1,13 @@
 import { FC } from 'react';
 
-import { MotionConfig, SplitType } from '../../types';
+import { useResolvedMotion } from '../../hooks/useResolvedMotion';
+import { AnimationPreset, MotionConfig } from '../../types';
 import { generateAnimation } from '../../utils/generateAnimation';
-import { splitText } from '../../utils/splitText';
 
 type AnimatedSpanProps = {
-  text: string;
-  split: SplitType;
-  motion: MotionConfig;
+  splittedText: string[];
+  motion?: MotionConfig;
+  preset?: AnimationPreset[];
   sequenceIndex?: number;
 };
 
@@ -15,26 +15,26 @@ type AnimatedSpanProps = {
  * @description
  * `AnimatedSpan` is a component that creates a `<span>` element with animation styles.
  *
- * @param {string} text - The text content of the `<span>`.
- * @param {SplitType} split - The split type for text animations (`character`, `word` or `line`).
+ * @param {string} splittedText - The array of substrings based on the specified split type.
  * @param {MotionConfig} motion - The motion configuration to generate animation styles from.
+ * @param {AnimationPreset[]} preset - The animation presets to apply.
  * @param {number} sequenceIndex - The index of the element in the animation sequence.
  *
  * @returns {JSX.Element} A React element `<span>` with inline animation styles.
  */
-export const AnimatedSpan: FC<AnimatedSpanProps> = ({ text, split, motion, sequenceIndex = 0 }) => {
-  const splittedTexts = splitText(text, split);
+export const AnimatedSpan: FC<AnimatedSpanProps> = ({ splittedText, motion, preset, sequenceIndex = 0 }) => {
+  const resolvedMotion = useResolvedMotion(motion, preset);
 
-  return splittedTexts.map((splittedText, index) => {
-    const { style } = generateAnimation(motion, index + sequenceIndex);
+  return splittedText.map((text, index) => {
+    const { style } = generateAnimation(resolvedMotion, index + sequenceIndex);
 
-    if (splittedText === '\n') {
+    if (text === '\n') {
       return <br key={index} />;
     }
 
     return (
       <span key={index} style={style} aria-hidden="true">
-        {splittedText}
+        {text}
       </span>
     );
   });

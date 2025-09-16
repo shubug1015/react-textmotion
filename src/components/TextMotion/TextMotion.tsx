@@ -5,8 +5,8 @@ import { FC, memo } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
-import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { TextMotionProps } from '../../types';
+import { splitText } from '../../utils/splitText';
 import { handleValidation, validateTextMotionProps } from '../../utils/validation';
 
 /**
@@ -65,19 +65,11 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
-  const resolvedMotion = useResolvedMotion(motion, preset);
-
-  if (shouldAnimate) {
-    return (
-      <Tag ref={targetRef} className="text-motion" aria-label={text}>
-        <AnimatedSpan text={text} split={split} motion={resolvedMotion} />
-      </Tag>
-    );
-  }
+  const splittedText = splitText(text, split);
 
   return (
-    <Tag ref={targetRef} aria-label={text}>
-      {text}
+    <Tag ref={targetRef} className="text-motion" aria-label={text}>
+      {shouldAnimate ? <AnimatedSpan splittedText={splittedText} motion={motion} preset={preset} /> : text}
     </Tag>
   );
 });

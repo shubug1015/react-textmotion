@@ -20,6 +20,7 @@ import { handleValidation, validateTextMotionProps } from '../../utils/validatio
  * @param {SplitType} [split='character'] - Defines how the text is split for animation (`character`, `word`, or `line`). Defaults to `'character'`.
  * @param {'on-load' | 'scroll' } [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
  * @param {boolean} [repeat=true] - Determines if the animation should repeat every time it enters the viewport. Only applicable when `trigger` is `'scroll'`. Defaults to `true`.
+ * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  * @param {MotionConfig} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {AnimationPreset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  *
@@ -34,6 +35,7 @@ import { handleValidation, validateTextMotionProps } from '../../utils/validatio
  *       split="character"
  *       trigger="scroll"
  *       repeat={false}
+ *       initialDelay={1}
  *       motion={{
  *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
  *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
@@ -50,6 +52,7 @@ import { handleValidation, validateTextMotionProps } from '../../utils/validatio
  *       text="Hello World!"
  *       split="word"
  *       trigger="on-load"
+ *       initialDelay={0.5}
  *       preset={['fade-in', 'slide-up']}
  *     />
  *   );
@@ -57,7 +60,16 @@ import { handleValidation, validateTextMotionProps } from '../../utils/validatio
  */
 
 export const TextMotion: FC<TextMotionProps> = memo(props => {
-  const { as: Tag = 'span', text, split = 'character', trigger = 'scroll', motion, preset, repeat = true } = props;
+  const {
+    as: Tag = 'span',
+    text,
+    split = 'character',
+    trigger = 'scroll',
+    repeat = true,
+    initialDelay = 0,
+    motion,
+    preset,
+  } = props;
 
   const { errors, warnings } = validateTextMotionProps(props);
   handleValidation(errors, warnings);
@@ -69,7 +81,11 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
 
   return (
     <Tag ref={targetRef} className="text-motion" aria-label={text}>
-      {shouldAnimate ? <AnimatedSpan splittedText={splittedText} motion={motion} preset={preset} /> : text}
+      {shouldAnimate ? (
+        <AnimatedSpan splittedText={splittedText} initialDelay={initialDelay} motion={motion} preset={preset} />
+      ) : (
+        text
+      )}
     </Tag>
   );
 });

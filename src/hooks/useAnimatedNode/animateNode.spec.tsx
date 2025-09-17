@@ -6,13 +6,14 @@ import { animateNode } from './animateNode';
 
 describe('animateNode utility', () => {
   const split = 'character';
+  const initialDelay = 0;
   const motion: MotionConfig = {};
   const preset: AnimationPreset[] = [];
   const sequenceIndex = 0;
 
   it('splits string into animated spans', () => {
     const node = 'Hi';
-    const result = animateNode(node, split, motion, preset, sequenceIndex);
+    const result = animateNode(node, split, initialDelay, motion, preset, sequenceIndex);
 
     const { container } = render(<>{result.nodes}</>);
     const spans = container.querySelectorAll('span');
@@ -25,7 +26,7 @@ describe('animateNode utility', () => {
 
   it('splits number into animated spans', () => {
     const node = 123;
-    const result = animateNode(node, split, motion, preset, sequenceIndex);
+    const result = animateNode(node, split, initialDelay, motion, preset, sequenceIndex);
 
     const { container } = render(<>{result.nodes}</>);
     const spans = container.querySelectorAll('span');
@@ -39,7 +40,7 @@ describe('animateNode utility', () => {
 
   it('handles node without sequenceIndex', () => {
     const node = '1';
-    const result = animateNode(node, split, motion, preset);
+    const result = animateNode(node, split, initialDelay, motion, preset);
 
     const { container } = render(<>{result.nodes}</>);
     const spans = container.querySelectorAll('span');
@@ -51,7 +52,7 @@ describe('animateNode utility', () => {
 
   it('recursively handles nested elements', () => {
     const node = <strong>Hello</strong>;
-    const result = animateNode(node, split, motion, preset, sequenceIndex);
+    const result = animateNode(node, split, initialDelay, motion, preset, sequenceIndex);
 
     const { container } = render(<>{result.nodes}</>);
     const strong = container.querySelector('strong') as HTMLElement;
@@ -64,7 +65,7 @@ describe('animateNode utility', () => {
 
   it('handles arrays of nodes', () => {
     const node = ['Hello', ' ', 'World'];
-    const result = animateNode(node, split, motion, preset, sequenceIndex);
+    const result = animateNode(node, split, initialDelay, motion, preset, sequenceIndex);
 
     const { container } = render(<>{result.nodes}</>);
     const spans = container.querySelectorAll('span');
@@ -77,8 +78,8 @@ describe('animateNode utility', () => {
     const nullNode = null;
     const booleanNode = true;
 
-    const nullResult = animateNode(nullNode, split, motion, preset, sequenceIndex);
-    const booleanResult = animateNode(booleanNode, split, motion, preset, sequenceIndex);
+    const nullResult = animateNode(nullNode, split, initialDelay, motion, preset, sequenceIndex);
+    const booleanResult = animateNode(booleanNode, split, initialDelay, motion, preset, sequenceIndex);
 
     expect(nullResult.nodes).toEqual([]);
     expect(nullResult.count).toBe(sequenceIndex);
@@ -89,7 +90,7 @@ describe('animateNode utility', () => {
 
   it('handles unknown node types by returning the node as-is', () => {
     const unknownNode = Symbol('test');
-    const result = animateNode(unknownNode as any, 'character', {}, [], 0);
+    const result = animateNode(unknownNode as any, split, initialDelay, motion, preset, sequenceIndex);
 
     expect(result.nodes).toEqual([unknownNode]);
     expect(result.count).toBe(0);

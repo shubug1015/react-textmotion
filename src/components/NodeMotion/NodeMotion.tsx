@@ -19,6 +19,7 @@ import { handleValidation, validateNodeMotionProps } from '../../utils/validatio
  * @param {SplitType} [split='character'] - Defines how the text is split for animation (`character` or `word`). Defaults to `'character'`.
  * @param {'on-load' | 'scroll'} [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
  * @param {boolean} [repeat=true] - Determines if the animation should repeat every time it enters the viewport. Only applicable when `trigger` is `'scroll'`. Defaults to `true`.
+ * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  * @param {MotionConfig} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {AnimationPreset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  *
@@ -57,7 +58,16 @@ import { handleValidation, validateNodeMotionProps } from '../../utils/validatio
  * }
  */
 export const NodeMotion: FC<NodeMotionProps> = memo(props => {
-  const { as: Tag = 'span', children, split = 'character', trigger = 'scroll', motion, preset, repeat = true } = props;
+  const {
+    as: Tag = 'span',
+    children,
+    split = 'character',
+    trigger = 'scroll',
+    repeat = true,
+    initialDelay = 0,
+    motion,
+    preset,
+  } = props;
 
   const { errors, warnings } = validateNodeMotionProps(props);
   handleValidation(errors, warnings);
@@ -66,7 +76,7 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const accessibleText = useTextFromReactNode(children);
-  const animatedNode = useAnimatedNode(children, split, motion, preset);
+  const animatedNode = useAnimatedNode(children, split, initialDelay, motion, preset);
 
   return (
     <Tag ref={targetRef} className="node-motion" aria-label={accessibleText}>

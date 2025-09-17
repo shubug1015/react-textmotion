@@ -8,6 +8,7 @@ export type BaseMotionProps = {
   split?: SplitType;
   trigger?: 'on-load' | 'scroll';
   repeat?: boolean;
+  initialDelay?: number;
 };
 
 export type MotionProps =

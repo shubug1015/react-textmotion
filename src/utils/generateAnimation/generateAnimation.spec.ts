@@ -8,7 +8,7 @@ describe('generateAnimation utility', () => {
       const motion: MotionConfig = {
         fade: { variant: 'in', duration: 2, delay: 1 },
       };
-      const { style } = generateAnimation(motion, 0);
+      const { style } = generateAnimation(motion, 0, 0);
 
       expect(style.animation).toBe('fade-in 2s ease-out 0s both');
     });
@@ -17,7 +17,7 @@ describe('generateAnimation utility', () => {
       const motion: MotionConfig = {
         fade: { variant: 'out', duration: 1.5, delay: 0.5 },
       };
-      const { style } = generateAnimation(motion, 2);
+      const { style } = generateAnimation(motion, 2, 0);
 
       expect(style.animation).toBe('fade-out 1.5s ease-out 1s both');
     });
@@ -27,7 +27,7 @@ describe('generateAnimation utility', () => {
         fade: { variant: 'in', duration: 2, delay: 1 },
         slide: { variant: 'up', duration: 3, delay: 0.5 },
       };
-      const { style } = generateAnimation(motion, 2);
+      const { style } = generateAnimation(motion, 2, 0);
 
       expect(style.animation).toBe('fade-in 2s ease-out 2s both, slide-up 3s ease-out 1s both');
     });
@@ -36,7 +36,7 @@ describe('generateAnimation utility', () => {
       const motion: MotionConfig = {
         fade: { variant: 'in', duration: 2, delay: 1, easing: 'ease-in-out' },
       };
-      const { style } = generateAnimation(motion, 0);
+      const { style } = generateAnimation(motion, 0, 0);
 
       expect(style.animation).toBe('fade-in 2s ease-in-out 0s both');
     });
@@ -45,7 +45,7 @@ describe('generateAnimation utility', () => {
       const motion: MotionConfig = {
         slide: { variant: 'up', duration: 1, delay: 0, distance: '100px' },
       };
-      const { style } = generateAnimation(motion, 0);
+      const { style } = generateAnimation(motion, 0, 0);
 
       expect(style).toHaveProperty('--slide-distance', '100px');
       expect(style.animation).toBe('slide-up 1s ease-out 0s both');
@@ -55,7 +55,7 @@ describe('generateAnimation utility', () => {
       const motion: MotionConfig = {
         slide: { variant: 'up', duration: 1, delay: 0, distance: undefined },
       };
-      const { style } = generateAnimation(motion, 0);
+      const { style } = generateAnimation(motion, 0, 0);
 
       expect(style).not.toHaveProperty('--slide-distance');
       expect(style.animation).toBe('slide-up 1s ease-out 0s both');
@@ -85,7 +85,7 @@ describe('generateAnimation utility', () => {
     ];
 
     it.each(testCases)('should handle %s correctly', (_, motion, expected) => {
-      const { style } = generateAnimation(motion, 0);
+      const { style } = generateAnimation(motion, 0, 0);
 
       expect(style.animation).toBe(expected);
     });
@@ -98,7 +98,7 @@ describe('generateAnimation utility', () => {
 
       motionsWithPrototype.ownMotion = { variant: 'out', duration: 2, delay: 0.5 };
 
-      const { style } = generateAnimation(motionsWithPrototype, 1);
+      const { style } = generateAnimation(motionsWithPrototype, 1, 0);
 
       expect(style.animation).toBe('ownMotion-out 2s ease-out 0.5s both');
     });

@@ -65,6 +65,8 @@ Animate **plain text strings** with per-character, word, or line animations.
   text="Hello World!"
   split="character"
   trigger="scroll"
+  repeat={false}
+  initialDelay={0.5}
   motion={{
     fade: {
       variant: 'in',
@@ -89,6 +91,7 @@ Animate **any React children** (mixed tags, custom components, blocks).
   split="character"
   trigger="scroll"
   repeat={false}
+  initialDelay={0.5}
   motion={{
     fade: {
       variant: 'in',
@@ -108,14 +111,15 @@ Animate **any React children** (mixed tags, custom components, blocks).
 
 ## API Reference
 
-| Prop      | Type                              | Default       | Description                  |
-| --------- | --------------------------------- | ------------- | ---------------------------- |
-| `as`      | `string`                          | `"span"`      | HTML tag wrapper             |
-| `split`   | `"character" \| "word" \| "line"` | `"character"` | Text split granularity       |
-| `trigger` | `"on-load" \| "scroll"`           | `"scroll"`    | When animation starts        |
-| `repeat`  | `boolean`                         | `true`        | Repeat entire animation      |
-| `motion`  | `MotionConfig`                    | `-`           | Custom animation config      |
-| `preset`  | `AnimationPreset[]`               | `-`           | Predefined animation presets |
+| Prop           | Type                              | Default       | Description                                    |
+| -------------- | --------------------------------- | ------------- | ---------------------------------------------- |
+| `as`           | `string`                          | `"span"`      | HTML tag wrapper                               |
+| `split`        | `"character" \| "word" \| "line"` | `"character"` | Text split granularity                         |
+| `trigger`      | `"on-load" \| "scroll"`           | `"scroll"`    | When animation starts                          |
+| `repeat`       | `boolean`                         | `true`        | Repeat entire animation                        |
+| `initialDelay` | `number`                          | `0`           | Initial delay before animation starts (in `s`) |
+| `motion`       | `MotionConfig`                    | `-`           | Custom animation config                        |
+| `preset`       | `AnimationPreset[]`               | `-`           | Predefined animation presets                   |
 
 <!-- > Full details: [API Docs](./docs/API.md) -->
 

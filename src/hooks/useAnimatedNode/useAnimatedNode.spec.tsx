@@ -5,13 +5,14 @@ import { AnimationPreset, MotionConfig } from '../../types';
 import { useAnimatedNode } from './useAnimatedNode';
 
 describe('useAnimatedNode hook', () => {
+  const split = 'character';
+  const initialDelay = 0;
   const motion: MotionConfig = {};
   const preset: AnimationPreset[] = [];
-  const split = 'character';
 
   it('generates animated spans for string children', () => {
     const children = 'Hey';
-    const { result } = renderHook(() => useAnimatedNode(children, split, motion, preset));
+    const { result } = renderHook(() => useAnimatedNode(children, split, initialDelay, motion, preset));
 
     const { container } = render(<>{result.current}</>);
     const spans = container.querySelectorAll('span');
@@ -22,7 +23,7 @@ describe('useAnimatedNode hook', () => {
 
   it('handles nested React elements with text', () => {
     const children = <p>Hello</p>;
-    const { result } = renderHook(() => useAnimatedNode(children, split, motion, preset));
+    const { result } = renderHook(() => useAnimatedNode(children, split, initialDelay, motion, preset));
 
     const { container } = render(<>{result.current}</>);
     const paragraph = container.querySelector('p') as HTMLElement;
@@ -34,7 +35,7 @@ describe('useAnimatedNode hook', () => {
 
   it('resets sequenceIndexRef for each call', () => {
     const children = 'Hi';
-    const { result } = renderHook(() => useAnimatedNode(children, split, motion, preset));
+    const { result } = renderHook(() => useAnimatedNode(children, split, initialDelay, motion, preset));
 
     const { container } = render(<>{result.current}</>);
     const spans = container.querySelectorAll('span');

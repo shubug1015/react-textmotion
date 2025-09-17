@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { splitNode } from './splitNode';
+import { splitNode } from './splitNodeAndExtractText';
 
 describe('splitNode utility', () => {
   const split = 'character';

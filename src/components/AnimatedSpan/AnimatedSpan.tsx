@@ -1,13 +1,10 @@
 import { FC } from 'react';
 
-import { MotionConfig } from '../../types';
-import { generateAnimation } from '../../utils/generateAnimation';
+import { StyleWithCustomProperties } from '../../utils/generateAnimation/generateAnimation';
 
 type AnimatedSpanProps = {
-  splittedText: string[];
-  initialDelay?: number;
-  resolvedMotion: MotionConfig;
-  sequenceIndex?: number;
+  text: string;
+  style: StyleWithCustomProperties;
 };
 
 /**
@@ -21,23 +18,14 @@ type AnimatedSpanProps = {
  *
  * @returns {JSX.Element} A React element `<span>` with inline animation styles.
  */
-export const AnimatedSpan: FC<AnimatedSpanProps> = ({
-  splittedText,
-  initialDelay = 0,
-  resolvedMotion,
-  sequenceIndex = 0,
-}) => {
-  return splittedText.map((text, index) => {
-    const { style } = generateAnimation(resolvedMotion, index + sequenceIndex, initialDelay);
+export const AnimatedSpan: FC<AnimatedSpanProps> = ({ text, style }) => {
+  if (text === '\n') {
+    return <br />;
+  }
 
-    if (text === '\n') {
-      return <br key={`${text}-${index}`} />;
-    }
-
-    return (
-      <span key={`${text}-${index}`} style={style} aria-hidden="true">
-        {text}
-      </span>
-    );
-  });
+  return (
+    <span style={style} aria-hidden="true">
+      {text}
+    </span>
+  );
 };

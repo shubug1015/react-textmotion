@@ -2,6 +2,7 @@ import { Children, cloneElement, isValidElement, ReactNode, useMemo } from 'reac
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
 import { MotionConfig } from '../../types';
+import { generateAnimation } from '../../utils/generateAnimation';
 
 /**
  * @description
@@ -39,15 +40,11 @@ export const wrapWithAnimatedSpan = (
     const currentIndex = sequenceIndexRef!.current++;
 
     if (typeof node === 'string' || typeof node === 'number') {
-      return (
-        <AnimatedSpan
-          key={currentIndex}
-          splittedText={[String(node)]}
-          initialDelay={initialDelay}
-          resolvedMotion={resolvedMotion}
-          sequenceIndex={currentIndex}
-        />
-      );
+      return [String(node)].map(text => {
+        const { style } = generateAnimation(resolvedMotion, currentIndex, initialDelay);
+
+        return <AnimatedSpan key={currentIndex} text={text} style={style} />;
+      });
     }
 
     if (isValidElement<{ children?: ReactNode }>(node)) {

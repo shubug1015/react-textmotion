@@ -7,6 +7,7 @@ import { AnimatedSpan } from '../../components/AnimatedSpan';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { TextMotionProps } from '../../types';
+import { generateAnimation } from '../../utils/generateAnimation';
 import { splitText } from '../../utils/splitText';
 import { handleValidation, validateTextMotionProps } from '../../utils/validation';
 
@@ -75,20 +76,20 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const { errors, warnings } = validateTextMotionProps(props);
   handleValidation(errors, warnings);
 
-  const splittedText = splitText(text, split);
-
-  const resolvedMotion = useResolvedMotion(motion, preset);
-
   const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
+  const splittedText = splitText(text, split);
+  const resolvedMotion = useResolvedMotion(motion, preset);
+  const animatedNode = splittedText.map((text, index) => {
+    const { style } = generateAnimation(resolvedMotion, index, initialDelay);
+
+    return <AnimatedSpan key={index} text={text} style={style} />;
+  });
+
   return (
     <Tag ref={targetRef} className="text-motion" aria-label={text}>
-      {shouldAnimate ? (
-        <AnimatedSpan splittedText={splittedText} initialDelay={initialDelay} resolvedMotion={resolvedMotion} />
-      ) : (
-        text
-      )}
+      {shouldAnimate ? animatedNode : text}
     </Tag>
   );
 });

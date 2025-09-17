@@ -73,14 +73,12 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const { errors, warnings } = validateNodeMotionProps(props);
   handleValidation(errors, warnings);
 
-  const { splittedNode, text } = splitNodeAndExtractText(children, split);
-
-  const resolvedMotion = useResolvedMotion(motion, preset);
-
-  const animatedNode = useAnimatedNode(splittedNode, initialDelay, resolvedMotion);
-
   const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
+
+  const { splittedNode, text } = splitNodeAndExtractText(children, split);
+  const resolvedMotion = useResolvedMotion(motion, preset);
+  const animatedNode = useAnimatedNode(splittedNode, initialDelay, resolvedMotion);
 
   return (
     <Tag ref={targetRef} className="node-motion" aria-label={text}>

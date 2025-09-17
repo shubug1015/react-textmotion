@@ -57,7 +57,16 @@ import { handleValidation, validateTextMotionProps } from '../../utils/validatio
  */
 
 export const TextMotion: FC<TextMotionProps> = memo(props => {
-  const { as: Tag = 'span', text, split = 'character', trigger = 'scroll', motion, preset, repeat = true } = props;
+  const {
+    as: Tag = 'span',
+    text,
+    split = 'character',
+    trigger = 'scroll',
+    repeat = true,
+    initialDelay = 0,
+    motion,
+    preset,
+  } = props;
 
   const { errors, warnings } = validateTextMotionProps(props);
   handleValidation(errors, warnings);
@@ -69,7 +78,11 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
 
   return (
     <Tag ref={targetRef} className="text-motion" aria-label={text}>
-      {shouldAnimate ? <AnimatedSpan splittedText={splittedText} motion={motion} preset={preset} /> : text}
+      {shouldAnimate ? (
+        <AnimatedSpan splittedText={splittedText} initialDelay={initialDelay} motion={motion} preset={preset} />
+      ) : (
+        text
+      )}
     </Tag>
   );
 });

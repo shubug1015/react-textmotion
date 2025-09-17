@@ -6,6 +6,7 @@ import { generateAnimation } from '../../utils/generateAnimation';
 
 type AnimatedSpanProps = {
   splittedText: string[];
+  initialDelay?: number;
   motion?: MotionConfig;
   preset?: AnimationPreset[];
   sequenceIndex?: number;
@@ -22,11 +23,17 @@ type AnimatedSpanProps = {
  *
  * @returns {JSX.Element} A React element `<span>` with inline animation styles.
  */
-export const AnimatedSpan: FC<AnimatedSpanProps> = ({ splittedText, motion, preset, sequenceIndex = 0 }) => {
+export const AnimatedSpan: FC<AnimatedSpanProps> = ({
+  splittedText,
+  initialDelay = 0,
+  motion,
+  preset,
+  sequenceIndex = 0,
+}) => {
   const resolvedMotion = useResolvedMotion(motion, preset);
 
   return splittedText.map((text, index) => {
-    const { style } = generateAnimation(resolvedMotion, index + sequenceIndex);
+    const { style } = generateAnimation(resolvedMotion, index + sequenceIndex, initialDelay);
 
     if (text === '\n') {
       return <br key={`${text}-${index}`} />;

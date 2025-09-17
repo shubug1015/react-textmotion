@@ -16,13 +16,17 @@ type StyleWithCustomProperties = CSSProperties & {
  *
  * @returns {{ style: StyleWithCustomProperties }} An object containing the generated CSS styles.
  */
-export const generateAnimation = (motionConfig: MotionConfig, index: number): { style: StyleWithCustomProperties } => {
+export const generateAnimation = (
+  motionConfig: MotionConfig,
+  index: number,
+  initialDelay: number
+): { style: StyleWithCustomProperties } => {
   const { animations, style } = Object.entries(motionConfig).reduce(
     (acc, [name, animation]) => {
       if (!animation || !('variant' in animation)) return acc;
 
       const { variant, duration, delay, easing = 'ease-out', ...rest } = animation;
-      const calculatedDelay = index * delay;
+      const calculatedDelay = index * delay + initialDelay;
 
       const animationString = `${name}-${variant} ${duration}s ${easing} ${calculatedDelay}s both`;
       acc.animations.push(animationString);

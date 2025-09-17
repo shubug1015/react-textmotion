@@ -20,6 +20,7 @@ import { splitText } from '../../utils/splitText';
 export const animateNode = (
   node: ReactNode,
   split: SplitType,
+  initialDelay: number,
   motion?: MotionConfig,
   preset?: AnimationPreset[],
   sequenceIndex: number = 0
@@ -33,6 +34,7 @@ export const animateNode = (
         <AnimatedSpan
           key={`${text}-${sequenceIndex}`}
           splittedText={splittedText}
+          initialDelay={initialDelay}
           motion={motion}
           preset={preset}
           sequenceIndex={sequenceIndex}
@@ -45,7 +47,14 @@ export const animateNode = (
   if (Array.isArray(node)) {
     return node.reduce(
       (acc, child) => {
-        const { nodes: childNodes, count } = animateNode(child, split, motion, preset, sequenceIndex + acc.count);
+        const { nodes: childNodes, count } = animateNode(
+          child,
+          split,
+          initialDelay,
+          motion,
+          preset,
+          sequenceIndex + acc.count
+        );
 
         acc.nodes.push(...childNodes);
         acc.count += count;
@@ -57,7 +66,14 @@ export const animateNode = (
   }
 
   if (isValidElement<{ children?: ReactNode }>(node)) {
-    const { nodes: childrenNodes, count } = animateNode(node.props.children, split, motion, preset, sequenceIndex);
+    const { nodes: childrenNodes, count } = animateNode(
+      node.props.children,
+      split,
+      initialDelay,
+      motion,
+      preset,
+      sequenceIndex
+    );
 
     return {
       nodes: [cloneElement(node, { key: sequenceIndex, children: childrenNodes })],

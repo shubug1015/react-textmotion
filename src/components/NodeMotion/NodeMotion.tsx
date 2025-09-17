@@ -57,7 +57,16 @@ import { handleValidation, validateNodeMotionProps } from '../../utils/validatio
  * }
  */
 export const NodeMotion: FC<NodeMotionProps> = memo(props => {
-  const { as: Tag = 'span', children, split = 'character', trigger = 'scroll', motion, preset, repeat = true } = props;
+  const {
+    as: Tag = 'span',
+    children,
+    split = 'character',
+    trigger = 'scroll',
+    repeat = true,
+    initialDelay = 0,
+    motion,
+    preset,
+  } = props;
 
   const { errors, warnings } = validateNodeMotionProps(props);
   handleValidation(errors, warnings);
@@ -66,7 +75,7 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const accessibleText = useTextFromReactNode(children);
-  const animatedNode = useAnimatedNode(children, split, motion, preset);
+  const animatedNode = useAnimatedNode(children, split, initialDelay, motion, preset);
 
   return (
     <Tag ref={targetRef} className="node-motion" aria-label={accessibleText}>

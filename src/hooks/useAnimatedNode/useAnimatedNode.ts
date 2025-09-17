@@ -20,6 +20,7 @@ import { animateNode } from './animateNode';
 export const useAnimatedNode = (
   children: ReactNode,
   split: SplitType,
+  initialDelay: number,
   motion?: MotionConfig,
   preset?: AnimationPreset[]
 ) => {
@@ -28,14 +29,14 @@ export const useAnimatedNode = (
     const collectedNodes: ReactNode[] = [];
 
     Children.forEach(children, child => {
-      const { nodes, count } = animateNode(child, split, motion, preset, sequenceIndex);
+      const { nodes, count } = animateNode(child, split, initialDelay, motion, preset, sequenceIndex);
 
       collectedNodes.push(...nodes);
       sequenceIndex += count;
     });
 
     return collectedNodes;
-  }, [children, split, motion, preset]);
+  }, [children, split, initialDelay, motion, preset]);
 
   return animatedNode;
 };

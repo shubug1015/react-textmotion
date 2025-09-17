@@ -16,40 +16,41 @@ import { splitText } from '../splitText';
 export const splitNodeAndExtractText = (
   node: ReactNode,
   split: SplitType
-): { splittedNodes: ReactNode[]; text: string } => {
+): { splittedNode: ReactNode[]; text: string } => {
   if (node == null || typeof node === 'boolean') {
-    return { splittedNodes: [], text: '' };
+    return { splittedNode: [], text: '' };
   }
 
   if (typeof node === 'string' || typeof node === 'number') {
     const text = String(node);
     return {
-      splittedNodes: splitText(text, split),
+      splittedNode: splitText(text, split),
       text,
     };
   }
 
   if (Array.isArray(node)) {
-    return node.reduce<{ splittedNodes: ReactNode[]; text: string }>(
+    return node.reduce<{ splittedNode: ReactNode[]; text: string }>(
       (acc, child) => {
-        const { splittedNodes, text } = splitNodeAndExtractText(child, split);
+        const { splittedNode, text } = splitNodeAndExtractText(child, split);
 
-        acc.splittedNodes.push(...splittedNodes);
+        acc.splittedNode.push(...splittedNode);
         acc.text += text;
 
         return acc;
       },
-      { splittedNodes: [], text: '' }
+      { splittedNode: [], text: '' }
     );
   }
 
   if (isValidElement<{ children?: ReactNode }>(node)) {
-    const { splittedNodes, text } = splitNodeAndExtractText(node.props.children, split);
+    const { splittedNode, text } = splitNodeAndExtractText(node.props.children, split);
+
     return {
-      splittedNodes: [cloneElement(node, { children: splittedNodes })],
+      splittedNode: [cloneElement(node, { children: splittedNode })],
       text,
     };
   }
 
-  return { splittedNodes: [node], text: '' };
+  return { splittedNode: [node], text: '' };
 };

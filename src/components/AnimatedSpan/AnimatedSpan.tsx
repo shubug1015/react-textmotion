@@ -1,14 +1,12 @@
 import { FC } from 'react';
 
-import { useResolvedMotion } from '../../hooks/useResolvedMotion';
-import { AnimationPreset, MotionConfig } from '../../types';
+import { MotionConfig } from '../../types';
 import { generateAnimation } from '../../utils/generateAnimation';
 
 type AnimatedSpanProps = {
   splittedText: string[];
   initialDelay?: number;
-  motion?: MotionConfig;
-  preset?: AnimationPreset[];
+  resolvedMotion: MotionConfig;
   sequenceIndex?: number;
 };
 
@@ -18,8 +16,7 @@ type AnimatedSpanProps = {
  *
  * @param {string} splittedText - The array of substrings based on the specified split type.
  * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
- * @param {MotionConfig} motion - The motion configuration to generate animation styles from.
- * @param {AnimationPreset[]} preset - The animation presets to apply.
+ * @param {MotionConfig} resolvedMotion - The motion configuration to generate animation styles from.
  * @param {number} sequenceIndex - The index of the element in the animation sequence.
  *
  * @returns {JSX.Element} A React element `<span>` with inline animation styles.
@@ -27,12 +24,9 @@ type AnimatedSpanProps = {
 export const AnimatedSpan: FC<AnimatedSpanProps> = ({
   splittedText,
   initialDelay = 0,
-  motion,
-  preset,
+  resolvedMotion,
   sequenceIndex = 0,
 }) => {
-  const resolvedMotion = useResolvedMotion(motion, preset);
-
   return splittedText.map((text, index) => {
     const { style } = generateAnimation(resolvedMotion, index + sequenceIndex, initialDelay);
 

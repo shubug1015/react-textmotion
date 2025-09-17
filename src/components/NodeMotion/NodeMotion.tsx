@@ -5,6 +5,7 @@ import { FC, memo } from 'react';
 
 import { useAnimatedNode } from '../../hooks/useAnimatedNode';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
+import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { NodeMotionProps } from '../../types';
 import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
 import { handleValidation, validateNodeMotionProps } from '../../utils/validation';
@@ -72,12 +73,14 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const { errors, warnings } = validateNodeMotionProps(props);
   handleValidation(errors, warnings);
 
+  const { splittedNode, text } = splitNodeAndExtractText(children, split);
+
+  const resolvedMotion = useResolvedMotion(motion, preset);
+
+  const animatedNode = useAnimatedNode(splittedNode, initialDelay, resolvedMotion);
+
   const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
-
-  const { splittedNodes, text } = splitNodeAndExtractText(children, split);
-
-  const animatedNode = useAnimatedNode(splittedNodes, initialDelay, motion, preset);
 
   return (
     <Tag ref={targetRef} className="node-motion" aria-label={text}>

@@ -1,7 +1,7 @@
 import { Children, cloneElement, isValidElement, ReactNode, useMemo } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
-import { AnimationPreset, MotionConfig } from '../../types';
+import { MotionConfig } from '../../types';
 
 /**
  * @description
@@ -18,26 +18,24 @@ import { AnimationPreset, MotionConfig } from '../../types';
  * @returns {ReactNode[]} An array of animated React nodes.
  */
 export const useAnimatedNode = (
-  splittedNodes: ReactNode[],
+  splittedNode: ReactNode[],
   initialDelay: number,
-  motion?: MotionConfig,
-  preset?: AnimationPreset[]
+  resolvedMotion: MotionConfig
 ): ReactNode[] => {
   return useMemo(() => {
     const sequenceIndexRef = { current: 0 };
 
-    return wrapWithAnimatedSpan(splittedNodes, initialDelay, motion, preset, sequenceIndexRef);
-  }, [splittedNodes, initialDelay, motion, preset]);
+    return wrapWithAnimatedSpan(splittedNode, initialDelay, resolvedMotion, sequenceIndexRef);
+  }, [splittedNode, initialDelay, resolvedMotion]);
 };
 
 export const wrapWithAnimatedSpan = (
-  nodes: ReactNode[],
+  splittedNode: ReactNode[],
   initialDelay: number,
-  motion?: MotionConfig,
-  preset?: AnimationPreset[],
+  resolvedMotion: MotionConfig,
   sequenceIndexRef?: { current: number }
 ): ReactNode[] => {
-  return nodes.map(node => {
+  return splittedNode.map(node => {
     const currentIndex = sequenceIndexRef!.current++;
 
     if (typeof node === 'string' || typeof node === 'number') {
@@ -46,8 +44,7 @@ export const wrapWithAnimatedSpan = (
           key={currentIndex}
           splittedText={[String(node)]}
           initialDelay={initialDelay}
-          motion={motion}
-          preset={preset}
+          resolvedMotion={resolvedMotion}
           sequenceIndex={currentIndex}
         />
       );
@@ -55,7 +52,7 @@ export const wrapWithAnimatedSpan = (
 
     if (isValidElement<{ children?: ReactNode }>(node)) {
       const childArray = Children.toArray(node.props.children);
-      const animatedChildren = wrapWithAnimatedSpan(childArray, initialDelay, motion, preset, sequenceIndexRef);
+      const animatedChildren = wrapWithAnimatedSpan(childArray, initialDelay, resolvedMotion, sequenceIndexRef);
 
       return cloneElement(node, { ...node.props, children: animatedChildren, key: currentIndex });
     }

@@ -19,6 +19,7 @@ import { handleValidation, validateNodeMotionProps } from '../../utils/validatio
  * @param {SplitType} [split='character'] - Defines how the text is split for animation (`character` or `word`). Defaults to `'character'`.
  * @param {'on-load' | 'scroll'} [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
  * @param {boolean} [repeat=true] - Determines if the animation should repeat every time it enters the viewport. Only applicable when `trigger` is `'scroll'`. Defaults to `true`.
+ * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  * @param {MotionConfig} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {AnimationPreset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  *

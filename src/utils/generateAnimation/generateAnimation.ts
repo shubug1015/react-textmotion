@@ -13,6 +13,7 @@ type StyleWithCustomProperties = CSSProperties & {
  *
  * @param {MotionConfig} motionConfig - The motion configuration object.
  * @param {number} index - The index of the element in the animation sequence, used to calculate the animation delay.
+ * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  *
  * @returns {{ style: StyleWithCustomProperties }} An object containing the generated CSS styles.
  */

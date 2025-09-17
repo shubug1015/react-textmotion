@@ -11,6 +11,7 @@ import { splitText } from '../../utils/splitText';
  *
  * @param {ReactNode} node - The React node to process.
  * @param {SplitType} split - The split type for text animations (`character` or `word`).
+ * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  * @param {MotionConfig} motion - The motion configuration to apply.
  * @param {AnimationPreset[]} preset - The animation presets to apply.
  * @param {number} sequenceIndex - The starting sequence index for the animation.

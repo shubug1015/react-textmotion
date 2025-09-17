@@ -12,6 +12,7 @@ import { animateNode } from './animateNode';
  *
  * @param {ReactNode} children - The React children to be animated.
  * @param {SplitType} split - The split type for text animations (`character` or `word`).
+ * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  * @param {MotionConfig} motion - The motion configuration object, which is a result of merging custom motion and presets.
  * @param {AnimationPreset[]} preset - The animation presets to apply.
  *

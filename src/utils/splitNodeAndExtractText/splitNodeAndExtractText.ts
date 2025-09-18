@@ -5,13 +5,14 @@ import { splitText } from '../splitText';
 
 /**
  * @description
- * `splitNode` is a recursive pure function that traverses a React node and its children,
+ * `splitNodeAndExtractText` is a recursive pure function that traverses a React node and its children,
  * splitting nodes into substrings based on the specified split type.
+ * It returns an object containing the array of substrings and the extracted text.
  *
  * @param {ReactNode} node - The React node to split.
  * @param {SplitType} split - The split type for text animations (`character` or `word`).
  *
- * @returns {ReactNode[]} An array of substrings.
+ * @returns {{ splittedNode: ReactNode[]; text: string }} An object containing the array of substrings and the extracted text.
  */
 export const splitNodeAndExtractText = (
   node: ReactNode,

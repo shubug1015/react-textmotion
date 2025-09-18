@@ -6,15 +6,12 @@ import { generateAnimation } from '../../utils/generateAnimation';
 
 /**
  * @description
- * `useAnimatedNode` is a custom hook that traverses through the children of a component,
- * applying animations to them based on the provided motion configuration.
+ * `useAnimatedNode` is a custom hook that animates an array of React nodes.
  * It manages the animation sequence index to apply delays correctly.
  *
- * @param {ReactNode} children - The React children to be animated.
- * @param {SplitType} split - The split type for text animations (`character` or `word`).
- * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
- * @param {MotionConfig} motion - The motion configuration object, which is a result of merging custom motion and presets.
- * @param {AnimationPreset[]} preset - The animation presets to apply.
+ * @param {ReactNode[]} splittedNode - The array of React nodes to be animated.
+ * @param {number} initialDelay - The initial delay before the animation starts, in seconds.
+ * @param {MotionConfig} resolvedMotion - The motion configuration object, which is a result of merging custom motion and presets.
  *
  * @returns {ReactNode[]} An array of animated React nodes.
  */

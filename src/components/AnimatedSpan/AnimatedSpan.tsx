@@ -11,10 +11,8 @@ type AnimatedSpanProps = {
  * @description
  * `AnimatedSpan` is a component that creates a `<span>` element with animation styles.
  *
- * @param {string} splittedText - The array of substrings based on the specified split type.
- * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
- * @param {MotionConfig} resolvedMotion - The motion configuration to generate animation styles from.
- * @param {number} sequenceIndex - The index of the element in the animation sequence.
+ * @param {string} text - The text content to animate.
+ * @param {StyleWithCustomProperties} style - The inline styles to apply to the `<span>` element.
  *
  * @returns {JSX.Element} A React element `<span>` with inline animation styles.
  */

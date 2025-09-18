@@ -1,92 +1,85 @@
-import { render } from '@testing-library/react';
+import { splitNodeAndExtractText } from './splitNodeAndExtractText';
 
-import { splitNode } from './splitNodeAndExtractText';
+describe('splitNodeAndExtractText utility', () => {
+  it('splits a string into individual characters when split type is "character"', () => {
+    const { splittedNode, text } = splitNodeAndExtractText('Hi', 'character');
 
-describe('splitNode utility', () => {
-  const split = 'character';
-
-  it('splits string into animated spans', () => {
-    const node = 'Hi';
-    const result = splitNode(node, split);
-
-    const { container } = render(<>{result}</>);
-    const spans = container.querySelectorAll('span');
-
-    expect(spans.length).toBe(2);
-    expect(spans[0].textContent).toBe('H');
-    expect(spans[1].textContent).toBe('i');
-    expect(result.length).toBe(2);
+    expect(splittedNode).toHaveLength(2);
+    expect(splittedNode[0]).toBe('H');
+    expect(splittedNode[1]).toBe('i');
+    expect(text).toBe('Hi');
   });
 
-  it('splits number into animated spans', () => {
-    const node = 123;
-    const result = splitNode(node, split);
+  it('splits a number into individual characters when split type is "character"', () => {
+    const { splittedNode, text } = splitNodeAndExtractText(123, 'character');
 
-    const { container } = render(<>{result}</>);
-    const spans = container.querySelectorAll('span');
-
-    expect(spans.length).toBe(3);
-    expect(spans[0].textContent).toBe('1');
-    expect(spans[1].textContent).toBe('2');
-    expect(spans[2].textContent).toBe('3');
-    expect(result.length).toBe(3);
+    expect(splittedNode).toHaveLength(3);
+    expect(splittedNode[0]).toBe('1');
+    expect(splittedNode[1]).toBe('2');
+    expect(splittedNode[2]).toBe('3');
+    expect(text).toBe('123');
   });
 
-  it('handles node without sequenceIndex', () => {
-    const node = '1';
-    const result = splitNode(node, split);
+  it('returns empty array and empty text when input is an empty string', () => {
+    const { splittedNode, text } = splitNodeAndExtractText('', 'character');
 
-    const { container } = render(<>{result}</>);
-    const spans = container.querySelectorAll('span');
-
-    expect(spans.length).toBe(1);
-    expect(spans[0].textContent).toBe('1');
-    expect(result.length).toBe(1);
+    expect(splittedNode).toHaveLength(0);
+    expect(text).toBe('');
   });
 
-  it('recursively handles nested elements', () => {
-    const node = <strong>Hello</strong>;
-    const result = splitNode(node, split);
+  it('recursively splits children of a valid React element', () => {
+    const { splittedNode, text } = splitNodeAndExtractText(<strong>Hello</strong>, 'character');
 
-    const { container } = render(<>{result}</>);
-    const strong = container.querySelector('strong') as HTMLElement;
-    const spans = strong.querySelectorAll('span');
-
-    expect(strong).toBeInTheDocument();
-    expect(spans.length).toBe('Hello'.length);
-    expect(result.length).toBe('Hello'.length);
+    expect(splittedNode).toHaveLength(1);
+    expect(text).toBe('Hello');
   });
 
-  it('handles arrays of nodes', () => {
-    const node = ['Hello', ' ', 'World'];
-    const result = splitNode(node, split);
+  it('returns element itself with empty text when React element has no children', () => {
+    const { splittedNode, text } = splitNodeAndExtractText(<span />, 'character');
 
-    const { container } = render(<>{result}</>);
-    const spans = container.querySelectorAll('span');
-
-    expect(spans.length).toBe(11);
-    expect(result.length).toBe(11);
+    expect(splittedNode).toHaveLength(1);
+    expect(text).toBe('');
   });
 
-  it('handles null and boolean nodes', () => {
-    const nullNode = null;
-    const booleanNode = true;
+  it('splits an array of nodes into combined substrings and concatenated text', () => {
+    const { splittedNode, text } = splitNodeAndExtractText(['Hello', ' ', 'World'], 'character');
 
-    const nullResult = splitNode(nullNode, split);
-    const booleanResult = splitNode(booleanNode, split);
-
-    expect(nullResult).toEqual([]);
-    expect(nullResult.length).toBe(0);
-
-    expect(booleanResult).toEqual([]);
-    expect(booleanResult.length).toBe(0);
+    expect(splittedNode).toHaveLength(11);
+    expect(text).toBe('Hello World');
   });
 
-  it('handles unknown node types by returning the node as-is', () => {
-    const unknownNode = Symbol('test');
-    const result = splitNode(unknownNode as any, split);
+  it('returns empty array and empty text when input is null or boolean', () => {
+    const { splittedNode, text } = splitNodeAndExtractText(null, 'character');
+    const boolResult = splitNodeAndExtractText(true, 'character');
 
-    expect(result).toEqual([unknownNode]);
-    expect(result.length).toBe(0);
+    expect(splittedNode).toEqual([]);
+    expect(text).toBe('');
+
+    expect(boolResult.splittedNode).toEqual([]);
+    expect(boolResult.text).toBe('');
+  });
+
+  it('returns node as-is with empty text when input is an unsupported type', () => {
+    const symbolNode = Symbol('test');
+    const fnNode = () => 'test';
+
+    const symbolResult = splitNodeAndExtractText(symbolNode as any, 'character');
+    const fnResult = splitNodeAndExtractText(fnNode as any, 'character');
+
+    expect(symbolResult.splittedNode).toEqual([symbolNode]);
+    expect(symbolResult.text).toBe('');
+
+    expect(fnResult.splittedNode).toEqual([fnNode]);
+    expect(fnResult.text).toBe('');
+  });
+
+  it('splits a string into words and spaces when split type is "word"', () => {
+    const { splittedNode, text } = splitNodeAndExtractText('Hello World', 'word');
+
+    expect(splittedNode).toHaveLength(3);
+    expect(splittedNode[0]).toBe('Hello');
+    expect(splittedNode[1]).toBe(' ');
+    expect(splittedNode[2]).toBe('World');
+    expect(text).toBe('Hello World');
   });
 });

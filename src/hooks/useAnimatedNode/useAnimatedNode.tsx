@@ -23,11 +23,13 @@ export const useAnimatedNode = (
   initialDelay: number,
   resolvedMotion: MotionConfig
 ): ReactNode[] => {
-  return useMemo(() => {
+  const animatedNode = useMemo(() => {
     const sequenceIndexRef = { current: 0 };
 
     return wrapWithAnimatedSpan(splittedNode, initialDelay, resolvedMotion, sequenceIndexRef);
   }, [splittedNode, initialDelay, resolvedMotion]);
+
+  return animatedNode;
 };
 
 export const wrapWithAnimatedSpan = (

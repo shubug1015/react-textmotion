@@ -1,0 +1,1 @@
+export { splitNodeAndExtractText } from './splitNodeAndExtractText';

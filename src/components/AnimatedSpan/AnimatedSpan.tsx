@@ -1,49 +1,29 @@
 import { FC } from 'react';
 
-import { useResolvedMotion } from '../../hooks/useResolvedMotion';
-import { AnimationPreset, MotionConfig } from '../../types';
-import { generateAnimation } from '../../utils/generateAnimation';
+import { StyleWithCustomProperties } from '../../utils/generateAnimation/generateAnimation';
 
 type AnimatedSpanProps = {
-  splittedText: string[];
-  initialDelay?: number;
-  motion?: MotionConfig;
-  preset?: AnimationPreset[];
-  sequenceIndex?: number;
+  text: string;
+  style: StyleWithCustomProperties;
 };
 
 /**
  * @description
  * `AnimatedSpan` is a component that creates a `<span>` element with animation styles.
  *
- * @param {string} splittedText - The array of substrings based on the specified split type.
- * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
- * @param {MotionConfig} motion - The motion configuration to generate animation styles from.
- * @param {AnimationPreset[]} preset - The animation presets to apply.
- * @param {number} sequenceIndex - The index of the element in the animation sequence.
+ * @param {string} text - The text content to animate.
+ * @param {StyleWithCustomProperties} style - The inline styles to apply to the `<span>` element.
  *
  * @returns {JSX.Element} A React element `<span>` with inline animation styles.
  */
-export const AnimatedSpan: FC<AnimatedSpanProps> = ({
-  splittedText,
-  initialDelay = 0,
-  motion,
-  preset,
-  sequenceIndex = 0,
-}) => {
-  const resolvedMotion = useResolvedMotion(motion, preset);
+export const AnimatedSpan: FC<AnimatedSpanProps> = ({ text, style }) => {
+  if (text === '\n') {
+    return <br />;
+  }
 
-  return splittedText.map((text, index) => {
-    const { style } = generateAnimation(resolvedMotion, index + sequenceIndex, initialDelay);
-
-    if (text === '\n') {
-      return <br key={`${text}-${index}`} />;
-    }
-
-    return (
-      <span key={`${text}-${index}`} style={style} aria-hidden="true">
-        {text}
-      </span>
-    );
-  });
+  return (
+    <span style={style} aria-hidden="true">
+      {text}
+    </span>
+  );
 };

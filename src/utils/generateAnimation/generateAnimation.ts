@@ -2,7 +2,7 @@ import { CSSProperties } from 'react';
 
 import { MotionConfig } from '../../types';
 
-type StyleWithCustomProperties = CSSProperties & {
+export type StyleWithCustomProperties = CSSProperties & {
   [key: `--${string}`]: string | number;
 };
 

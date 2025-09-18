@@ -20,6 +20,14 @@ export type SplitType = 'character' | 'word' | 'line';
 
 /**
  * @description
+ * Defines the order of animation.
+ * - `first-to-last`: Animates from the first element to the last element.
+ * - `last-to-first`: Animates from the last element to the first element.
+ */
+export type AnimationOrder = 'first-to-last' | 'last-to-first';
+
+/**
+ * @description
  * A configuration object that defines the animations to be applied.
  * Each property corresponds to a type of animation and holds its specific configuration.
  *
@@ -43,6 +51,13 @@ export type MotionConfig = {
   [key: string]: CustomAnimation | undefined;
 };
 
+/**
+ * @description
+ * A configuration object that defines the validation result.
+ *
+ * @property {string[]} errors - An array of error messages.
+ * @property {string[]} warnings - An array of warning messages.
+ */
 export type ValidationResult = {
   errors: string[];
   warnings: string[];

@@ -1,6 +1,6 @@
 import { ElementType, ReactNode } from 'react';
 
-import { MotionConfig, SplitType } from './common';
+import { AnimationOrder, MotionConfig, SplitType } from './common';
 import { AnimationPreset } from './preset';
 
 export type BaseMotionProps = {
@@ -9,6 +9,7 @@ export type BaseMotionProps = {
   trigger?: 'on-load' | 'scroll';
   repeat?: boolean;
   initialDelay?: number;
+  animationOrder?: AnimationOrder;
 };
 
 export type MotionProps =

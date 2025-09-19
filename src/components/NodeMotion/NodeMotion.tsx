@@ -6,9 +6,9 @@ import { FC, memo } from 'react';
 import { useAnimatedNode } from '../../hooks/useAnimatedNode';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
+import { useValidation } from '../../hooks/useValidation';
 import { NodeMotionProps } from '../../types';
 import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
-import { handleValidation, validateNodeMotionProps } from '../../utils/validation';
 
 /**
  * @description
@@ -72,8 +72,7 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
     preset,
   } = props;
 
-  const { errors, warnings } = validateNodeMotionProps(props);
-  handleValidation(errors, warnings);
+  useValidation('NodeMotion', props);
 
   const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;

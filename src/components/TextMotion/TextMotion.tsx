@@ -6,10 +6,10 @@ import { FC, memo } from 'react';
 import { AnimatedSpan } from '../../components/AnimatedSpan';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
+import { useValidation } from '../../hooks/useValidation';
 import { TextMotionProps } from '../../types';
 import { generateAnimation } from '../../utils/generateAnimation';
 import { splitText } from '../../utils/splitText';
-import { handleValidation, validateTextMotionProps } from '../../utils/validation';
 
 /**
  * @description
@@ -74,8 +74,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     preset,
   } = props;
 
-  const { errors, warnings } = validateTextMotionProps(props);
-  handleValidation(errors, warnings);
+  useValidation('TextMotion', props);
 
   const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;

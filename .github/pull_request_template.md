@@ -1,8 +1,3 @@
----
-name: Pull Request
-about: Describe your changes
----
-
 ## Description
 
 Please include a concise description of the changes.

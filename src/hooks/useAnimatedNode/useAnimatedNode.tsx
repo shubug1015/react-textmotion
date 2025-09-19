@@ -1,7 +1,7 @@
 import { Children, cloneElement, isValidElement, ReactNode, useMemo } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
-import { MotionConfig } from '../../types';
+import { AnimationOrder, MotionConfig } from '../../types';
 import { generateAnimation } from '../../utils/generateAnimation';
 
 /**
@@ -18,29 +18,51 @@ import { generateAnimation } from '../../utils/generateAnimation';
 export const useAnimatedNode = (
   splittedNode: ReactNode[],
   initialDelay: number,
+  animationOrder: AnimationOrder,
   resolvedMotion: MotionConfig
 ): ReactNode[] => {
   const animatedNode = useMemo(() => {
+    const totalNodes = countNodes(splittedNode);
     const sequenceIndexRef = { current: 0 };
 
-    return wrapWithAnimatedSpan(splittedNode, initialDelay, resolvedMotion, sequenceIndexRef);
-  }, [splittedNode, initialDelay, resolvedMotion]);
+    return wrapWithAnimatedSpan(
+      splittedNode,
+      initialDelay,
+      animationOrder,
+      resolvedMotion,
+      totalNodes,
+      sequenceIndexRef
+    );
+  }, [splittedNode, initialDelay, animationOrder, resolvedMotion]);
 
   return animatedNode;
+};
+
+const countNodes = (nodes: ReactNode[]): number => {
+  return Children.toArray(nodes).reduce((count: number, node: ReactNode) => {
+    if (isValidElement<{ children?: ReactNode }>(node)) {
+      return count + 1 + countNodes(Children.toArray(node.props.children));
+    }
+
+    return count + 1;
+  }, 0);
 };
 
 export const wrapWithAnimatedSpan = (
   splittedNode: ReactNode[],
   initialDelay: number,
+  animationOrder: AnimationOrder,
   resolvedMotion: MotionConfig,
+  totalNodes: number,
   sequenceIndexRef?: { current: number }
 ): ReactNode[] => {
   return splittedNode.map(node => {
     const currentIndex = sequenceIndexRef!.current++;
+    const animationIndex = animationOrder === 'last-to-first' ? totalNodes - 1 - currentIndex : currentIndex;
 
     if (typeof node === 'string' || typeof node === 'number') {
       return [String(node)].map(text => {
-        const { style } = generateAnimation(resolvedMotion, currentIndex, initialDelay);
+        const { style } = generateAnimation(resolvedMotion, animationIndex, initialDelay);
 
         return <AnimatedSpan key={currentIndex} text={text} style={style} />;
       });
@@ -48,7 +70,14 @@ export const wrapWithAnimatedSpan = (
 
     if (isValidElement<{ children?: ReactNode }>(node)) {
       const childArray = Children.toArray(node.props.children);
-      const animatedChildren = wrapWithAnimatedSpan(childArray, initialDelay, resolvedMotion, sequenceIndexRef);
+      const animatedChildren = wrapWithAnimatedSpan(
+        childArray,
+        initialDelay,
+        animationOrder,
+        resolvedMotion,
+        totalNodes,
+        sequenceIndexRef
+      );
 
       return cloneElement(node, { ...node.props, children: animatedChildren, key: currentIndex });
     }

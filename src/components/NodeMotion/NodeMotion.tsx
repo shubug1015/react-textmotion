@@ -66,6 +66,7 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
     trigger = 'scroll',
     repeat = true,
     initialDelay = 0,
+    animationOrder = 'first-to-last',
     motion,
     preset,
   } = props;
@@ -78,7 +79,7 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
 
   const { splittedNode, text } = splitNodeAndExtractText(children, split);
   const resolvedMotion = useResolvedMotion(motion, preset);
-  const animatedNode = useAnimatedNode(splittedNode, initialDelay, resolvedMotion);
+  const animatedNode = useAnimatedNode(splittedNode, initialDelay, animationOrder, resolvedMotion);
 
   return (
     <Tag ref={targetRef} className="node-motion" aria-label={text}>

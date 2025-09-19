@@ -9,7 +9,7 @@ type AnimatedSpanProps = {
 
 /**
  * @description
- * `AnimatedSpan` is a component that creates a `<span>` element with animation styles.
+ * `AnimatedSpan` is a component that animates a text node by creating a `<span>` element with animation styles.
  *
  * @param {string} text - The text content to animate.
  * @param {StyleWithCustomProperties} style - The inline styles to apply to the `<span>` element.

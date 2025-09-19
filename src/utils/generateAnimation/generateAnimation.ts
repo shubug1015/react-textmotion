@@ -12,14 +12,14 @@ export type StyleWithCustomProperties = CSSProperties & {
  * It creates the `animation` property and any custom CSS properties needed for the animations.
  *
  * @param {MotionConfig} motionConfig - The motion configuration object.
- * @param {number} index - The index of the element in the animation sequence, used to calculate the animation delay.
+ * @param {number} sequenceIndex - The index of the element in the animation sequence, used to calculate the animation delay.
  * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  *
  * @returns {{ style: StyleWithCustomProperties }} An object containing the generated CSS styles.
  */
 export const generateAnimation = (
   motionConfig: MotionConfig,
-  index: number,
+  sequenceIndex: number,
   initialDelay: number
 ): { style: StyleWithCustomProperties } => {
   const { animations, style } = Object.entries(motionConfig).reduce(
@@ -27,7 +27,7 @@ export const generateAnimation = (
       if (!animation || !('variant' in animation)) return acc;
 
       const { variant, duration, delay, easing = 'ease-out', ...rest } = animation;
-      const calculatedDelay = index * delay + initialDelay;
+      const calculatedDelay = sequenceIndex * delay + initialDelay;
 
       const animationString = `${name}-${variant} ${duration}s ${easing} ${calculatedDelay}s both`;
       acc.animations.push(animationString);

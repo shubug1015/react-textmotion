@@ -21,6 +21,7 @@ import { handleValidation, validateNodeMotionProps } from '../../utils/validatio
  * @param {'on-load' | 'scroll'} [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
  * @param {boolean} [repeat=true] - Determines if the animation should repeat every time it enters the viewport. Only applicable when `trigger` is `'scroll'`. Defaults to `true`.
  * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
+ * @param {'first-to-last' | 'last-to-first'} [animationOrder='first-to-last'] - Defines the order in which the animation sequence is applied. Defaults to `'first-to-last'`.
  * @param {MotionConfig} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {AnimationPreset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  *
@@ -66,6 +67,7 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
     trigger = 'scroll',
     repeat = true,
     initialDelay = 0,
+    animationOrder = 'first-to-last',
     motion,
     preset,
   } = props;
@@ -78,7 +80,7 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
 
   const { splittedNode, text } = splitNodeAndExtractText(children, split);
   const resolvedMotion = useResolvedMotion(motion, preset);
-  const animatedNode = useAnimatedNode(splittedNode, initialDelay, resolvedMotion);
+  const animatedNode = useAnimatedNode(splittedNode, initialDelay, animationOrder, resolvedMotion);
 
   return (
     <Tag ref={targetRef} className="node-motion" aria-label={text}>

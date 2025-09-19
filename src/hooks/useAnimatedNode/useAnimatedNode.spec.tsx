@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 import { render, renderHook } from '@testing-library/react';
 
-import { MotionConfig } from '../../types';
+import { AnimationOrder, MotionConfig } from '../../types';
+import * as generateAnimationModule from '../../utils/generateAnimation';
 import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
 
 import { useAnimatedNode } from './useAnimatedNode';
@@ -10,10 +11,11 @@ const renderAnimatedNode = (
   children: ReactNode,
   split: 'character' | 'word',
   motion: MotionConfig = {},
-  initialDelay = 0
+  initialDelay = 0,
+  animationOrder: AnimationOrder = 'first-to-last'
 ) => {
   const { splittedNode } = splitNodeAndExtractText(children, split);
-  const { result } = renderHook(() => useAnimatedNode(splittedNode, initialDelay, motion));
+  const { result } = renderHook(() => useAnimatedNode(splittedNode, initialDelay, animationOrder, motion));
   const { container } = render(<>{result.current}</>);
 
   return container.querySelectorAll('span');
@@ -45,7 +47,7 @@ describe('useAnimatedNode hook', () => {
 
   it('handles nested React elements with text', () => {
     const { splittedNode } = splitNodeAndExtractText(<p>Hello</p>, split);
-    const { result } = renderHook(() => useAnimatedNode(splittedNode, 0, motion));
+    const { result } = renderHook(() => useAnimatedNode(splittedNode, 0, 'first-to-last', motion));
     const { container } = render(<>{result.current}</>);
 
     const p = container.querySelector('p');
@@ -62,7 +64,7 @@ describe('useAnimatedNode hook', () => {
 
   it('handles React element without children', () => {
     const { splittedNode } = splitNodeAndExtractText(<span />, split);
-    const { result } = renderHook(() => useAnimatedNode(splittedNode, 0, motion));
+    const { result } = renderHook(() => useAnimatedNode(splittedNode, 0, 'first-to-last', motion));
     const { container } = render(<>{result.current}</>);
 
     const span = container.querySelector('span');
@@ -73,7 +75,7 @@ describe('useAnimatedNode hook', () => {
 
   it('handles unknown node types gracefully', () => {
     const { splittedNode } = splitNodeAndExtractText([null, true] as any, split);
-    const { result } = renderHook(() => useAnimatedNode(splittedNode, 0, motion));
+    const { result } = renderHook(() => useAnimatedNode(splittedNode, 0, 'first-to-last', motion));
     const { container } = render(<>{result.current}</>);
 
     expect(container.textContent).toBe('');
@@ -88,8 +90,44 @@ describe('useAnimatedNode hook', () => {
 
   it('returns unknown node types as-is', () => {
     const unknownNode = Symbol('unknown');
-    const { result } = renderHook(() => useAnimatedNode([unknownNode as any], 0, {}));
+    const { result } = renderHook(() => useAnimatedNode([unknownNode as any], 0, 'first-to-last', motion));
 
     expect(result.current).toEqual([unknownNode]);
+  });
+});
+
+describe('useAnimatedNode animationIndex calculation', () => {
+  const motion: MotionConfig = {};
+  const initialDelay = 0;
+  const generateAnimationSpy = jest.spyOn(generateAnimationModule, 'generateAnimation');
+
+  beforeEach(() => {
+    generateAnimationSpy.mockClear();
+  });
+
+  it('calculates animationIndex in first-to-last order', () => {
+    const text = 'ABC';
+    const { splittedNode } = splitNodeAndExtractText(text, 'character');
+
+    renderHook(() => useAnimatedNode(splittedNode, initialDelay, 'first-to-last', motion));
+
+    const calls = generateAnimationSpy.mock.calls;
+
+    expect(calls[0][1]).toBe(0);
+    expect(calls[1][1]).toBe(1);
+    expect(calls[2][1]).toBe(2);
+  });
+
+  it('calculates animationIndex in last-to-first order', () => {
+    const text = 'ABC';
+    const { splittedNode } = splitNodeAndExtractText(text, 'character');
+
+    renderHook(() => useAnimatedNode(splittedNode, initialDelay, 'last-to-first', motion));
+
+    const calls = generateAnimationSpy.mock.calls;
+
+    expect(calls[0][1]).toBe(2);
+    expect(calls[1][1]).toBe(1);
+    expect(calls[2][1]).toBe(0);
   });
 });

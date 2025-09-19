@@ -1,3 +1,25 @@
+import { useEffect } from 'react';
+
+import { NodeMotionProps, TextMotionProps } from '../../types';
+
+import { validateNodeMotionProps, validateTextMotionProps } from './validation';
+
+type ComponentName = 'TextMotion' | 'NodeMotion';
+type Props = TextMotionProps | NodeMotionProps;
+
+export const useValidation = (componentName: ComponentName, props: Props) => {
+  useEffect(() => {
+    const { errors, warnings } =
+      componentName === 'TextMotion'
+        ? validateTextMotionProps(props as TextMotionProps)
+        : validateNodeMotionProps(props as NodeMotionProps);
+
+    if (errors.length > 0 || warnings.length > 0) {
+      handleValidation(errors, warnings);
+    }
+  }, [props, componentName]);
+};
+
 /**
  * @description
  * Handles validation errors and warnings by logging them to the console.

@@ -50,15 +50,3 @@ export type MotionConfig = {
   flip?: FlipAnimation;
   [key: string]: CustomAnimation | undefined;
 };
-
-/**
- * @description
- * A configuration object that defines the validation result.
- *
- * @property {string[]} errors - An array of error messages.
- * @property {string[]} warnings - An array of warning messages.
- */
-export type ValidationResult = {
-  errors: string[];
-  warnings: string[];
-};

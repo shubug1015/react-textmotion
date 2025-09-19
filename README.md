@@ -111,15 +111,16 @@ Animate **any React children** (mixed tags, custom components, blocks).
 
 ## API Reference
 
-| Prop           | Type                              | Default       | Description                                    |
-| -------------- | --------------------------------- | ------------- | ---------------------------------------------- |
-| `as`           | `string`                          | `"span"`      | HTML tag wrapper                               |
-| `split`        | `"character" \| "word" \| "line"` | `"character"` | Text split granularity                         |
-| `trigger`      | `"on-load" \| "scroll"`           | `"scroll"`    | When animation starts                          |
-| `repeat`       | `boolean`                         | `true`        | Repeat entire animation                        |
-| `initialDelay` | `number`                          | `0`           | Initial delay before animation starts (in `s`) |
-| `motion`       | `MotionConfig`                    | `-`           | Custom animation config                        |
-| `preset`       | `AnimationPreset[]`               | `-`           | Predefined animation presets                   |
+| Prop             | Type                              | Default         | Description                                    |
+| ---------------- | --------------------------------- | --------------- | ---------------------------------------------- |
+| `as`             | `string`                          | `"span"`        | HTML tag wrapper                               |
+| `split`          | `"character" \| "word" \| "line"` | `"character"`   | Text split granularity                         |
+| `trigger`        | `"on-load" \| "scroll"`           | `"scroll"`      | When animation starts                          |
+| `repeat`         | `boolean`                         | `true`          | Repeat entire animation                        |
+| `initialDelay`   | `number`                          | `0`             | Initial delay before animation starts (in `s`) |
+| `animationOrder` | `AnimationOrder`                  | `first-to-last` | Order of the animation sequence                |
+| `motion`         | `MotionConfig`                    | `-`             | Custom animation config                        |
+| `preset`         | `AnimationPreset[]`               | `-`             | Predefined animation presets                   |
 
 <!-- > Full details: [API Docs](./docs/API.md) -->
 

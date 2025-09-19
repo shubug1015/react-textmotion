@@ -4,10 +4,15 @@ import { NodeMotionProps, TextMotionProps } from '../../types';
 
 import { validateNodeMotionProps, validateTextMotionProps } from './validation';
 
-type ComponentName = 'TextMotion' | 'NodeMotion';
-type Props = TextMotionProps | NodeMotionProps;
-
-export const useValidation = (componentName: ComponentName, props: Props) => {
+/**
+ * @description
+ * Validates the props of a TextMotion or NodeMotion component.
+ * It checks for required props, invalid values, and logs warnings or throws errors in non-production environments.
+ *
+ * @param {'TextMotion' | 'NodeMotion'} componentName - The name of the component to validate ('TextMotion' or 'NodeMotion').
+ * @param {TextMotionProps | NodeMotionProps} props - The props to validate.
+ */
+export const useValidation = (componentName: 'TextMotion' | 'NodeMotion', props: TextMotionProps | NodeMotionProps) => {
   useEffect(() => {
     const { errors, warnings } =
       componentName === 'TextMotion'

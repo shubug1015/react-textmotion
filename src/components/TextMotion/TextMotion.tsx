@@ -60,7 +60,6 @@ import { handleValidation, validateTextMotionProps } from '../../utils/validatio
  *   );
  * }
  */
-
 export const TextMotion: FC<TextMotionProps> = memo(props => {
   const {
     as: Tag = 'span',
@@ -69,6 +68,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     trigger = 'scroll',
     repeat = true,
     initialDelay = 0,
+    animationOrder = 'first-to-last',
     motion,
     preset,
   } = props;
@@ -82,7 +82,8 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const splittedText = splitText(text, split);
   const resolvedMotion = useResolvedMotion(motion, preset);
   const animatedNode = splittedText.map((text, index) => {
-    const { style } = generateAnimation(resolvedMotion, index, initialDelay);
+    const sequenceIndex = animationOrder === 'first-to-last' ? index : splittedText.length - (index + 1);
+    const { style } = generateAnimation(resolvedMotion, sequenceIndex, initialDelay);
 
     return <AnimatedSpan key={index} text={text} style={style} />;
   });

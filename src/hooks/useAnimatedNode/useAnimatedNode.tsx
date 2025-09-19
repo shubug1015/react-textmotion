@@ -11,6 +11,7 @@ import { generateAnimation } from '../../utils/generateAnimation';
  *
  * @param {ReactNode[]} splittedNode - The array of React nodes to be animated.
  * @param {number} initialDelay - The initial delay before the animation starts, in seconds.
+ * @param {AnimationOrder} animationOrder - Defines the order in which the animation sequence is applied. Defaults to `'first-to-last'`.
  * @param {MotionConfig} resolvedMotion - The motion configuration object, which is a result of merging custom motion and presets.
  *
  * @returns {ReactNode[]} An array of animated React nodes.

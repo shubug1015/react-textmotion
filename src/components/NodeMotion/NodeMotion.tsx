@@ -35,6 +35,8 @@ import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
  *       split="character"
  *       trigger="scroll"
  *       repeat={false}
+ *       initialDelay={1}
+ *       animationOrder="first-to-last"
  *       motion={{
  *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
  *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
@@ -52,6 +54,8 @@ import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
  *     <NodeMotion
  *       split="word"
  *       trigger="on-load"
+ *       initialDelay={0.5}
+ *       animationOrder="first-to-last"
  *       preset={['fade-in', 'slide-up']}
  *     >
  *       <span>Hello</span> <b>World!</b>

@@ -39,6 +39,7 @@ import { splitText } from '../../utils/splitText';
  *       trigger="scroll"
  *       repeat={false}
  *       initialDelay={1}
+ *       animationOrder="first-to-last"
  *       motion={{
  *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
  *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
@@ -56,6 +57,7 @@ import { splitText } from '../../utils/splitText';
  *       split="word"
  *       trigger="on-load"
  *       initialDelay={0.5}
+ *       animationOrder="first-to-last"
  *       preset={['fade-in', 'slide-up']}
  *     />
  *   );

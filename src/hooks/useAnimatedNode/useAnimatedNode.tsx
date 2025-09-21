@@ -1,7 +1,7 @@
 import { Children, cloneElement, isValidElement, ReactNode, useMemo } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
-import { AnimationOrder, MotionConfig } from '../../types';
+import { AnimationOrder, Motion } from '../../types';
 import { generateAnimation } from '../../utils/generateAnimation';
 
 /**
@@ -12,7 +12,7 @@ import { generateAnimation } from '../../utils/generateAnimation';
  * @param {ReactNode[]} splittedNode - The array of React nodes to be animated.
  * @param {number} initialDelay - The initial delay before the animation starts, in seconds.
  * @param {AnimationOrder} animationOrder - Defines the order in which the animation sequence is applied. Defaults to `'first-to-last'`.
- * @param {MotionConfig} resolvedMotion - The motion configuration object, which is a result of merging custom motion and presets.
+ * @param {Motion} resolvedMotion - The motion configuration object, which is a result of merging custom motion and presets.
  *
  * @returns {ReactNode[]} An array of animated React nodes.
  */
@@ -20,7 +20,7 @@ export const useAnimatedNode = (
   splittedNode: ReactNode[],
   initialDelay: number,
   animationOrder: AnimationOrder,
-  resolvedMotion: MotionConfig
+  resolvedMotion: Motion
 ): ReactNode[] => {
   const animatedNode = useMemo(() => {
     const totalNodes = countNodes(splittedNode);
@@ -53,7 +53,7 @@ export const wrapWithAnimatedSpan = (
   splittedNode: ReactNode[],
   initialDelay: number,
   animationOrder: AnimationOrder,
-  resolvedMotion: MotionConfig,
+  resolvedMotion: Motion,
   totalNodes: number,
   sequenceIndexRef?: { current: number }
 ): ReactNode[] => {

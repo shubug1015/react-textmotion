@@ -1,6 +1,6 @@
 import { cloneElement, isValidElement, ReactNode } from 'react';
 
-import { SplitType } from '../../types';
+import { Split } from '../../types';
 import { splitText } from '../splitText';
 
 /**
@@ -10,14 +10,11 @@ import { splitText } from '../splitText';
  * It returns an object containing the array of substrings and the extracted text.
  *
  * @param {ReactNode} node - The React node to split.
- * @param {SplitType} split - The split type for text animations (`character` or `word`).
+ * @param {Split} split - The split type for text animations (`character` or `word`).
  *
  * @returns {{ splittedNode: ReactNode[]; text: string }} An object containing the array of substrings and the extracted text.
  */
-export const splitNodeAndExtractText = (
-  node: ReactNode,
-  split: SplitType
-): { splittedNode: ReactNode[]; text: string } => {
+export const splitNodeAndExtractText = (node: ReactNode, split: Split): { splittedNode: ReactNode[]; text: string } => {
   if (node == null || typeof node === 'boolean') {
     return { splittedNode: [], text: '' };
   }

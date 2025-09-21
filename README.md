@@ -91,6 +91,7 @@ Animate **any React children** (mixed tags, custom components, blocks).
 
 ```tsx
 <NodeMotion
+  as="span"
   split="character"
   trigger="scroll"
   repeat={false}
@@ -119,31 +120,31 @@ Animate **any React children** (mixed tags, custom components, blocks).
 
 ### TextMotion Props
 
-| Prop             | Type                              | Default         | Required                | Description                                    |
-| ---------------- | --------------------------------- | --------------- | ----------------------- | ---------------------------------------------- |
-| `text`           | `string`                          | `-`             | Yes                     | Text to animate                                |
-| `as`             | `string`                          | `"span"`        | No                      | HTML tag wrapper                               |
-| `split`          | `"character" \| "word" \| "line"` | `"character"`   | No                      | Text split granularity                         |
-| `trigger`        | `"on-load" \| "scroll"`           | `"scroll"`      | No                      | When animation starts                          |
-| `repeat`         | `boolean`                         | `true`          | No                      | Repeat entire animation                        |
-| `initialDelay`   | `number`                          | `0`             | No                      | Initial delay before animation starts (in `s`) |
-| `animationOrder` | `AnimationOrder`                  | `first-to-last` | No                      | Order of the animation sequence                |
-| `motion`         | `MotionConfig`                    | `-`             | Yes (if `preset` unset) | Custom animation config                        |
-| `preset`         | `AnimationPreset[]`               | `-`             | Yes (if `motion` unset) | Predefined animation presets                   |
+| Prop             | Type                                 | Default         | Required                | Description                                    |
+| ---------------- | ------------------------------------ | --------------- | ----------------------- | ---------------------------------------------- |
+| `text`           | `string`                             | `-`             | Yes                     | Text to animate                                |
+| `as`             | `string`                             | `"span"`        | No                      | HTML tag wrapper                               |
+| `split`          | `"character" \| "word" \| "line"`    | `"character"`   | No                      | Text split granularity                         |
+| `trigger`        | `"on-load" \| "scroll"`              | `"scroll"`      | No                      | When animation starts                          |
+| `repeat`         | `boolean`                            | `true`          | No                      | Repeat entire animation                        |
+| `initialDelay`   | `number`                             | `0`             | No                      | Initial delay before animation starts (in `s`) |
+| `animationOrder` | `"first-to-last" \| "last-to-first"` | `first-to-last` | No                      | Order of the animation sequence                |
+| `motion`         | `Motion`                             | `-`             | Yes (if `preset` unset) | Custom animation config                        |
+| `preset`         | `Preset[]`                           | `-`             | Yes (if `motion` unset) | Predefined animation presets                   |
 
 ### NodeMotion
 
-| Prop             | Type                    | Default         | Required                | Description                                    |
-| ---------------- | ----------------------- | --------------- | ----------------------- | ---------------------------------------------- |
-| `children`       | `ReactNode`             | `-`             | Yes                     | Content to animate                             |
-| `as`             | `string`                | `"span"`        | No                      | HTML tag wrapper                               |
-| `split`          | `"character" \| "word"` | `"character"`   | No                      | Text split granularity                         |
-| `trigger`        | `"on-load" \| "scroll"` | `"scroll"`      | No                      | When animation starts                          |
-| `repeat`         | `boolean`               | `true`          | No                      | Repeat entire animation                        |
-| `initialDelay`   | `number`                | `0`             | No                      | Initial delay before animation starts (in `s`) |
-| `animationOrder` | `AnimationOrder`        | `first-to-last` | No                      | Order of the animation sequence                |
-| `motion`         | `MotionConfig`          | `-`             | Yes (if `preset` unset) | Custom animation config                        |
-| `preset`         | `AnimationPreset[]`     | `-`             | Yes (if `motion` unset) | Predefined animation presets                   |
+| Prop             | Type                                 | Default         | Required                | Description                                    |
+| ---------------- | ------------------------------------ | --------------- | ----------------------- | ---------------------------------------------- |
+| `children`       | `ReactNode`                          | `-`             | Yes                     | Content to animate                             |
+| `as`             | `string`                             | `"span"`        | No                      | HTML tag wrapper                               |
+| `split`          | `"character" \| "word"`              | `"character"`   | No                      | Text split granularity                         |
+| `trigger`        | `"on-load" \| "scroll"`              | `"scroll"`      | No                      | When animation starts                          |
+| `repeat`         | `boolean`                            | `true`          | No                      | Repeat entire animation                        |
+| `initialDelay`   | `number`                             | `0`             | No                      | Initial delay before animation starts (in `s`) |
+| `animationOrder` | `"first-to-last" \| "last-to-first"` | `first-to-last` | No                      | Order of the animation sequence                |
+| `motion`         | `Motion`                             | `-`             | Yes (if `preset` unset) | Custom animation config                        |
+| `preset`         | `Preset[]`                           | `-`             | Yes (if `motion` unset) | Predefined animation presets                   |
 
 <!-- > Full details: [API Docs](./docs/API.md) -->
 

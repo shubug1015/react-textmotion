@@ -1,11 +1,11 @@
-import { MotionConfig } from '../../types';
+import { Motion } from '../../types';
 
 import { generateAnimation } from './generateAnimation';
 
 describe('generateAnimation utility', () => {
   describe('when given a valid motion configuration', () => {
     it('should generate a style object with a single motion string correctly for index 0', () => {
-      const motion: MotionConfig = {
+      const motion: Motion = {
         fade: { variant: 'in', duration: 2, delay: 1 },
       };
       const { style } = generateAnimation(motion, 0, 0);
@@ -14,7 +14,7 @@ describe('generateAnimation utility', () => {
     });
 
     it('should apply the correct staggered delay for a non-zero index', () => {
-      const motion: MotionConfig = {
+      const motion: Motion = {
         fade: { variant: 'out', duration: 1.5, delay: 0.5 },
       };
       const { style } = generateAnimation(motion, 2, 0);
@@ -23,7 +23,7 @@ describe('generateAnimation utility', () => {
     });
 
     it('should join multiple animation strings with a comma', () => {
-      const motion: MotionConfig = {
+      const motion: Motion = {
         fade: { variant: 'in', duration: 2, delay: 1 },
         slide: { variant: 'up', duration: 3, delay: 0.5 },
       };
@@ -33,7 +33,7 @@ describe('generateAnimation utility', () => {
     });
 
     it('should apply a custom easing function if provided', () => {
-      const motion: MotionConfig = {
+      const motion: Motion = {
         fade: { variant: 'in', duration: 2, delay: 1, easing: 'ease-in-out' },
       };
       const { style } = generateAnimation(motion, 0, 0);
@@ -42,7 +42,7 @@ describe('generateAnimation utility', () => {
     });
 
     it('should generate CSS variables for dynamic properties', () => {
-      const motion: MotionConfig = {
+      const motion: Motion = {
         slide: { variant: 'up', duration: 1, delay: 0, distance: '100px' },
       };
       const { style } = generateAnimation(motion, 0, 0);
@@ -52,7 +52,7 @@ describe('generateAnimation utility', () => {
     });
 
     it('should not generate a CSS variable for a dynamic property with an undefined value', () => {
-      const motion: MotionConfig = {
+      const motion: Motion = {
         slide: { variant: 'up', duration: 1, delay: 0, distance: undefined },
       };
       const { style } = generateAnimation(motion, 0, 0);
@@ -63,7 +63,7 @@ describe('generateAnimation utility', () => {
   });
 
   describe('when given an invalid or empty motion configuration', () => {
-    const testCases: [string, MotionConfig, string][] = [
+    const testCases: [string, Motion, string][] = [
       ['an empty motion object', {}, ''],
       [
         'a motion object with all invalid values',

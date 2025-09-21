@@ -16,7 +16,7 @@ import {
  * - `word`: Splits the text into words.
  * - `line`: Splits the text into lines.
  */
-export type SplitType = 'character' | 'word' | 'line';
+export type Split = 'character' | 'word' | 'line';
 
 /**
  * @description
@@ -40,7 +40,7 @@ export type AnimationOrder = 'first-to-last' | 'last-to-first';
  * @property {FlipAnimation} [flip] - Configuration for flip animation.
  * @property {CustomAnimation} [key] - Configuration for any custom animation.
  */
-export type MotionConfig = {
+export type Motion = {
   fade?: FadeAnimation;
   slide?: SlideAnimation;
   scale?: ScaleAnimation;
@@ -50,3 +50,26 @@ export type MotionConfig = {
   flip?: FlipAnimation;
   [key: string]: CustomAnimation | undefined;
 };
+
+/**
+ * @description
+ * A list of predefined animation presets that can be used with the `TextMotion` and `NodeMotion` components.
+ * Each preset corresponds to a specific animation configuration.
+ */
+export type Preset =
+  | 'fade-in'
+  | 'fade-out'
+  | 'slide-up'
+  | 'slide-down'
+  | 'slide-left'
+  | 'slide-right'
+  | 'scale-in'
+  | 'scale-out'
+  | 'rotate-clockwise'
+  | 'rotate-counterclockwise'
+  | 'bounce-in'
+  | 'bounce-out'
+  | 'elastic-in'
+  | 'elastic-out'
+  | 'flip-in'
+  | 'flip-out';

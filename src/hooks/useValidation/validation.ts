@@ -1,4 +1,4 @@
-import { MotionConfig, NodeMotionProps, TextMotionProps } from '../../types';
+import { Motion, NodeMotionProps, TextMotionProps } from '../../types';
 
 export type ValidationResult = {
   errors: string[];
@@ -91,7 +91,7 @@ const validateCommonProps = (props: Partial<TextMotionProps | NodeMotionProps>):
   }
 
   if (props.motion !== undefined) {
-    const motionValidation = validateMotionConfig(props.motion);
+    const motionValidation = validateMotion(props.motion);
 
     errors.push(...motionValidation.errors);
     warnings.push(...motionValidation.warnings);
@@ -105,10 +105,10 @@ const validateCommonProps = (props: Partial<TextMotionProps | NodeMotionProps>):
  * Validates the motion configuration object.
  * It checks for positive duration, non-negative delay, and warns if the duration is too long.
  *
- * @param {MotionConfig} motion - The motion configuration to validate.
+ * @param {Motion} motion - The motion configuration to validate.
  * @returns {ValidationResult} An object containing arrays of errors and warnings.
  */
-const validateMotionConfig = (motion: MotionConfig): ValidationResult => {
+const validateMotion = (motion: Motion): ValidationResult => {
   const MAX_RECOMMENDED_DURATION = 10;
 
   const errors: string[] = [];

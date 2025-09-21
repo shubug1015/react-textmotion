@@ -17,10 +17,10 @@ import { splitText } from '../../utils/splitText';
  * and applying motion presets or custom motion configurations.
  * It leverages CSS animations and dynamically generated inline styles for smooth effects.
  *
- * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
  * @param {string} text - The text content to animate.
+ * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
  * @param {Split} [split='character'] - Defines how the text is split for animation (`character`, `word`, or `line`). Defaults to `'character'`.
- * @param {'on-load' | 'scroll' } [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
+ * @param {Trigger} [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
  * @param {boolean} [repeat=true] - Determines if the animation should repeat every time it enters the viewport. Only applicable when `trigger` is `'scroll'`. Defaults to `true`.
  * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  * @param {'first-to-last' | 'last-to-first'} [animationOrder='first-to-last'] - Defines the order in which the animation sequence is applied. Defaults to `'first-to-last'`.

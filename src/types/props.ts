@@ -1,11 +1,11 @@
 import { ElementType, ReactNode } from 'react';
 
-import { AnimationOrder, Motion, Preset, Split } from './common';
+import { AnimationOrder, Motion, Preset, Split, Trigger } from './common';
 
 export type BaseMotionProps = {
   as?: ElementType;
   split?: Split;
-  trigger?: 'on-load' | 'scroll';
+  trigger?: Trigger;
   repeat?: boolean;
   initialDelay?: number;
   animationOrder?: AnimationOrder;

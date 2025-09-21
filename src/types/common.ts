@@ -20,6 +20,14 @@ export type Split = 'character' | 'word' | 'line';
 
 /**
  * @description
+ * Defines when the animation should start.
+ * - `on-load`: Starts the animation immediately.
+ * - `scroll`: Starts the animation only when the component enters the viewport.
+ */
+export type Trigger = 'on-load' | 'scroll';
+
+/**
+ * @description
  * Defines the order of animation.
  * - `first-to-last`: Animates from the first element to the last element.
  * - `last-to-first`: Animates from the last element to the first element.

@@ -15,10 +15,10 @@ import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
  * `NodeMotion` is a component that animates its children by applying motion presets or custom motion configurations.
  * It can animate text nodes by splitting them into characters or words, and can also animate other React elements.
  *
- * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
  * @param {ReactNode} children - The content to animate. Can be a string, a number, or any React element.
+ * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
  * @param {Split} [split='character'] - Defines how the text is split for animation (`character` or `word`). Defaults to `'character'`.
- * @param {'on-load' | 'scroll'} [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
+ * @param {Trigger} [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
  * @param {boolean} [repeat=true] - Determines if the animation should repeat every time it enters the viewport. Only applicable when `trigger` is `'scroll'`. Defaults to `true`.
  * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  * @param {'first-to-last' | 'last-to-first'} [animationOrder='first-to-last'] - Defines the order in which the animation sequence is applied. Defaults to `'first-to-last'`.

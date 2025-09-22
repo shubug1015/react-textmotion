@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { NodeMotionProps, TextMotionProps } from '../../types';
+import type { NodeMotionProps, TextMotionProps } from '../../types';
 
 import { handleValidation, useValidation } from './useValidation';
 

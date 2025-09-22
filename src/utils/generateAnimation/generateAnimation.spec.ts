@@ -1,4 +1,4 @@
-import { Motion } from '../../types';
+import type { Motion } from '../../types';
 
 import { generateAnimation } from './generateAnimation';
 

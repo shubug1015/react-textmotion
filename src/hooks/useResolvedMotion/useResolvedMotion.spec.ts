@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 
-import { Motion, Preset } from '../../types';
+import type { Motion, Preset } from '../../types';
 
 import { DELAY, DURATION } from './motionMap';
 import { useResolvedMotion } from './useResolvedMotion';

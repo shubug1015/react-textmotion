@@ -1,13 +1,13 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { FC, memo } from 'react';
+import { type FC, memo } from 'react';
 
 import { useAnimatedNode } from '../../hooks/useAnimatedNode';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { useValidation } from '../../hooks/useValidation';
-import { NodeMotionProps } from '../../types';
+import type { NodeMotionProps } from '../../types';
 import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
 
 /**

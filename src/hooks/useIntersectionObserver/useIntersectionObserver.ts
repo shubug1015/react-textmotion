@@ -15,7 +15,7 @@
  * - `ref`: A RefObject to be attached to the DOM element you want to observe.
  * - `isIntersecting`: A boolean indicating whether the observed element is currently intersecting with its root.
  */
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { type RefObject, useEffect, useRef, useState } from 'react';
 
 type IntersectionObserverOptions = {
   repeat?: boolean;

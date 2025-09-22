@@ -1,6 +1,6 @@
-import { CSSProperties } from 'react';
+import { type CSSProperties } from 'react';
 
-import { Motion } from '../../types';
+import type { Motion } from '../../types';
 
 export type StyleWithCustomProperties = CSSProperties & {
   [key: `--${string}`]: string | number;

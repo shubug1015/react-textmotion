@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { render, renderHook } from '@testing-library/react';
 
-import { AnimationOrder, Motion } from '../../types';
+import type { AnimationOrder, Motion } from '../../types';
 import * as generateAnimationModule from '../../utils/generateAnimation';
 import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
 

@@ -1,4 +1,4 @@
-import { Motion, NodeMotionProps, TextMotionProps } from '../../types';
+import type { Motion, NodeMotionProps, TextMotionProps } from '../../types';
 
 export type ValidationResult = {
   errors: string[];

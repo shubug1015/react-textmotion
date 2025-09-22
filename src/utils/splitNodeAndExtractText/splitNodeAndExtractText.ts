@@ -1,6 +1,6 @@
-import { cloneElement, isValidElement, ReactNode } from 'react';
+import { cloneElement, isValidElement, type ReactNode } from 'react';
 
-import { Split } from '../../types';
+import type { Split } from '../../types';
 import { splitText } from '../splitText';
 
 /**

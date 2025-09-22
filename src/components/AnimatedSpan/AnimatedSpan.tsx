@@ -1,6 +1,6 @@
-import { FC } from 'react';
+import { type FC } from 'react';
 
-import { StyleWithCustomProperties } from '../../utils/generateAnimation/generateAnimation';
+import { type StyleWithCustomProperties } from '../../utils/generateAnimation/generateAnimation';
 
 type AnimatedSpanProps = {
   text: string;

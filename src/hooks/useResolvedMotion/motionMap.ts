@@ -1,4 +1,4 @@
-import { Motion, Preset } from '../../types';
+import type { Motion, Preset } from '../../types';
 
 export const DURATION = 0.25;
 export const DELAY = 0.025;

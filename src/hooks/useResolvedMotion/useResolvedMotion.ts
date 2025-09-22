@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { Motion, Preset } from '../../types';
+import type { Motion, Preset } from '../../types';
 
 import { motionMap } from './motionMap';
 

@@ -1,6 +1,6 @@
-import { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode } from 'react';
 
-import { AnimationOrder, Motion, Preset, Split, Trigger } from './common';
+import type { AnimationOrder, Motion, Preset, Split, Trigger } from './common';
 
 export type BaseMotionProps = {
   as?: ElementType;

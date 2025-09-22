@@ -1,7 +1,7 @@
-import { Children, cloneElement, isValidElement, ReactNode, useMemo } from 'react';
+import { Children, cloneElement, isValidElement, type ReactNode, useMemo } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
-import { AnimationOrder, Motion } from '../../types';
+import type { AnimationOrder, Motion } from '../../types';
 import { generateAnimation } from '../../utils/generateAnimation';
 
 /**

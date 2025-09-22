@@ -10,6 +10,7 @@ export type BaseMotionProps = {
   initialDelay?: number;
   animationOrder?: AnimationOrder;
   onAnimationStart?: () => void;
+  onAnimationEnd?: () => void;
 };
 
 export type MotionPresetProps =

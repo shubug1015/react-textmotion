@@ -82,6 +82,8 @@ Animate **plain text strings** with per-character, word, or line animations.
       easing: 'linear',
     },
   }}
+  onAnimationStart={() => console.log('Animation started')}
+  onAnimationEnd={() => console.log('Animation ended')}
 />
 ```
 
@@ -111,6 +113,8 @@ Animate **any React children** (mixed tags, custom components, blocks).
       easing: 'linear',
     },
   }}
+  onAnimationStart={() => console.log('Animation started')}
+  onAnimationEnd={() => console.log('Animation ended')}
 >
   <span>Hello</span> <b>World!</b>
 </NodeMotion>
@@ -120,31 +124,35 @@ Animate **any React children** (mixed tags, custom components, blocks).
 
 ### TextMotion Props
 
-| Prop             | Type                                 | Default         | Required                | Description                                    |
-| ---------------- | ------------------------------------ | --------------- | ----------------------- | ---------------------------------------------- |
-| `text`           | `string`                             | `-`             | Yes                     | Text to animate                                |
-| `as`             | `string`                             | `"span"`        | No                      | HTML tag wrapper                               |
-| `split`          | `"character" \| "word" \| "line"`    | `"character"`   | No                      | Text split granularity                         |
-| `trigger`        | `"on-load" \| "scroll"`              | `"scroll"`      | No                      | When animation starts                          |
-| `repeat`         | `boolean`                            | `true`          | No                      | Repeat entire animation                        |
-| `initialDelay`   | `number`                             | `0`             | No                      | Initial delay before animation starts (in `s`) |
-| `animationOrder` | `"first-to-last" \| "last-to-first"` | `first-to-last` | No                      | Order of the animation sequence                |
-| `motion`         | `Motion`                             | `-`             | Yes (if `preset` unset) | Custom animation config                        |
-| `preset`         | `Preset[]`                           | `-`             | Yes (if `motion` unset) | Predefined animation presets                   |
+| Prop               | Type                                 | Default         | Required                | Description                                                |
+| ------------------ | ------------------------------------ | --------------- | ----------------------- | ---------------------------------------------------------- |
+| `text`             | `string`                             | `-`             | Yes                     | Text to animate                                            |
+| `as`               | `string`                             | `"span"`        | No                      | HTML tag wrapper                                           |
+| `split`            | `"character" \| "word" \| "line"`    | `"character"`   | No                      | Text split granularity                                     |
+| `trigger`          | `"on-load" \| "scroll"`              | `"scroll"`      | No                      | When animation starts                                      |
+| `repeat`           | `boolean`                            | `true`          | No                      | Repeat entire animation                                    |
+| `initialDelay`     | `number`                             | `0`             | No                      | Initial delay before animation starts (in `s`)             |
+| `animationOrder`   | `"first-to-last" \| "last-to-first"` | `first-to-last` | No                      | Order of the animation sequence                            |
+| `motion`           | `Motion`                             | `-`             | Yes (if `preset` unset) | Custom animation config                                    |
+| `preset`           | `Preset[]`                           | `-`             | Yes (if `motion` unset) | Predefined animation presets                               |
+| `onAnimationStart` | `() => void`                         | `-`             | No                      | Callback function that is called when the animation starts |
+| `onAnimationEnd`   | `() => void`                         | `-`             | No                      | Callback function that is called when the animation ends   |
 
 ### NodeMotion
 
-| Prop             | Type                                 | Default         | Required                | Description                                    |
-| ---------------- | ------------------------------------ | --------------- | ----------------------- | ---------------------------------------------- |
-| `children`       | `ReactNode`                          | `-`             | Yes                     | Content to animate                             |
-| `as`             | `string`                             | `"span"`        | No                      | HTML tag wrapper                               |
-| `split`          | `"character" \| "word"`              | `"character"`   | No                      | Text split granularity                         |
-| `trigger`        | `"on-load" \| "scroll"`              | `"scroll"`      | No                      | When animation starts                          |
-| `repeat`         | `boolean`                            | `true`          | No                      | Repeat entire animation                        |
-| `initialDelay`   | `number`                             | `0`             | No                      | Initial delay before animation starts (in `s`) |
-| `animationOrder` | `"first-to-last" \| "last-to-first"` | `first-to-last` | No                      | Order of the animation sequence                |
-| `motion`         | `Motion`                             | `-`             | Yes (if `preset` unset) | Custom animation config                        |
-| `preset`         | `Preset[]`                           | `-`             | Yes (if `motion` unset) | Predefined animation presets                   |
+| Prop               | Type                                 | Default         | Required                | Description                                                |
+| ------------------ | ------------------------------------ | --------------- | ----------------------- | ---------------------------------------------------------- |
+| `children`         | `ReactNode`                          | `-`             | Yes                     | Content to animate                                         |
+| `as`               | `string`                             | `"span"`        | No                      | HTML tag wrapper                                           |
+| `split`            | `"character" \| "word"`              | `"character"`   | No                      | Text split granularity                                     |
+| `trigger`          | `"on-load" \| "scroll"`              | `"scroll"`      | No                      | When animation starts                                      |
+| `repeat`           | `boolean`                            | `true`          | No                      | Repeat entire animation                                    |
+| `initialDelay`     | `number`                             | `0`             | No                      | Initial delay before animation starts (in `s`)             |
+| `animationOrder`   | `"first-to-last" \| "last-to-first"` | `first-to-last` | No                      | Order of the animation sequence                            |
+| `motion`           | `Motion`                             | `-`             | Yes (if `preset` unset) | Custom animation config                                    |
+| `preset`           | `Preset[]`                           | `-`             | Yes (if `motion` unset) | Predefined animation presets                               |
+| `onAnimationStart` | `() => void`                         | `-`             | No                      | Callback function that is called when the animation starts |
+| `onAnimationEnd`   | `() => void`                         | `-`             | No                      | Callback function that is called when the animation ends   |
 
 <!-- > Full details: [API Docs](./docs/API.md) -->
 

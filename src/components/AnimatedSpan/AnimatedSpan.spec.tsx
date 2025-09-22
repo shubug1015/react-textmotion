@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 
 import { AnimatedSpan } from './AnimatedSpan';
 
@@ -75,5 +75,18 @@ describe('AnimatedSpan component', () => {
 
     expect(span).toBeInTheDocument();
     expect(span?.style.animation).toBe('');
+  });
+
+  it('invokes onAnimationEnd callback only once', () => {
+    const onAnimationEndMock = jest.fn();
+    const { container } = render(<AnimatedSpan text={TEXT} style={STYLE} onAnimationEnd={onAnimationEndMock} />);
+    const span = container.querySelector('span');
+
+    if (span) {
+      fireEvent.animationEnd(span);
+      fireEvent.animationEnd(span);
+    }
+
+    expect(onAnimationEndMock).toHaveBeenCalledTimes(1);
   });
 });

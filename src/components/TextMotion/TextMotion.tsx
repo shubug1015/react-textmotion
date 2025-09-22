@@ -1,7 +1,7 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { type FC, memo } from 'react';
+import { type FC, memo, useEffect } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
@@ -26,6 +26,7 @@ import { splitText } from '../../utils/splitText';
  * @param {'first-to-last' | 'last-to-first'} [animationOrder='first-to-last'] - Defines the order in which the animation sequence is applied. Defaults to `'first-to-last'`.
  * @param {Motion} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {Preset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
+ * @param {() => void} [onAnimationStart] - Callback function that is called when the animation starts.
  *
  * @returns {JSX.Element} A React element that renders animated `<span>`s for each split unit of text.
  *
@@ -44,6 +45,7 @@ import { splitText } from '../../utils/splitText';
  *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
  *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
  *       }}
+ *       onAnimationStart={() => console.log('Animation started')}
  *     />
  *   );
  * }
@@ -59,6 +61,7 @@ import { splitText } from '../../utils/splitText';
  *       initialDelay={0.5}
  *       animationOrder="first-to-last"
  *       preset={['fade-in', 'slide-up']}
+ *       onAnimationStart={() => console.log('Animation started')}
  *     />
  *   );
  * }
@@ -74,6 +77,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     animationOrder = 'first-to-last',
     motion,
     preset,
+    onAnimationStart,
   } = props;
 
   useValidation('TextMotion', props);
@@ -81,8 +85,13 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
-  const splittedText = splitText(text, split);
+  useEffect(() => {
+    if (shouldAnimate) {
+      onAnimationStart?.();
+    }
+  }, [shouldAnimate, onAnimationStart]);
 
+  const splittedText = splitText(text, split);
   const resolvedMotion = useResolvedMotion(motion, preset);
 
   const animatedNode = splittedText.map((text, index) => {

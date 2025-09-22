@@ -27,6 +27,7 @@ import { splitText } from '../../utils/splitText';
  * @param {Motion} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {Preset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  * @param {() => void} [onAnimationStart] - Callback function that is called when the animation starts.
+ * @param {() => void} [onAnimationEnd] - Callback function that is called when the animation ends.
  *
  * @returns {JSX.Element} A React element that renders animated `<span>`s for each split unit of text.
  *
@@ -46,6 +47,7 @@ import { splitText } from '../../utils/splitText';
  *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
  *       }}
  *       onAnimationStart={() => console.log('Animation started')}
+ *       onAnimationEnd={() => console.log('Animation ended')}
  *     />
  *   );
  * }
@@ -62,6 +64,7 @@ import { splitText } from '../../utils/splitText';
  *       animationOrder="first-to-last"
  *       preset={['fade-in', 'slide-up']}
  *       onAnimationStart={() => console.log('Animation started')}
+ *       onAnimationEnd={() => console.log('Animation ended')}
  *     />
  *   );
  * }
@@ -78,6 +81,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     motion,
     preset,
     onAnimationStart,
+    onAnimationEnd,
   } = props;
 
   useValidation('TextMotion', props);
@@ -94,11 +98,14 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const splittedText = splitText(text, split);
   const resolvedMotion = useResolvedMotion(motion, preset);
 
+  const lastIndex = animationOrder === 'first-to-last' ? splittedText.length - 1 : 0;
   const animatedNode = splittedText.map((text, index) => {
     const sequenceIndex = animationOrder === 'first-to-last' ? index : splittedText.length - (index + 1);
     const { style } = generateAnimation(resolvedMotion, sequenceIndex, initialDelay);
 
-    return <AnimatedSpan key={index} text={text} style={style} />;
+    const handleAnimationEnd = index === lastIndex ? onAnimationEnd : undefined;
+
+    return <AnimatedSpan key={index} text={text} style={style} onAnimationEnd={handleAnimationEnd} />;
   });
 
   return (

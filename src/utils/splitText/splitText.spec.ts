@@ -1,10 +1,10 @@
-import type { SplitType } from '../../types';
+import type { Split } from '../../types';
 
 import { splitText } from './splitText';
 
 describe('splitText utility', () => {
   describe('when using a valid split type', () => {
-    const testCases: [SplitType, string, string[]][] = [
+    const testCases: [Split, string, string[]][] = [
       ['character', 'Hello', ['H', 'e', 'l', 'l', 'o']],
       ['word', 'Hello World', ['Hello', ' ', 'World']],
       ['line', 'Hello\nWorld', ['Hello', '\n', 'World']],
@@ -19,9 +19,9 @@ describe('splitText utility', () => {
     it('should default to splitting by character', () => {
       const input = 'Hi';
       const expected = ['H', 'i'];
-      const invalidSplitType = 'invalid' as any;
+      const invalidSplit = 'invalid' as any;
 
-      expect(splitText(input, invalidSplitType)).toEqual(expected);
+      expect(splitText(input, invalidSplit)).toEqual(expected);
     });
   });
 });

@@ -1,9 +1,9 @@
-import { AnimationPreset, MotionConfig } from '../../types';
+import type { Motion, Preset } from '../../types';
 
 export const DURATION = 0.25;
 export const DELAY = 0.025;
 
-export const motionMap: Record<AnimationPreset, MotionConfig> = {
+export const motionMap: Record<Preset, Motion> = {
   'fade-in': { fade: { variant: 'in', duration: DURATION, delay: DELAY } },
   'fade-out': { fade: { variant: 'out', duration: DURATION, delay: DELAY } },
   'slide-up': { slide: { variant: 'up', duration: DURATION, delay: DELAY } },

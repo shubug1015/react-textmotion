@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from 'react';
+import { type RefObject, useEffect } from 'react';
 import { act, render, screen } from '@testing-library/react';
 
 import { useIntersectionObserver } from './useIntersectionObserver';

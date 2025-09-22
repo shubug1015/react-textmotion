@@ -1,6 +1,6 @@
-import { CSSProperties } from 'react';
+import { type CSSProperties } from 'react';
 
-import { MotionConfig } from '../../types';
+import type { Motion } from '../../types';
 
 export type StyleWithCustomProperties = CSSProperties & {
   [key: `--${string}`]: string | number;
@@ -11,14 +11,14 @@ export type StyleWithCustomProperties = CSSProperties & {
  * `generateAnimation` is a utility function that generates CSS animation styles from a motion configuration object.
  * It creates the `animation` property and any custom CSS properties needed for the animations.
  *
- * @param {MotionConfig} motionConfig - The motion configuration object.
+ * @param {Motion} motionConfig - The motion configuration object.
  * @param {number} sequenceIndex - The index of the element in the animation sequence, used to calculate the animation delay.
  * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  *
  * @returns {{ style: StyleWithCustomProperties }} An object containing the generated CSS styles.
  */
 export const generateAnimation = (
-  motionConfig: MotionConfig,
+  motionConfig: Motion,
   sequenceIndex: number,
   initialDelay: number
 ): { style: StyleWithCustomProperties } => {

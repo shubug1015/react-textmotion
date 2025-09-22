@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { AnimationPreset, MotionConfig } from '../../types';
+import type { Motion, Preset } from '../../types';
 
 import { motionMap } from './motionMap';
 
@@ -8,16 +8,16 @@ import { motionMap } from './motionMap';
  * @description
  * `useResolvedMotion` is a custom hook that resolves the motion configuration.
  * It either uses the provided `motion` object or generates a configuration from the `preset` array.
- * If a `preset` is provided, it will be mapped to a `MotionConfig` object.
+ * If a `preset` is provided, it will be mapped to a `Motion` object.
  * If a `motion` object is provided, it will be deep-copied.
  * If neither is provided, an empty object will be returned.
  *
- * @param {MotionConfig} [motion] - A custom motion configuration object.
- * @param {AnimationPreset[]} [preset] - An array of animation presets.
+ * @param {Motion} [motion] - A custom motion configuration object.
+ * @param {Preset[]} [preset] - An array of animation presets.
  *
- * @returns {MotionConfig} The resolved motion configuration object.
+ * @returns {Motion} The resolved motion configuration object.
  */
-export const useResolvedMotion = (motion?: MotionConfig, preset?: AnimationPreset[]): MotionConfig => {
+export const useResolvedMotion = (motion?: Motion, preset?: Preset[]): Motion => {
   const resolvedMotion = useMemo(() => {
     if (preset) {
       return preset.reduce((config, presetName) => ({ ...config, ...motionMap[presetName] }), {});

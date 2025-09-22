@@ -1,13 +1,13 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { FC, memo } from 'react';
+import { type FC, memo } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { useValidation } from '../../hooks/useValidation';
-import { TextMotionProps } from '../../types';
+import type { TextMotionProps } from '../../types';
 import { generateAnimation } from '../../utils/generateAnimation';
 import { splitText } from '../../utils/splitText';
 
@@ -17,15 +17,15 @@ import { splitText } from '../../utils/splitText';
  * and applying motion presets or custom motion configurations.
  * It leverages CSS animations and dynamically generated inline styles for smooth effects.
  *
- * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
  * @param {string} text - The text content to animate.
- * @param {SplitType} [split='character'] - Defines how the text is split for animation (`character`, `word`, or `line`). Defaults to `'character'`.
- * @param {'on-load' | 'scroll' } [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
+ * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
+ * @param {Split} [split='character'] - Defines how the text is split for animation (`character`, `word`, or `line`). Defaults to `'character'`.
+ * @param {Trigger} [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
  * @param {boolean} [repeat=true] - Determines if the animation should repeat every time it enters the viewport. Only applicable when `trigger` is `'scroll'`. Defaults to `true`.
  * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
  * @param {'first-to-last' | 'last-to-first'} [animationOrder='first-to-last'] - Defines the order in which the animation sequence is applied. Defaults to `'first-to-last'`.
- * @param {MotionConfig} [motion] - Custom motion configuration object. Cannot be used with `preset`.
- * @param {AnimationPreset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
+ * @param {Motion} [motion] - Custom motion configuration object. Cannot be used with `preset`.
+ * @param {Preset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
  *
  * @returns {JSX.Element} A React element that renders animated `<span>`s for each split unit of text.
  *
@@ -65,8 +65,8 @@ import { splitText } from '../../utils/splitText';
  */
 export const TextMotion: FC<TextMotionProps> = memo(props => {
   const {
-    as: Tag = 'span',
     text,
+    as: Tag = 'span',
     split = 'character',
     trigger = 'scroll',
     repeat = true,
@@ -82,7 +82,9 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const splittedText = splitText(text, split);
+
   const resolvedMotion = useResolvedMotion(motion, preset);
+
   const animatedNode = splittedText.map((text, index) => {
     const sequenceIndex = animationOrder === 'first-to-last' ? index : splittedText.length - (index + 1);
     const { style } = generateAnimation(resolvedMotion, sequenceIndex, initialDelay);

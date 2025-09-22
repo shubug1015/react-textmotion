@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { type FC, type ReactNode } from 'react';
 import { render, screen } from '@testing-library/react';
 
 import * as useIntersectionObserver from '../../hooks/useIntersectionObserver';

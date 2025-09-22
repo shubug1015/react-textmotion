@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { NodeMotionProps, TextMotionProps } from '../../types';
+import type { NodeMotionProps, TextMotionProps } from '../../types';
 
 import { validateNodeMotionProps, validateTextMotionProps } from './validation';
 

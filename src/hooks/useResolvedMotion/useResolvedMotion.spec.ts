@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 
-import { AnimationPreset, MotionConfig } from '../../types';
+import type { Motion, Preset } from '../../types';
 
 import { DELAY, DURATION } from './motionMap';
 import { useResolvedMotion } from './useResolvedMotion';
@@ -13,14 +13,14 @@ describe('useResolvedMotion hook', () => {
   });
 
   it('returns empty object when motion has no keys', () => {
-    const motions: MotionConfig = {};
+    const motions: Motion = {};
     const { result } = renderHook(() => useResolvedMotion(motions));
 
     expect(result.current).toEqual({});
   });
 
   it('preserves multiple motion types', () => {
-    const motion: MotionConfig = {
+    const motion: Motion = {
       fade: { variant: 'out', duration: 1, delay: 0.5 },
       slide: { variant: 'up', duration: 2, delay: 1 },
     };
@@ -30,7 +30,7 @@ describe('useResolvedMotion hook', () => {
   });
 
   it('returns preset-based motion when preset is provided', () => {
-    const preset: AnimationPreset[] = ['fade-in'];
+    const preset: Preset[] = ['fade-in'];
     const { result } = renderHook(() => useResolvedMotion(undefined, preset));
 
     expect(result.current).toEqual({

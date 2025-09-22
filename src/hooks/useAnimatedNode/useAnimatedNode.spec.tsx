@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { render, renderHook } from '@testing-library/react';
 
-import { AnimationOrder, MotionConfig } from '../../types';
+import type { AnimationOrder, Motion } from '../../types';
 import * as generateAnimationModule from '../../utils/generateAnimation';
 import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
 
@@ -10,7 +10,7 @@ import { useAnimatedNode } from './useAnimatedNode';
 const renderAnimatedNode = (
   children: ReactNode,
   split: 'character' | 'word',
-  motion: MotionConfig = {},
+  motion: Motion = {},
   initialDelay = 0,
   animationOrder: AnimationOrder = 'first-to-last'
 ) => {
@@ -23,7 +23,7 @@ const renderAnimatedNode = (
 
 describe('useAnimatedNode hook', () => {
   const split = 'character';
-  const motion: MotionConfig = {};
+  const motion: Motion = {};
 
   it('generates animated spans for string children', () => {
     const spans = renderAnimatedNode('Hey', split, motion);
@@ -97,7 +97,7 @@ describe('useAnimatedNode hook', () => {
 });
 
 describe('useAnimatedNode animationIndex calculation', () => {
-  const motion: MotionConfig = {};
+  const motion: Motion = {};
   const initialDelay = 0;
   const generateAnimationSpy = jest.spyOn(generateAnimationModule, 'generateAnimation');
 

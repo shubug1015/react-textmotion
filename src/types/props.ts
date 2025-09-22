@@ -1,24 +1,23 @@
-import { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode } from 'react';
 
-import { AnimationOrder, MotionConfig, SplitType } from './common';
-import { AnimationPreset } from './preset';
+import type { AnimationOrder, Motion, Preset, Split, Trigger } from './common';
 
 export type BaseMotionProps = {
   as?: ElementType;
-  split?: SplitType;
-  trigger?: 'on-load' | 'scroll';
+  split?: Split;
+  trigger?: Trigger;
   repeat?: boolean;
   initialDelay?: number;
   animationOrder?: AnimationOrder;
 };
 
-export type MotionProps =
-  | { motion: MotionConfig; preset?: never }
-  | { motion?: never; preset: AnimationPreset[] }
+export type MotionPresetProps =
+  | { motion: Motion; preset?: never }
+  | { motion?: never; preset: Preset[] }
   | { motion?: undefined; preset?: undefined };
 
 // TextMotion
-export type TextMotionProps = BaseMotionProps & MotionProps & { text: string };
+export type TextMotionProps = BaseMotionProps & MotionPresetProps & { text: string };
 
 // NodeMotion
-export type NodeMotionProps = BaseMotionProps & MotionProps & { children: ReactNode };
+export type NodeMotionProps = BaseMotionProps & MotionPresetProps & { children: ReactNode };

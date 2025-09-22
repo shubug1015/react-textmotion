@@ -1,3 +1,9 @@
+import { type RefObject, useEffect, useRef, useState } from 'react';
+
+type IntersectionObserverOptions = {
+  repeat?: boolean;
+} & IntersectionObserverInit;
+
 /**
  * @description
  * `useIntersectionObserver` is a custom hook that provides a way to observe changes in the intersection
@@ -15,12 +21,6 @@
  * - `ref`: A RefObject to be attached to the DOM element you want to observe.
  * - `isIntersecting`: A boolean indicating whether the observed element is currently intersecting with its root.
  */
-import { type RefObject, useEffect, useRef, useState } from 'react';
-
-type IntersectionObserverOptions = {
-  repeat?: boolean;
-} & IntersectionObserverInit;
-
 export const useIntersectionObserver = <T extends Element>(
   options: IntersectionObserverOptions = {}
 ): [RefObject<T | null>, boolean] => {

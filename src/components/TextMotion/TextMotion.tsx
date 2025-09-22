@@ -65,8 +65,8 @@ import { splitText } from '../../utils/splitText';
  */
 export const TextMotion: FC<TextMotionProps> = memo(props => {
   const {
-    as: Tag = 'span',
     text,
+    as: Tag = 'span',
     split = 'character',
     trigger = 'scroll',
     repeat = true,
@@ -82,7 +82,9 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const splittedText = splitText(text, split);
+
   const resolvedMotion = useResolvedMotion(motion, preset);
+
   const animatedNode = splittedText.map((text, index) => {
     const sequenceIndex = animationOrder === 'first-to-last' ? index : splittedText.length - (index + 1);
     const { style } = generateAnimation(resolvedMotion, sequenceIndex, initialDelay);

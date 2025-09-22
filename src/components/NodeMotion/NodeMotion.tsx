@@ -65,8 +65,8 @@ import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
  */
 export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const {
-    as: Tag = 'span',
     children,
+    as: Tag = 'span',
     split = 'character',
     trigger = 'scroll',
     repeat = true,
@@ -82,6 +82,7 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   const { splittedNode, text } = splitNodeAndExtractText(children, split);
+
   const resolvedMotion = useResolvedMotion(motion, preset);
   const animatedNode = useAnimatedNode(splittedNode, initialDelay, animationOrder, resolvedMotion);
 

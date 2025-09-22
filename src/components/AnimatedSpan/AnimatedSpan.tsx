@@ -2,7 +2,7 @@ import { type FC } from 'react';
 
 import { type StyleWithCustomProperties } from '../../utils/generateAnimation/generateAnimation';
 
-type AnimatedSpanProps = {
+type Props = {
   text: string;
   style: StyleWithCustomProperties;
 };
@@ -16,7 +16,7 @@ type AnimatedSpanProps = {
  *
  * @returns {JSX.Element} A React element `<span>` with inline animation styles.
  */
-export const AnimatedSpan: FC<AnimatedSpanProps> = ({ text, style }) => {
+export const AnimatedSpan: FC<Props> = ({ text, style }) => {
   if (text === '\n') {
     return <br />;
   }

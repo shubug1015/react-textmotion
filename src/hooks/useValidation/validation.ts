@@ -97,6 +97,18 @@ const validateCommonProps = (props: Partial<TextMotionProps | NodeMotionProps>):
     warnings.push(...motionValidation.warnings);
   }
 
+  if (props.preset !== undefined && !Array.isArray(props.preset)) {
+    errors.push('preset prop must be an array');
+  }
+
+  if (props.onAnimationStart !== undefined && typeof props.onAnimationStart !== 'function') {
+    errors.push('onAnimationStart prop must be a function');
+  }
+
+  if (props.onAnimationEnd !== undefined && typeof props.onAnimationEnd !== 'function') {
+    errors.push('onAnimationEnd prop must be a function');
+  }
+
   return { errors, warnings };
 };
 

@@ -1,7 +1,7 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { type FC, memo } from 'react';
+import { type FC, memo, useEffect } from 'react';
 
 import { useAnimatedNode } from '../../hooks/useAnimatedNode';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
@@ -24,6 +24,8 @@ import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
  * @param {'first-to-last' | 'last-to-first'} [animationOrder='first-to-last'] - Defines the order in which the animation sequence is applied. Defaults to `'first-to-last'`.
  * @param {Motion} [motion] - Custom motion configuration object. Cannot be used with `preset`.
  * @param {Preset[]} [preset] - Predefined motion presets. Cannot be used with `motion`.
+ * @param {() => void} [onAnimationStart] - Callback function that is called when the animation starts.
+ * @param {() => void} [onAnimationEnd] - Callback function that is called when the animation ends.
  *
  * @returns {JSX.Element} A React element that renders animated children.
  *
@@ -41,6 +43,8 @@ import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
  *         fade: { variant: 'in', duration: 0.25, delay: 0.025, easing: 'linear' },
  *         slide: { variant: 'up', duration: 0.25, delay: 0.025, easing: 'linear' },
  *       }}
+ *       onAnimationStart={() => console.log('Animation started')}
+ *       onAnimationEnd={() => console.log('Animation ended')}
  *     >
  *       Hello <strong>World</strong>
  *     </NodeMotion>
@@ -57,6 +61,8 @@ import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
  *       initialDelay={0.5}
  *       animationOrder="first-to-last"
  *       preset={['fade-in', 'slide-up']}
+ *       onAnimationStart={() => console.log('Animation started')}
+ *       onAnimationEnd={() => console.log('Animation ended')}
  *     >
  *       <span>Hello</span> <b>World!</b>
  *     </NodeMotion>
@@ -74,6 +80,8 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
     animationOrder = 'first-to-last',
     motion,
     preset,
+    onAnimationStart,
+    onAnimationEnd,
   } = props;
 
   useValidation('NodeMotion', props);
@@ -81,10 +89,16 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
   const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
+  useEffect(() => {
+    if (shouldAnimate) {
+      onAnimationStart?.();
+    }
+  }, [shouldAnimate, onAnimationStart]);
+
   const { splittedNode, text } = splitNodeAndExtractText(children, split);
 
   const resolvedMotion = useResolvedMotion(motion, preset);
-  const animatedNode = useAnimatedNode(splittedNode, initialDelay, animationOrder, resolvedMotion);
+  const animatedNode = useAnimatedNode(splittedNode, initialDelay, animationOrder, resolvedMotion, onAnimationEnd);
 
   return (
     <Tag ref={targetRef} className="node-motion" aria-label={text}>

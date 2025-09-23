@@ -9,6 +9,8 @@ export type BaseMotionProps = {
   repeat?: boolean;
   initialDelay?: number;
   animationOrder?: AnimationOrder;
+  onAnimationStart?: () => void;
+  onAnimationEnd?: () => void;
 };
 
 export type MotionPresetProps =

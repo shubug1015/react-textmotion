@@ -28,6 +28,9 @@ describe('validation utility', () => {
         repeat: 'yes' as any,
         initialDelay: -5,
         animationOrder: 'reverse' as any,
+        preset: 'fade-in' as any,
+        onAnimationStart: 'Animation Start' as any,
+        onAnimationEnd: 'Animation End' as any,
       };
       const { errors } = validateTextMotionProps(props);
 
@@ -37,6 +40,9 @@ describe('validation utility', () => {
         'repeat prop must be a boolean',
         'initialDelay prop must be non-negative',
         'animationOrder prop must be one of: first-to-last, last-to-first',
+        'preset prop must be an array',
+        'onAnimationStart prop must be a function',
+        'onAnimationEnd prop must be a function',
       ]);
     });
 

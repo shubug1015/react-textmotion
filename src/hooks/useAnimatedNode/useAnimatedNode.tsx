@@ -13,6 +13,7 @@ import { generateAnimation } from '../../utils/generateAnimation';
  * @param {number} initialDelay - The initial delay before the animation starts, in seconds.
  * @param {AnimationOrder} animationOrder - Defines the order in which the animation sequence is applied. Defaults to `'first-to-last'`.
  * @param {Motion} resolvedMotion - The motion configuration object, which is a result of merging custom motion and presets.
+ * @param {() => void} onAnimationEnd - Callback function that is called when the animation ends.
  *
  * @returns {ReactNode[]} An array of animated React nodes.
  */
@@ -20,7 +21,8 @@ export const useAnimatedNode = (
   splittedNode: ReactNode[],
   initialDelay: number,
   animationOrder: AnimationOrder,
-  resolvedMotion: Motion
+  resolvedMotion: Motion,
+  onAnimationEnd?: () => void
 ): ReactNode[] => {
   const animatedNode = useMemo(() => {
     const totalNodes = countNodes(splittedNode);
@@ -32,9 +34,10 @@ export const useAnimatedNode = (
       animationOrder,
       resolvedMotion,
       totalNodes,
-      sequenceIndexRef
+      sequenceIndexRef,
+      onAnimationEnd
     );
-  }, [splittedNode, initialDelay, animationOrder, resolvedMotion]);
+  }, [splittedNode, initialDelay, animationOrder, resolvedMotion, onAnimationEnd]);
 
   return animatedNode;
 };
@@ -55,17 +58,22 @@ export const wrapWithAnimatedSpan = (
   animationOrder: AnimationOrder,
   resolvedMotion: Motion,
   totalNodes: number,
-  sequenceIndexRef?: { current: number }
+  sequenceIndexRef?: { current: number },
+  onAnimationEnd?: () => void
 ): ReactNode[] => {
+  const lastIndex = animationOrder === 'first-to-last' ? totalNodes - 1 : 0;
+
   return splittedNode.map(node => {
     const currentIndex = sequenceIndexRef!.current++;
-    const animationIndex = animationOrder === 'last-to-first' ? totalNodes - 1 - currentIndex : currentIndex;
+    const animationIndex = animationOrder === 'first-to-last' ? currentIndex : totalNodes - currentIndex - 1;
+
+    const handleAnimationEnd = animationIndex === lastIndex ? onAnimationEnd : undefined;
 
     if (typeof node === 'string' || typeof node === 'number') {
       return [String(node)].map(text => {
         const { style } = generateAnimation(resolvedMotion, animationIndex, initialDelay);
 
-        return <AnimatedSpan key={currentIndex} text={text} style={style} />;
+        return <AnimatedSpan key={currentIndex} text={text} style={style} onAnimationEnd={handleAnimationEnd} />;
       });
     }
 
@@ -77,7 +85,8 @@ export const wrapWithAnimatedSpan = (
         animationOrder,
         resolvedMotion,
         totalNodes,
-        sequenceIndexRef
+        sequenceIndexRef,
+        onAnimationEnd
       );
 
       return cloneElement(node, { ...node.props, children: animatedChildren, key: currentIndex });

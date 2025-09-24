@@ -83,10 +83,10 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     onAnimationEnd,
   } = props;
 
-  useValidation('TextMotion', props);
+  useValidation({ componentName: 'TextMotion', props });
 
   const splittedText = splitText(text, split);
-  const resolvedMotion = useResolvedMotion(motion, preset);
+  const resolvedMotion = useResolvedMotion({ motion, preset });
   const animatedText = useAnimatedText({
     splittedText,
     initialDelay,
@@ -95,7 +95,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     onAnimationEnd,
   });
 
-  const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
+  const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   useEffect(() => {

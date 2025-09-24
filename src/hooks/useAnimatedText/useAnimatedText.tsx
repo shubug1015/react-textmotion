@@ -4,7 +4,7 @@ import { AnimatedSpan } from '../../components/AnimatedSpan';
 import type { AnimationOrder, Motion } from '../../types';
 import { generateAnimation } from '../../utils/generateAnimation';
 
-type Options = {
+type UseAnimatedProps = {
   splittedText: string[];
   initialDelay: number;
   animationOrder: AnimationOrder;
@@ -18,14 +18,15 @@ export const useAnimatedText = ({
   animationOrder,
   resolvedMotion,
   onAnimationEnd,
-}: Options) => {
+}: UseAnimatedProps) => {
   const animatedText = useMemo(() => {
     return splittedText.map((text, index) => {
       const sequenceIndex = animationOrder === 'first-to-last' ? index : splittedText.length - (index + 1);
+
       const isLast = sequenceIndex === splittedText.length - 1;
+      const handleAnimationEnd = isLast ? onAnimationEnd : undefined;
 
       const { style } = generateAnimation(resolvedMotion, sequenceIndex, initialDelay);
-      const handleAnimationEnd = isLast ? onAnimationEnd : undefined;
 
       return <AnimatedSpan key={`${text}-${index}`} text={text} style={style} onAnimationEnd={handleAnimationEnd} />;
     });

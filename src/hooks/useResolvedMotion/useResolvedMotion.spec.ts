@@ -7,14 +7,14 @@ import { useResolvedMotion } from './useResolvedMotion';
 
 describe('useResolvedMotion hook', () => {
   it('returns empty object when motion is undefined', () => {
-    const { result } = renderHook(() => useResolvedMotion(undefined));
+    const { result } = renderHook(() => useResolvedMotion({}));
 
     expect(result.current).toEqual({});
   });
 
   it('returns empty object when motion has no keys', () => {
-    const motions: Motion = {};
-    const { result } = renderHook(() => useResolvedMotion(motions));
+    const motion: Motion = {};
+    const { result } = renderHook(() => useResolvedMotion({ motion }));
 
     expect(result.current).toEqual({});
   });
@@ -24,14 +24,14 @@ describe('useResolvedMotion hook', () => {
       fade: { variant: 'out', duration: 1, delay: 0.5 },
       slide: { variant: 'up', duration: 2, delay: 1 },
     };
-    const { result } = renderHook(() => useResolvedMotion(motion));
+    const { result } = renderHook(() => useResolvedMotion({ motion }));
 
     expect(result.current).toStrictEqual(motion);
   });
 
   it('returns preset-based motion when preset is provided', () => {
     const preset: Preset[] = ['fade-in'];
-    const { result } = renderHook(() => useResolvedMotion(undefined, preset));
+    const { result } = renderHook(() => useResolvedMotion({ preset }));
 
     expect(result.current).toEqual({
       fade: { variant: 'in', duration: DURATION, delay: DELAY },

@@ -6,7 +6,7 @@ import { handleValidation, useValidation } from './useValidation';
 
 describe('useValidation hook', () => {
   const TestComponent = ({ componentName, props }: { componentName: 'TextMotion' | 'NodeMotion'; props: any }) => {
-    useValidation(componentName, props);
+    useValidation({ componentName, props });
 
     return <div>Test</div>;
   };

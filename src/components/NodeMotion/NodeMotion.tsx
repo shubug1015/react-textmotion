@@ -84,10 +84,10 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
     onAnimationEnd,
   } = props;
 
-  useValidation('NodeMotion', props);
+  useValidation({ componentName: 'NodeMotion', props });
 
   const { splittedNode, text } = splitNodeAndExtractText(children, split);
-  const resolvedMotion = useResolvedMotion(motion, preset);
+  const resolvedMotion = useResolvedMotion({ motion, preset });
   const animatedChildren = useAnimatedChildren({
     splittedNode,
     initialDelay,
@@ -96,7 +96,7 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
     onAnimationEnd,
   });
 
-  const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
+  const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   useEffect(() => {

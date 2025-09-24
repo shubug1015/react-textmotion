@@ -4,6 +4,11 @@ import type { Motion, Preset } from '../../types';
 
 import { motionMap } from './motionMap';
 
+type UseResolvedMotionProps = {
+  motion?: Motion;
+  preset?: Preset[];
+};
+
 /**
  * @description
  * `useResolvedMotion` is a custom hook that resolves the motion configuration.
@@ -17,7 +22,7 @@ import { motionMap } from './motionMap';
  *
  * @returns {Motion} The resolved motion configuration object.
  */
-export const useResolvedMotion = (motion?: Motion, preset?: Preset[]): Motion => {
+export const useResolvedMotion = ({ motion, preset }: UseResolvedMotionProps): Motion => {
   const resolvedMotion = useMemo(() => {
     if (preset) {
       return preset.reduce((config, presetName) => ({ ...config, ...motionMap[presetName] }), {});

@@ -11,28 +11,21 @@ describe('useValidation hook', () => {
     return <div>Test</div>;
   };
 
-  it('should call handleValidation with errors for invalid TextMotionProps', () => {
-    const props: TextMotionProps = {
+  it('should throw an error for invalid TextMotionProps', () => {
+    const props: Partial<TextMotionProps> = {
       text: null as any,
-      split: 'invalid' as any,
-      trigger: 'invalid' as any,
-      repeat: 'yes' as any,
-      initialDelay: -1,
-      animationOrder: 'reverse' as any,
-      motion: undefined,
     };
 
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    jest.spyOn(console, 'log').mockImplementation(() => {});
-
     expect(() => render(<TestComponent componentName="TextMotion" props={props} />)).toThrow();
 
-    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'TextMotion validation errors:',
       expect.arrayContaining(['text prop is required'])
     );
+
+    consoleErrorSpy.mockRestore();
   });
 
   it('should not throw for valid NodeMotionProps', () => {

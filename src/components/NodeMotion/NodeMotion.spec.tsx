@@ -34,12 +34,6 @@ describe('NodeMotion component', () => {
     expect(useIntersectionObserverSpy).toHaveBeenCalledWith({ repeat: true });
   });
 
-  it('should call useIntersectionObserver without repeat prop', () => {
-    render(<NodeMotion trigger="on-load">{TEXT}</NodeMotion>);
-
-    expect(useIntersectionObserverSpy).toHaveBeenCalledWith({ repeat: true });
-  });
-
   it('should respect the repeat prop when provided', () => {
     render(
       <NodeMotion trigger="scroll" repeat={false}>

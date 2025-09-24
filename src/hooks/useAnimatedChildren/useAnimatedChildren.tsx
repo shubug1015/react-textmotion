@@ -4,9 +4,17 @@ import { AnimatedSpan } from '../../components/AnimatedSpan';
 import type { AnimationOrder, Motion } from '../../types';
 import { generateAnimation } from '../../utils/generateAnimation';
 
+type Options = {
+  splittedNode: ReactNode[];
+  initialDelay: number;
+  animationOrder: AnimationOrder;
+  resolvedMotion: Motion;
+  onAnimationEnd?: () => void;
+};
+
 /**
  * @description
- * `useAnimatedNode` is a custom hook that animates an array of React nodes.
+ * `useAnimatedChildren` is a custom hook that animates an array of React nodes.
  * It manages the animation sequence index to apply delays correctly.
  *
  * @param {ReactNode[]} splittedNode - The array of React nodes to be animated.
@@ -17,14 +25,14 @@ import { generateAnimation } from '../../utils/generateAnimation';
  *
  * @returns {ReactNode[]} An array of animated React nodes.
  */
-export const useAnimatedNode = (
-  splittedNode: ReactNode[],
-  initialDelay: number,
-  animationOrder: AnimationOrder,
-  resolvedMotion: Motion,
-  onAnimationEnd?: () => void
-): ReactNode[] => {
-  const animatedNode = useMemo(() => {
+export const useAnimatedChildren = ({
+  splittedNode,
+  initialDelay,
+  animationOrder,
+  resolvedMotion,
+  onAnimationEnd,
+}: Options): ReactNode[] => {
+  const animatedChildren = useMemo(() => {
     const totalNodes = countNodes(splittedNode);
     const sequenceIndexRef = { current: 0 };
 
@@ -39,7 +47,7 @@ export const useAnimatedNode = (
     );
   }, [splittedNode, initialDelay, animationOrder, resolvedMotion, onAnimationEnd]);
 
-  return animatedNode;
+  return animatedChildren;
 };
 
 const countNodes = (nodes: ReactNode[]): number => {

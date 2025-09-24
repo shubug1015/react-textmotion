@@ -5,49 +5,53 @@ import type { AnimationOrder, Motion } from '../../types';
 import * as generateAnimationModule from '../../utils/generateAnimation';
 import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
 
-import { useAnimatedNode } from './useAnimatedNode';
+import { useAnimatedChildren } from './useAnimatedChildren';
 
 const renderAnimatedNode = (
   children: ReactNode,
   split: 'character' | 'word',
-  motion: Motion = {},
+  resolvedMotion: Motion = {},
   initialDelay = 0,
   animationOrder: AnimationOrder = 'first-to-last'
 ) => {
   const { splittedNode } = splitNodeAndExtractText(children, split);
-  const { result } = renderHook(() => useAnimatedNode(splittedNode, initialDelay, animationOrder, motion));
+  const { result } = renderHook(() =>
+    useAnimatedChildren({ splittedNode, initialDelay, animationOrder, resolvedMotion })
+  );
   const { container } = render(<>{result.current}</>);
 
   return container.querySelectorAll('span');
 };
 
-describe('useAnimatedNode hook', () => {
+describe('useAnimatedChildren hook', () => {
   const split = 'character';
-  const motion: Motion = {};
+  const resolvedMotion: Motion = {};
 
   it('generates animated spans for string children', () => {
-    const spans = renderAnimatedNode('Hey', split, motion);
+    const spans = renderAnimatedNode('Hey', split, resolvedMotion);
 
     expect(spans).toHaveLength(3);
     expect(Array.from(spans).map(s => s.textContent)).toEqual(['H', 'e', 'y']);
   });
 
   it('handles number children', () => {
-    const spans = renderAnimatedNode(123, split, motion);
+    const spans = renderAnimatedNode(123, split, resolvedMotion);
 
     expect(spans).toHaveLength(3);
     expect(Array.from(spans).map(s => s.textContent)).toEqual(['1', '2', '3']);
   });
 
   it('handles empty string gracefully', () => {
-    const spans = renderAnimatedNode('', split, motion);
+    const spans = renderAnimatedNode('', split, resolvedMotion);
 
     expect(spans).toHaveLength(0);
   });
 
   it('handles nested React elements with text', () => {
     const { splittedNode } = splitNodeAndExtractText(<p>Hello</p>, split);
-    const { result } = renderHook(() => useAnimatedNode(splittedNode, 0, 'first-to-last', motion));
+    const { result } = renderHook(() =>
+      useAnimatedChildren({ splittedNode, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
+    );
     const { container } = render(<>{result.current}</>);
 
     const p = container.querySelector('p');
@@ -64,7 +68,9 @@ describe('useAnimatedNode hook', () => {
 
   it('handles React element without children', () => {
     const { splittedNode } = splitNodeAndExtractText(<span />, split);
-    const { result } = renderHook(() => useAnimatedNode(splittedNode, 0, 'first-to-last', motion));
+    const { result } = renderHook(() =>
+      useAnimatedChildren({ splittedNode, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
+    );
     const { container } = render(<>{result.current}</>);
 
     const span = container.querySelector('span');
@@ -75,14 +81,16 @@ describe('useAnimatedNode hook', () => {
 
   it('handles unknown node types gracefully', () => {
     const { splittedNode } = splitNodeAndExtractText([null, true] as any, split);
-    const { result } = renderHook(() => useAnimatedNode(splittedNode, 0, 'first-to-last', motion));
+    const { result } = renderHook(() =>
+      useAnimatedChildren({ splittedNode, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
+    );
     const { container } = render(<>{result.current}</>);
 
     expect(container.textContent).toBe('');
   });
 
   it('splits by word when split type is "word"', () => {
-    const spans = renderAnimatedNode('Hello World', 'word', motion);
+    const spans = renderAnimatedNode('Hello World', 'word', resolvedMotion);
 
     expect(spans).toHaveLength(3);
     expect(Array.from(spans).map(s => s.textContent)).toEqual(['Hello', ' ', 'World']);
@@ -90,15 +98,22 @@ describe('useAnimatedNode hook', () => {
 
   it('returns unknown node types as-is', () => {
     const unknownNode = Symbol('unknown');
-    const { result } = renderHook(() => useAnimatedNode([unknownNode as any], 0, 'first-to-last', motion));
+    const { result } = renderHook(() =>
+      useAnimatedChildren({
+        splittedNode: [unknownNode as any],
+        initialDelay: 0,
+        animationOrder: 'first-to-last',
+        resolvedMotion,
+      })
+    );
 
     expect(result.current).toEqual([unknownNode]);
   });
 });
 
-describe('useAnimatedNode animationIndex calculation', () => {
-  const motion: Motion = {};
+describe('useAnimatedChildren animationIndex calculation', () => {
   const initialDelay = 0;
+  const resolvedMotion: Motion = {};
   const generateAnimationSpy = jest.spyOn(generateAnimationModule, 'generateAnimation');
 
   beforeEach(() => {
@@ -109,7 +124,9 @@ describe('useAnimatedNode animationIndex calculation', () => {
     const text = 'ABC';
     const { splittedNode } = splitNodeAndExtractText(text, 'character');
 
-    renderHook(() => useAnimatedNode(splittedNode, initialDelay, 'first-to-last', motion));
+    renderHook(() =>
+      useAnimatedChildren({ splittedNode, initialDelay, animationOrder: 'first-to-last', resolvedMotion })
+    );
 
     const calls = generateAnimationSpy.mock.calls;
 
@@ -122,7 +139,9 @@ describe('useAnimatedNode animationIndex calculation', () => {
     const text = 'ABC';
     const { splittedNode } = splitNodeAndExtractText(text, 'character');
 
-    renderHook(() => useAnimatedNode(splittedNode, initialDelay, 'last-to-first', motion));
+    renderHook(() =>
+      useAnimatedChildren({ splittedNode, initialDelay, animationOrder: 'last-to-first', resolvedMotion })
+    );
 
     const calls = generateAnimationSpy.mock.calls;
 

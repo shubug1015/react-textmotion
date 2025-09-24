@@ -52,7 +52,7 @@ Object.defineProperty(window, 'IntersectionObserver', {
   value: mockIntersectionObserver,
 });
 
-describe('useIntersectionObserver', () => {
+describe('useIntersectionObserver hook', () => {
   beforeEach(() => {
     mockIntersectionObserver.mockClear();
   });

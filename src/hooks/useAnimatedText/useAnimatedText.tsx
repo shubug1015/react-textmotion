@@ -41,7 +41,7 @@ export const useAnimatedText = ({
 
       const { style } = generateAnimation(resolvedMotion, sequenceIndex, initialDelay);
 
-      return <AnimatedSpan key={`${text}-${index}`} text={text} style={style} onAnimationEnd={handleAnimationEnd} />;
+      return <AnimatedSpan key={index} text={text} style={style} onAnimationEnd={handleAnimationEnd} />;
     });
   }, [splittedText, animationOrder, initialDelay, resolvedMotion, onAnimationEnd]);
 

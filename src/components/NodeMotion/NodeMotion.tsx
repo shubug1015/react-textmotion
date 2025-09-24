@@ -88,6 +88,7 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
 
   const { splittedNode, text } = splitNodeAndExtractText(children, split);
   const resolvedMotion = useResolvedMotion({ motion, preset });
+
   const animatedChildren = useAnimatedChildren({
     splittedNode,
     initialDelay,

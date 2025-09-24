@@ -87,6 +87,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
 
   const splittedText = splitText(text, split);
   const resolvedMotion = useResolvedMotion({ motion, preset });
+
   const animatedText = useAnimatedText({
     splittedText,
     initialDelay,

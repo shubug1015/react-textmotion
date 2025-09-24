@@ -30,23 +30,15 @@ export const useIntersectionObserver = <T extends Element>(
 
   useEffect(() => {
     const element = ref.current;
-
-    if (!element) {
-      return;
-    }
+    if (!element) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsIntersecting(true);
+        const isVisible = entry.isIntersecting;
+        setIsIntersecting(isVisible);
 
-          if (!repeat) {
-            observer.unobserve(element);
-          }
-        } else {
-          if (repeat) {
-            setIsIntersecting(false);
-          }
+        if (isVisible && !repeat) {
+          observer.unobserve(element);
         }
       },
       { threshold, root, rootMargin }
@@ -55,9 +47,9 @@ export const useIntersectionObserver = <T extends Element>(
     observer.observe(element);
 
     return () => {
-      observer.unobserve(element);
+      observer.disconnect();
     };
-  }, [ref, threshold, root, rootMargin, repeat]);
+  }, [threshold, root, rootMargin, repeat]);
 
   return [ref, isIntersecting];
 };

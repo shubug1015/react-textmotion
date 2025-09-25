@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  --background: #1a1a1a;
+  --card-background: #1e1e1e;
+  --border-color: #2c2c2c;
+  --text-primary: #fdfbf6;
+  --text-secondary: #b3b3b3;
+  --accent-color: #6c8eef;
+  --accent-glow: rgba(108, 142, 239, 0.5);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+html {
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+  background: var(--background);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 3rem 2rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+  &:hover {
+    background: var(--text-secondary);
+  }
+}
+
+::selection {
+  background: var(--accent-glow);
+  color: var(--text-primary);
+}
+.container {
+  max-width: 50rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 1rem;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+  background: linear-gradient(45deg, var(--text-primary), var(--accent-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem;
+  color: var(--text-secondary);
+  letter-spacing: -0.06em;
+}
+
+p {
+  line-height: 1.7;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.component-wrapper {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 1rem;
+    border: 1px solid transparent;
+    background: radial-gradient(
+      800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      var(--accent-glow),
+      transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-0.5rem) scale(1.01);
+    box-shadow: 0 16px 32px var(--shadow-color);
+    border-color: var(--accent-color);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+}

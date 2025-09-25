@@ -15,6 +15,6 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["node", "@testing-library/jest-dom"]
   },
-  "include": ["src"],
+  "include": ["src", "examples"],
   "exclude": ["node_modules", "dist"]
 }

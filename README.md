@@ -14,6 +14,12 @@ From **character-level typing effects** to **complex UI block animations**, it p
 - **Presets & Motion** – use built-in effects or define your property values
 - **Developer-Friendly** – JSDoc, examples, TypeScript support
 
+## Live Demo
+
+[![Open in CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/github/shubug1015/react-textmotion/main)
+
+Experience `react-textmotion` in a live environment. You can edit the code and see the results instantly.
+
 ## Installation
 
 ```bash
@@ -41,17 +47,6 @@ export default function App() {
 ```
 
 Instantly animates `"Hello World!"` with fade + slide.
-
-<!-- ## Demo
-
-- 📺 [Live Demo on CodeSandbox](https://codesandbox.io/s/react-textmotion-demo-xxxxx)
-- 📸 Preview:
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/shubug1015/react-textmotion/main/assets/demo-textmotion.gif" width="500" alt="TextMotion demo" />
-</p>
-
---- -->
 
 ## Components
 

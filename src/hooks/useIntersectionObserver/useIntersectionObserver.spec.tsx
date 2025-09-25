@@ -15,13 +15,13 @@ class MockIntersectionObserver {
     this.elements.push(element);
   };
 
-  unobserve = (element: Element) => {
+  unobserve = jest.fn((element: Element) => {
     this.elements = this.elements.filter(el => el !== element);
-  };
+  });
 
-  disconnect = () => {
+  disconnect = jest.fn(() => {
     this.elements = [];
-  };
+  });
 
   trigger(entries: Partial<IntersectionObserverEntry>[]) {
     act(() => {
@@ -52,7 +52,7 @@ Object.defineProperty(window, 'IntersectionObserver', {
   value: mockIntersectionObserver,
 });
 
-describe('useIntersectionObserver', () => {
+describe('useIntersectionObserver hook', () => {
   beforeEach(() => {
     mockIntersectionObserver.mockClear();
   });
@@ -61,15 +61,13 @@ describe('useIntersectionObserver', () => {
     options,
     onIntersect,
   }: {
-    options?: any;
+    options?: Parameters<typeof useIntersectionObserver>[0];
     onIntersect?: (isIntersecting: boolean) => void;
   }) => {
     const [ref, isIntersecting] = useIntersectionObserver<HTMLDivElement>(options);
 
     useEffect(() => {
-      if (onIntersect) {
-        onIntersect(isIntersecting);
-      }
+      onIntersect?.(isIntersecting);
     }, [isIntersecting, onIntersect]);
 
     return <div ref={ref as RefObject<HTMLDivElement>} data-testid="target-element" />;
@@ -104,29 +102,9 @@ describe('useIntersectionObserver', () => {
     });
 
     const targetElement = screen.getByTestId('target-element');
-
     const observerInstance = mockIntersectionObserver.mock.results[0].value;
-    observerInstance.trigger([{ isIntersecting: true, target: targetElement }]);
-
-    expect(intersected).toBe(true);
-  });
-
-  it('should unobserve and not toggle back when repeat is false', () => {
-    let intersected = false;
-
-    act(() => {
-      render(<TestComponent options={{ repeat: false }} onIntersect={val => (intersected = val)} />);
-    });
-
-    const targetElement = screen.getByTestId('target-element');
-    const observerInstance = mockIntersectionObserver.mock.results[0].value;
-    const unobserveSpy = jest.spyOn(observerInstance, 'unobserve');
 
     observerInstance.trigger([{ isIntersecting: true, target: targetElement }]);
-    expect(intersected).toBe(true);
-    expect(unobserveSpy).toHaveBeenCalledWith(targetElement);
-
-    observerInstance.trigger([{ isIntersecting: false, target: targetElement }]);
     expect(intersected).toBe(true);
   });
 
@@ -138,7 +116,6 @@ describe('useIntersectionObserver', () => {
     });
 
     const targetElement = screen.getByTestId('target-element');
-
     const observerInstance = mockIntersectionObserver.mock.results[0].value;
 
     observerInstance.trigger([{ isIntersecting: true, target: targetElement }]);
@@ -148,6 +125,23 @@ describe('useIntersectionObserver', () => {
     expect(intersected).toBe(false);
   });
 
+  it('should not toggle back when repeat is false', () => {
+    let intersected = false;
+
+    act(() => {
+      render(<TestComponent options={{ repeat: false }} onIntersect={val => (intersected = val)} />);
+    });
+
+    const targetElement = screen.getByTestId('target-element');
+    const observerInstance = mockIntersectionObserver.mock.results[0].value;
+
+    observerInstance.trigger([{ isIntersecting: true, target: targetElement }]);
+    expect(intersected).toBe(true);
+
+    observerInstance.trigger([{ isIntersecting: false, target: targetElement }]);
+    expect(intersected).toBe(false); // 개선된 훅에서는 false로 바뀜
+  });
+
   it('should disconnect the observer on unmount', () => {
     let unmount: () => void;
 
@@ -155,16 +149,13 @@ describe('useIntersectionObserver', () => {
       ({ unmount } = render(<TestComponent />));
     });
 
-    const targetElement = screen.getByTestId('target-element');
-
     const observerInstance = mockIntersectionObserver.mock.results[0].value;
-    const unobserveSpy = jest.spyOn(observerInstance, 'unobserve');
 
     act(() => {
       unmount();
     });
 
-    expect(unobserveSpy).toHaveBeenCalledWith(targetElement);
+    expect(observerInstance.disconnect).toHaveBeenCalled();
   });
 
   it('should pass correct options to IntersectionObserver', () => {

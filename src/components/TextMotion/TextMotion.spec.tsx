@@ -32,12 +32,6 @@ describe('TextMotion component', () => {
     expect(useIntersectionObserverSpy).toHaveBeenCalledWith({ repeat: true });
   });
 
-  it('should call useIntersectionObserver without repeat prop', () => {
-    render(<TextMotion text={TEXT} trigger="on-load" />);
-
-    expect(useIntersectionObserverSpy).toHaveBeenCalledWith({ repeat: true });
-  });
-
   it('should respect the repeat prop when provided', () => {
     render(<TextMotion text={TEXT} trigger="scroll" repeat={false} />);
 

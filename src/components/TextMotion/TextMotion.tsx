@@ -3,12 +3,11 @@ import '../../styles/motion.scss';
 
 import { type FC, memo, useEffect } from 'react';
 
-import { AnimatedSpan } from '../../components/AnimatedSpan';
+import { useAnimatedText } from '../../hooks/useAnimatedText';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { useValidation } from '../../hooks/useValidation';
 import type { TextMotionProps } from '../../types';
-import { generateAnimation } from '../../utils/generateAnimation';
 import { splitText } from '../../utils/splitText';
 
 /**
@@ -84,9 +83,20 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     onAnimationEnd,
   } = props;
 
-  useValidation('TextMotion', props);
+  useValidation({ componentName: 'TextMotion', props });
 
-  const [targetRef, isIntersecting] = useIntersectionObserver<HTMLSpanElement>({ repeat });
+  const splittedText = splitText(text, split);
+  const resolvedMotion = useResolvedMotion({ motion, preset });
+
+  const animatedText = useAnimatedText({
+    splittedText,
+    initialDelay,
+    animationOrder,
+    resolvedMotion,
+    onAnimationEnd,
+  });
+
+  const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
   useEffect(() => {
@@ -95,22 +105,9 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     }
   }, [shouldAnimate, onAnimationStart]);
 
-  const splittedText = splitText(text, split);
-  const resolvedMotion = useResolvedMotion(motion, preset);
-
-  const lastIndex = animationOrder === 'first-to-last' ? splittedText.length - 1 : 0;
-  const animatedNode = splittedText.map((text, index) => {
-    const sequenceIndex = animationOrder === 'first-to-last' ? index : splittedText.length - (index + 1);
-    const { style } = generateAnimation(resolvedMotion, sequenceIndex, initialDelay);
-
-    const handleAnimationEnd = index === lastIndex ? onAnimationEnd : undefined;
-
-    return <AnimatedSpan key={index} text={text} style={style} onAnimationEnd={handleAnimationEnd} />;
-  });
-
   return (
     <Tag ref={targetRef} className="text-motion" aria-label={text}>
-      {shouldAnimate ? animatedNode : text}
+      {shouldAnimate ? animatedText : text}
     </Tag>
   );
 });

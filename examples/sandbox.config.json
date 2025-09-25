@@ -1,0 +1,8 @@
+{
+  "template": "vite-react-ts",
+  "view": "editor-preview",
+  "infiniteLoopProtection": true,
+  "hardReloadOnChange": false,
+  "initialPath": "/",
+  "openFiles": ["src/App.tsx", "src/styles.css"]
+}

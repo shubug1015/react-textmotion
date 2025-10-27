@@ -21,6 +21,8 @@ export default [
       '**/*.d.ts',
       'eslint.config.js',
       'rollup.config.js',
+      'jest.config.js',
+      'jest.setup.js',
     ],
   },
 

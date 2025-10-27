@@ -89,7 +89,8 @@
     "typescript-eslint": "^8.34.1"
   },
   "peerDependencies": {
-    "react": "*"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

@@ -1,6 +1,9 @@
-export default {
+import type { Config } from 'jest';
+
+const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
+  clearMocks: true,
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
@@ -9,7 +12,7 @@ export default {
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/index.{ts,tsx}'],
   coverageThreshold: {
-    'src/**/*.{ts,tsx}': {
+    global: {
       statements: 90,
       branches: 90,
       functions: 90,
@@ -17,3 +20,5 @@ export default {
     },
   },
 };
+
+export default config;

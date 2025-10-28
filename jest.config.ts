@@ -12,7 +12,7 @@ const config: Config = {
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/index.{ts,tsx}'],
   coverageThreshold: {
-    'src/**/*.{ts,tsx}': {
+    global: {
       statements: 90,
       branches: 90,
       functions: 90,

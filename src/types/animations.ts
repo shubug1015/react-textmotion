@@ -118,11 +118,13 @@ export type FlipAnimation = BaseAnimation & {
 
 /**
  * @description
- * Properties for custom animations.
+ * Properties for user-defined custom animations.
  *
- * @property {string} animation - The full CSS 'animation' shorthand property string.
- * @example 'my-custom-animation 1s ease-in-out'
+ * @property {string} name - The name of the custom CSS animation (keyframes).
+ * @property {number} duration - The duration of the animation in seconds.
+ * @property {number} delay - The delay for each step in the sequence, in seconds.
+ * @property {'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'step-start' | 'step-end'} [easing] - The easing function for the animation.
  */
-export type CustomAnimation = {
-  animation: string;
+export type CustomAnimation = BaseAnimation & {
+  name: string;
 };

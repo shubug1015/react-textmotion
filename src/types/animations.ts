@@ -118,8 +118,11 @@ export type FlipAnimation = BaseAnimation & {
 
 /**
  * @description
- * Properties for custom animations, allowing any additional properties.
+ * Properties for custom animations.
+ *
+ * @property {string} animation - The full CSS 'animation' shorthand property string.
+ * @example 'my-custom-animation 1s ease-in-out'
  */
-export type CustomAnimation = BaseAnimation & {
-  [key: string]: unknown;
+export type CustomAnimation = {
+  animation: string;
 };

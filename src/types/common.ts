@@ -56,7 +56,7 @@ export type Motion = {
   bounce?: BounceAnimation;
   elastic?: ElasticAnimation;
   flip?: FlipAnimation;
-  [key: string]: CustomAnimation | undefined;
+  custom?: CustomAnimation;
 };
 
 /**

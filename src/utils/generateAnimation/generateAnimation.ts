@@ -1,6 +1,6 @@
 import { type CSSProperties } from 'react';
 
-import type { Motion } from '../../types';
+import type { CustomAnimation, Motion } from '../../types';
 
 export type StyleWithCustomProperties = CSSProperties & {
   [key: `--${string}`]: string | number;
@@ -23,23 +23,31 @@ export const generateAnimation = (
   initialDelay: number
 ): { style: StyleWithCustomProperties } => {
   const { animations, style } = Object.entries(motionConfig).reduce(
-    (acc, [name, animation]) => {
-      if (!animation || !('variant' in animation)) return acc;
+    (acc, [name, config]) => {
+      // if (!config) return acc;
 
-      const { variant, duration, delay, easing = 'ease-out', ...rest } = animation;
-      const calculatedDelay = sequenceIndex * delay + initialDelay;
+      if (name === 'custom') {
+        const { name: animationName, duration, delay, easing = 'ease-out' } = config as CustomAnimation;
+        const calculatedDelay = sequenceIndex * delay + initialDelay;
 
-      const animationString = `${name}-${variant} ${duration}s ${easing} ${calculatedDelay}s both`;
-      acc.animations.push(animationString);
+        const animationString = `${animationName} ${duration}s ${easing} ${calculatedDelay}s both`;
+        acc.animations.push(animationString);
+      } else if ('variant' in config) {
+        const { variant, duration, delay, easing = 'ease-out', ...rest } = config;
+        const calculatedDelay = sequenceIndex * delay + initialDelay;
 
-      const customProps = Object.entries(rest).reduce<StyleWithCustomProperties>((styleAcc, [key, value]) => {
-        if (value !== undefined && value !== null) {
-          styleAcc[`--${name}-${key}`] = value as string | number;
-        }
-        return styleAcc;
-      }, {});
+        const animationString = `${name}-${variant} ${duration}s ${easing} ${calculatedDelay}s both`;
+        acc.animations.push(animationString);
 
-      acc.style = { ...acc.style, ...customProps };
+        const customProps = Object.entries(rest).reduce<StyleWithCustomProperties>((styleAcc, [key, value]) => {
+          if (value !== undefined && value !== null) {
+            styleAcc[`--${name}-${key}`] = value as string | number;
+          }
+          return styleAcc;
+        }, {});
+
+        acc.style = { ...acc.style, ...customProps };
+      }
 
       return acc;
     },

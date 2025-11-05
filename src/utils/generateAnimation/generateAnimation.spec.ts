@@ -60,6 +60,47 @@ describe('generateAnimation utility', () => {
       expect(style).not.toHaveProperty('--slide-distance');
       expect(style.animation).toBe('slide-up 1s ease-out 0s both');
     });
+
+    it('should generate a style object for a custom motion string correctly for index 0', () => {
+      const motion: Motion = {
+        custom: { name: 'custom-animation', duration: 2, delay: 1, easing: 'linear' },
+      };
+      const { style } = generateAnimation(motion, 0, 0);
+
+      expect(style.animation).toBe('custom-animation 2s linear 0s both');
+    });
+
+    it('should apply the correct staggered delay for a custom motion with a non-zero index', () => {
+      const motion: Motion = {
+        custom: { name: 'custom-animation', duration: 1.5, delay: 0.5 },
+      };
+      const { style } = generateAnimation(motion, 2, 0);
+
+      expect(style.animation).toBe('custom-animation 1.5s ease-out 1s both');
+    });
+
+    it('should apply default easing for custom motion if not provided', () => {
+      const motion: Motion = {
+        custom: { name: 'custom-animation', duration: 1.5, delay: 0.5 },
+      };
+      const { style } = generateAnimation(motion, 0, 0);
+
+      expect(style.animation).toBe('custom-animation 1.5s ease-out 0s both');
+    });
+
+    it('should join custom and preset animation strings with a comma', () => {
+      const motion: Motion = {
+        fade: { variant: 'in', duration: 2, delay: 1 },
+        custom: { name: 'custom-animation', duration: 3, delay: 0.5, easing: 'ease-in' },
+      };
+      const { style } = generateAnimation(motion, 2, 0);
+
+      const animation = style.animation;
+      const expected1 = 'fade-in 2s ease-out 2s both, custom-animation 3s ease-in 1s both';
+      const expected2 = 'custom-animation 3s ease-in 1s both, fade-in 2s ease-out 2s both';
+
+      expect([expected1, expected2]).toContain(animation);
+    });
   });
 
   describe('when given an invalid or empty motion configuration', () => {
@@ -69,7 +110,7 @@ describe('generateAnimation utility', () => {
         'a motion object with all invalid values',
         {
           fade: undefined as any,
-          slide: { duration: 1, delay: 1 } as any, // missing variant
+          slide: { duration: 1, delay: 1 } as any,
         },
         '',
       ],

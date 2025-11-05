@@ -24,7 +24,7 @@ export const generateAnimation = (
 ): { style: StyleWithCustomProperties } => {
   const { animations, style } = Object.entries(motionConfig).reduce(
     (acc, [name, config]) => {
-      // if (!config) return acc;
+      if (config === undefined || config === null) return acc;
 
       if (name === 'custom') {
         const { name: animationName, duration, delay, easing = 'ease-out' } = config as CustomAnimation;

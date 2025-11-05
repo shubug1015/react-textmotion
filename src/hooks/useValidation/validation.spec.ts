@@ -12,7 +12,7 @@ describe('validation utility', () => {
         repeat: true,
         initialDelay: 0,
         animationOrder: 'first-to-last',
-        motion: { custom: { opacity: 0, y: 20, duration: 1, delay: 0.5 } },
+        motion: { custom: { name: 'custom-animation', duration: 1, delay: 0.5 } },
       };
       const { errors, warnings } = validateTextMotionProps(props);
 
@@ -68,7 +68,6 @@ describe('validation utility', () => {
         text: 'hello',
         motion: {
           custom: undefined,
-          another: null as any,
         },
       };
       const { errors, warnings } = validateTextMotionProps(props);
@@ -90,6 +89,18 @@ describe('validation utility', () => {
       expect(errors).toEqual(['fade.duration must be greater than 0', 'slide.delay must be non-negative']);
       expect(warnings).toEqual(['slide.duration is very long (15s)']);
     });
+
+    it('should return an error if custom motion name is invalid', () => {
+      const props: TextMotionProps = {
+        text: 'hello',
+        motion: {
+          custom: { name: '', duration: 1, delay: 1 },
+        },
+      };
+      const { errors } = validateTextMotionProps(props);
+
+      expect(errors).toContain('custom.name must be a non-empty string');
+    });
   });
 
   describe('validateNodeMotionProps', () => {
@@ -101,7 +112,7 @@ describe('validation utility', () => {
         repeat: false,
         initialDelay: 0,
         animationOrder: 'last-to-first',
-        motion: { custom: { opacity: 0, duration: 1, delay: 0 } },
+        motion: { custom: { name: 'custom-animation', duration: 1, delay: 0 } },
       };
       const { errors, warnings } = validateNodeMotionProps(props);
 
@@ -130,7 +141,6 @@ describe('validation utility', () => {
         children: 'hello',
         motion: {
           custom: undefined,
-          another: null as any,
         },
       };
       const { errors, warnings } = validateNodeMotionProps(props);
@@ -143,14 +153,14 @@ describe('validation utility', () => {
       const props: NodeMotionProps = {
         children: 'hello',
         motion: {
-          enter: { duration: 0, delay: -2 },
-          exit: { duration: 20, delay: 0 },
+          fade: { variant: 'in', duration: 0, delay: -2 },
+          slide: { variant: 'up', duration: 20, delay: 0 },
         },
       };
       const { errors, warnings } = validateNodeMotionProps(props);
 
-      expect(errors).toEqual(['enter.duration must be greater than 0', 'enter.delay must be non-negative']);
-      expect(warnings).toEqual(['exit.duration is very long (20s)']);
+      expect(errors).toEqual(['fade.duration must be greater than 0', 'fade.delay must be non-negative']);
+      expect(warnings).toEqual(['slide.duration is very long (20s)']);
     });
   });
 });

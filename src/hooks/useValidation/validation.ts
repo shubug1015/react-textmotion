@@ -1,4 +1,4 @@
-import type { Motion, NodeMotionProps, TextMotionProps } from '../../types';
+import type { CustomAnimation, Motion, NodeMotionProps, TextMotionProps } from '../../types';
 
 export type ValidationResult = {
   errors: string[];
@@ -127,7 +127,7 @@ const validateMotion = (motion: Motion): ValidationResult => {
   const warnings: string[] = [];
 
   Object.entries(motion).forEach(([key, config]) => {
-    if (!config) return;
+    if (config === undefined || config === null) return;
 
     if (config.duration <= 0) {
       errors.push(`${key}.duration must be greater than 0`);
@@ -139,6 +139,14 @@ const validateMotion = (motion: Motion): ValidationResult => {
 
     if (config.duration > MAX_RECOMMENDED_DURATION) {
       warnings.push(`${key}.duration is very long (${config.duration}s)`);
+    }
+
+    if (key === 'custom') {
+      const customConfig = config as CustomAnimation;
+
+      if (typeof customConfig.name !== 'string' || customConfig.name.trim() === '') {
+        errors.push('custom.name must be a non-empty string');
+      }
     }
   });
 

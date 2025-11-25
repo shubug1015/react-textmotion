@@ -59,7 +59,7 @@ describe('handleValidation', () => {
 
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    expect(() => handleValidation(errors, warnings)).toThrow('TextMotion: text prop is required');
+    expect(() => handleValidation('TextMotion', errors, warnings)).toThrow('TextMotion: text prop is required');
     expect(consoleErrorSpy).toHaveBeenCalledWith('TextMotion validation errors:', errors);
   });
 
@@ -71,7 +71,7 @@ describe('handleValidation', () => {
 
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    handleValidation(errors, warnings);
+    handleValidation('TextMotion', errors, warnings);
 
     expect(consoleWarnSpy).toHaveBeenCalledWith('TextMotion validation warnings:', warnings);
   });
@@ -85,7 +85,7 @@ describe('handleValidation', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    handleValidation(errors, warnings);
+    handleValidation('NodeMotion', errors, warnings);
 
     expect(consoleErrorSpy).not.toHaveBeenCalled();
     expect(consoleWarnSpy).not.toHaveBeenCalled();
@@ -100,7 +100,7 @@ describe('handleValidation', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    expect(() => handleValidation(errors, warnings)).not.toThrow();
+    expect(() => handleValidation('NodeMotion', errors, warnings)).not.toThrow();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
     expect(consoleWarnSpy).not.toHaveBeenCalled();
   });

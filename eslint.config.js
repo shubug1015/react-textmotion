@@ -44,12 +44,10 @@ export default [
       },
     },
   },
-
   js.configs.recommended,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
   reactHooks.configs['recommended-latest'],
-
   {
     plugins: {
       'simple-import-sort': simpleImportSort,
@@ -61,7 +59,6 @@ export default [
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/strict-boolean-expressions': 'error',
       '@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       'react/react-in-jsx-scope': 'off',
@@ -115,7 +112,6 @@ export default [
       },
     },
   },
-
   {
     files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
     rules: {
@@ -123,6 +119,5 @@ export default [
       'no-console': 'off',
     },
   },
-
   prettierRecommended,
 ];

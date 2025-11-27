@@ -105,9 +105,17 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     }
   }, [shouldAnimate, onAnimationStart]);
 
+  if (shouldAnimate) {
+    return (
+      <Tag ref={targetRef} className="text-motion" aria-label={text}>
+        {animatedText}
+      </Tag>
+    );
+  }
+
   return (
-    <Tag ref={targetRef} className="text-motion" aria-label={text}>
-      {shouldAnimate ? animatedText : text}
+    <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text}>
+      {text}
     </Tag>
   );
 });

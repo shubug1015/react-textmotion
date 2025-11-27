@@ -85,7 +85,10 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
 
   useValidation({ componentName: 'TextMotion', props });
 
-  const splittedText = splitText(text, split);
+  const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
+  const shouldAnimate = trigger === 'on-load' || isIntersecting;
+
+  const splittedText = shouldAnimate ? splitText(text, split) : [text];
   const resolvedMotion = useResolvedMotion({ motion, preset });
 
   const animatedText = useAnimatedText({
@@ -96,18 +99,23 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     onAnimationEnd,
   });
 
-  const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
-  const shouldAnimate = trigger === 'on-load' || isIntersecting;
-
   useEffect(() => {
     if (shouldAnimate) {
       onAnimationStart?.();
     }
   }, [shouldAnimate, onAnimationStart]);
 
+  if (shouldAnimate) {
+    return (
+      <Tag ref={targetRef} className="text-motion" aria-label={text}>
+        {animatedText}
+      </Tag>
+    );
+  }
+
   return (
-    <Tag ref={targetRef} className="text-motion" aria-label={text}>
-      {shouldAnimate ? animatedText : text}
+    <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text}>
+      {text}
     </Tag>
   );
 });

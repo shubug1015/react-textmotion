@@ -50,7 +50,7 @@ describe('TextMotion component', () => {
   it('renders raw text when not intersecting', () => {
     render(<MockTextMotion text={TEXT} />);
 
-    const container = screen.getByLabelText(TEXT);
+    const container = screen.getByText(TEXT);
     const spans = container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
 
     expect(container.textContent).toBe(TEXT);
@@ -82,7 +82,7 @@ describe('TextMotion animationOrder', () => {
   });
 
   it('should calculate sequenceIndex in first-to-last order', () => {
-    render(<TextMotion text={TEXT} animationOrder="first-to-last" />);
+    render(<TextMotion text={TEXT} trigger="on-load" animationOrder="first-to-last" />);
 
     expect(generateAnimationSpy).toHaveBeenNthCalledWith(1, expect.anything(), 0, 0);
     expect(generateAnimationSpy).toHaveBeenNthCalledWith(2, expect.anything(), 1, 0);
@@ -90,9 +90,7 @@ describe('TextMotion animationOrder', () => {
   });
 
   it('should calculate sequenceIndex in last-to-first order', () => {
-    const generateAnimationSpy = jest.spyOn(generateAnimationModule, 'generateAnimation');
-
-    render(<TextMotion text={TEXT} animationOrder="last-to-first" />);
+    render(<TextMotion text={TEXT} trigger="on-load" animationOrder="last-to-first" />);
 
     expect(generateAnimationSpy).toHaveBeenNthCalledWith(1, expect.anything(), 2, 0);
     expect(generateAnimationSpy).toHaveBeenNthCalledWith(2, expect.anything(), 1, 0);

@@ -56,7 +56,7 @@ describe('NodeMotion component', () => {
   it('renders plain text when not intersecting', () => {
     render(<MockNodeMotion>{TEXT}</MockNodeMotion>);
 
-    const container = screen.getByLabelText(TEXT);
+    const container = screen.getByText(TEXT);
     const spans = container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
 
     expect(container.textContent).toBe(TEXT);

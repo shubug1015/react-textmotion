@@ -86,7 +86,12 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
 
   useValidation({ componentName: 'NodeMotion', props });
 
-  const { splittedNode, text } = splitNodeAndExtractText(children, split);
+  const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
+  const shouldAnimate = trigger === 'on-load' || isIntersecting;
+
+  const { splittedNode, text } = shouldAnimate
+    ? splitNodeAndExtractText(children, split)
+    : { splittedNode: [children], text: 'NodeMotion' };
   const resolvedMotion = useResolvedMotion({ motion, preset });
 
   const animatedChildren = useAnimatedChildren({
@@ -97,18 +102,23 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
     onAnimationEnd,
   });
 
-  const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
-  const shouldAnimate = trigger === 'on-load' || isIntersecting;
-
   useEffect(() => {
     if (shouldAnimate) {
       onAnimationStart?.();
     }
   }, [shouldAnimate, onAnimationStart]);
 
+  if (shouldAnimate) {
+    return (
+      <Tag ref={targetRef} className="node-motion" aria-label={text}>
+        {animatedChildren}
+      </Tag>
+    );
+  }
+
   return (
-    <Tag ref={targetRef} className="node-motion" aria-label={text}>
-      {shouldAnimate ? animatedChildren : children}
+    <Tag ref={targetRef} className="node-motion-inanimate" aria-label={text}>
+      {children}
     </Tag>
   );
 });

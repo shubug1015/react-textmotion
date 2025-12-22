@@ -1,12 +1,10 @@
-import '../../styles/animations.scss';
-import '../../styles/motion.scss';
-
 import { type FC, memo, useEffect } from 'react';
 
 import { useAnimatedText } from '../../hooks/useAnimatedText';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { useValidation } from '../../hooks/useValidation';
+import * as styles from '../../styles/motion.css.ts';
 import type { TextMotionProps } from '../../types';
 import { splitText } from '../../utils/splitText';
 
@@ -107,14 +105,14 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
 
   if (shouldAnimate) {
     return (
-      <Tag ref={targetRef} className="text-motion" aria-label={text}>
+      <Tag ref={targetRef} aria-label={text}>
         {animatedText}
       </Tag>
     );
   }
 
   return (
-    <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text}>
+    <Tag ref={targetRef} className={styles.inanimate} aria-label={text}>
       {text}
     </Tag>
   );

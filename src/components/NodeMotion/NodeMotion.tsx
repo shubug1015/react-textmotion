@@ -1,12 +1,10 @@
-import '../../styles/animations.scss';
-import '../../styles/motion.scss';
-
 import { type FC, memo, useEffect } from 'react';
 
 import { useAnimatedChildren } from '../../hooks/useAnimatedChildren';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { useValidation } from '../../hooks/useValidation';
+import * as styles from '../../styles/motion.css.ts';
 import type { NodeMotionProps } from '../../types';
 import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
 
@@ -110,14 +108,14 @@ export const NodeMotion: FC<NodeMotionProps> = memo(props => {
 
   if (shouldAnimate) {
     return (
-      <Tag ref={targetRef} className="node-motion" aria-label={text}>
+      <Tag ref={targetRef} aria-label={text}>
         {animatedChildren}
       </Tag>
     );
   }
 
   return (
-    <Tag ref={targetRef} className="node-motion-inanimate" aria-label={text}>
+    <Tag ref={targetRef} className={styles.inanimate} aria-label={text}>
       {children}
     </Tag>
   );

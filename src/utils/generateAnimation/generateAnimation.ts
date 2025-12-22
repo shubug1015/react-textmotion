@@ -1,6 +1,8 @@
 import { type CSSProperties } from 'react';
 
-import type { CustomAnimation, Motion } from '../../types';
+import type { AnimationName, CustomAnimation, Motion } from '../../types';
+
+import { keyframesMap } from './keyframesMap';
 
 export type StyleWithCustomProperties = CSSProperties & {
   [key: `--${string}`]: string | number;
@@ -22,7 +24,7 @@ export const generateAnimation = (
   sequenceIndex: number,
   initialDelay: number
 ): { style: StyleWithCustomProperties } => {
-  const { animations, style } = Object.entries(motionConfig).reduce(
+  const { animationStrings, style } = Object.entries(motionConfig).reduce(
     (acc, [name, config]) => {
       if (config === undefined || config === null) return acc;
 
@@ -31,13 +33,17 @@ export const generateAnimation = (
         const calculatedDelay = sequenceIndex * delay + initialDelay;
 
         const animationString = `${animationName} ${duration}s ${easing} ${calculatedDelay}s both`;
-        acc.animations.push(animationString);
+        acc.animationStrings.push(animationString);
       } else if ('variant' in config) {
         const { variant, duration, delay, easing = 'ease-out', ...rest } = config;
         const calculatedDelay = sequenceIndex * delay + initialDelay;
 
-        const animationString = `${name}-${variant} ${duration}s ${easing} ${calculatedDelay}s both`;
-        acc.animations.push(animationString);
+        const keyframe = keyframesMap[name as AnimationName]?.[variant];
+
+        if (keyframe) {
+          const animationString = `${keyframe} ${duration}s ${easing} ${calculatedDelay}s both`;
+          acc.animationStrings.push(animationString);
+        }
 
         const customProps = Object.entries(rest).reduce<StyleWithCustomProperties>((styleAcc, [key, value]) => {
           if (value !== undefined && value !== null) {
@@ -51,8 +57,8 @@ export const generateAnimation = (
 
       return acc;
     },
-    { animations: [] as string[], style: {} as StyleWithCustomProperties }
+    { animationStrings: [] as string[], style: {} as StyleWithCustomProperties }
   );
 
-  return { style: { animation: animations.join(', '), ...style } };
+  return { style: { animation: animationStrings.join(', '), ...style } };
 };

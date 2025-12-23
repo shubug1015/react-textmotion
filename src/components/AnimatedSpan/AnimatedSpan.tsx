@@ -1,5 +1,7 @@
 import { type CSSProperties, type FC, useCallback, useRef } from 'react';
 
+import * as styles from '../../styles/motion.css.ts';
+
 type Props = {
   text: string;
   style: CSSProperties;
@@ -31,7 +33,7 @@ export const AnimatedSpan: FC<Props> = ({ text, style, onAnimationEnd }) => {
   }
 
   return (
-    <span style={style} aria-hidden="true" onAnimationEnd={handleAnimationEnd}>
+    <span className={styles.motion} style={style} aria-hidden="true" onAnimationEnd={handleAnimationEnd}>
       {text}
     </span>
   );

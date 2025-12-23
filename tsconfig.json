@@ -12,6 +12,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["node", "@testing-library/jest-dom"]
   },

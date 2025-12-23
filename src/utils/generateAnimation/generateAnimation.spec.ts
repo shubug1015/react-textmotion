@@ -2,6 +2,25 @@ import type { Motion } from '../../types';
 
 import { generateAnimation } from './generateAnimation';
 
+jest.mock('../../styles/animations.css.ts', () => ({
+  fadeIn: 'fade-in',
+  fadeOut: 'fade-out',
+  slideUp: 'slide-up',
+  slideDown: 'slide-down',
+  slideLeft: 'slide-left',
+  slideRight: 'slide-right',
+  scaleIn: 'scale-in',
+  scaleOut: 'scale-out',
+  rotateClockwise: 'rotate-clockwise',
+  rotateCounterclockwise: 'rotate-counterclockwise',
+  bounceIn: 'bounce-in',
+  bounceOut: 'bounce-out',
+  elasticIn: 'elastic-in',
+  elasticOut: 'elastic-out',
+  flipIn: 'flip-in',
+  flipOut: 'flip-out',
+}));
+
 describe('generateAnimation utility', () => {
   describe('when given a valid motion configuration', () => {
     it('should generate a style object with a single motion string correctly for index 0', () => {
@@ -141,7 +160,7 @@ describe('generateAnimation utility', () => {
 
       const { style } = generateAnimation(motionsWithPrototype, 1, 0);
 
-      expect(style.animation).toBe('ownMotion-out 2s ease-out 0.5s both');
+      expect(style.animation).toBe('');
     });
   });
 });

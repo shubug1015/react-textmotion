@@ -1,3 +1,5 @@
+export type AnimationName = 'fade' | 'slide' | 'scale' | 'rotate' | 'bounce' | 'elastic' | 'flip';
+
 /**
  * @description
  * Base properties for all animations.

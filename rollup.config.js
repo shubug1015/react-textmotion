@@ -5,8 +5,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import typescript from '@rollup/plugin-typescript';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import postcss from 'rollup-plugin-postcss';
-import autoprefixer from 'autoprefixer';
+import { vanillaExtractPlugin } from '@vanilla-extract/rollup-plugin';
 
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
@@ -50,19 +49,9 @@ export default {
       presets: ['@babel/preset-env', '@babel/preset-react'],
     }),
 
-    postcss({
-      plugins: [autoprefixer()],
-      extensions: ['.css', '.scss'],
-      minimize: true,
-      inject: true,
-      use: {
-        sass: {
-          silenceDeprecations: ['legacy-js-api'],
-        },
-      },
-    }),
-
     terser(),
+
+    vanillaExtractPlugin(),
   ],
   external: ['react', 'react-dom'],
 };

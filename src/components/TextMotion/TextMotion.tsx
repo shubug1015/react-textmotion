@@ -3,22 +3,21 @@ import '../../styles/motion.scss';
 
 import { type FC, memo, useEffect } from 'react';
 
-import { useAnimatedText } from '../../hooks/useAnimatedText';
+import { useAnimatedChildren } from '../../hooks/useAnimatedChildren';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
 import { useValidation } from '../../hooks/useValidation';
 import type { TextMotionProps } from '../../types';
-import { splitText } from '../../utils/splitText';
+import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
 
 /**
  * @description
- * `TextMotion` is a component that animates text by splitting it into characters, words or lines,
- * and applying motion presets or custom motion configurations.
- * It leverages CSS animations and dynamically generated inline styles for smooth effects.
+ * `TextMotion` is a component that animates its children by applying motion presets or custom motion configurations.
+ * It can animate text nodes by splitting them into characters, words or lines, and can also animate other React elements.
  *
- * @param {string} text - The text content to animate.
+ * @param {ReactNode} children - The content to animate. Can be a string, a number, or any React element.
  * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
- * @param {Split} [split='character'] - Defines how the text is split for animation (`character`, `word`, or `line`). Defaults to `'character'`.
+ * @param {Split} [split='character'] - Defines how the text is split for animation (`character`, `word`, or `line`). `line` is only applicable for string children. Defaults to `'character'`.
  * @param {Trigger} [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
  * @param {boolean} [repeat=true] - Determines if the animation should repeat every time it enters the viewport. Only applicable when `trigger` is `'scroll'`. Defaults to `true`.
  * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
@@ -28,14 +27,13 @@ import { splitText } from '../../utils/splitText';
  * @param {() => void} [onAnimationStart] - Callback function that is called when the animation starts.
  * @param {() => void} [onAnimationEnd] - Callback function that is called when the animation ends.
  *
- * @returns {JSX.Element} A React element that renders animated `<span>`s for each split unit of text.
+ * @returns {JSX.Element} A React element that renders animated children.
  *
  * @example
- * // Using custom motion configuration
+ * // Using custom motion configuration with text
  * function App() {
  *   return (
  *     <TextMotion
- *       text="Hello World!"
  *       split="character"
  *       trigger="scroll"
  *       repeat={false}
@@ -47,16 +45,17 @@ import { splitText } from '../../utils/splitText';
  *       }}
  *       onAnimationStart={() => console.log('Animation started')}
  *       onAnimationEnd={() => console.log('Animation ended')}
- *     />
+ *     >
+ *       Hello <strong>World</strong>
+ *     </TextMotion>
  *   );
  * }
  *
  * @example
- * // Using predefined animation presets
+ * // Using predefined animation presets with mixed children
  * function App() {
  *   return (
  *     <TextMotion
- *       text="Hello World!"
  *       split="word"
  *       trigger="on-load"
  *       initialDelay={0.5}
@@ -64,13 +63,15 @@ import { splitText } from '../../utils/splitText';
  *       preset={['fade-in', 'slide-up']}
  *       onAnimationStart={() => console.log('Animation started')}
  *       onAnimationEnd={() => console.log('Animation ended')}
- *     />
+ *     >
+ *       <span>Hello</span> <b>World!</b>
+ *     </TextMotion>
  *   );
  * }
  */
 export const TextMotion: FC<TextMotionProps> = memo(props => {
   const {
-    text,
+    children,
     as: Tag = 'span',
     split = 'character',
     trigger = 'scroll',
@@ -81,6 +82,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     preset,
     onAnimationStart,
     onAnimationEnd,
+    ...rest
   } = props;
 
   useValidation({ componentName: 'TextMotion', props });
@@ -88,11 +90,13 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
-  const splittedText = shouldAnimate ? splitText(text, split) : [text];
+  const { splittedNode, text } = shouldAnimate
+    ? splitNodeAndExtractText(children, split)
+    : { splittedNode: [children], text: 'TextMotion' };
   const resolvedMotion = useResolvedMotion({ motion, preset });
 
-  const animatedText = useAnimatedText({
-    splittedText,
+  const animatedChildren = useAnimatedChildren({
+    splittedNode,
     initialDelay,
     animationOrder,
     resolvedMotion,
@@ -107,15 +111,15 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
 
   if (shouldAnimate) {
     return (
-      <Tag ref={targetRef} className="text-motion" aria-label={text}>
-        {animatedText}
+      <Tag ref={targetRef} className="text-motion" aria-label={text} {...rest}>
+        {animatedChildren}
       </Tag>
     );
   }
 
   return (
-    <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text}>
-      {text}
+    <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text} {...rest}>
+      {children}
     </Tag>
   );
 });

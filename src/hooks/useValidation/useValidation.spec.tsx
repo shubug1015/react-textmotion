@@ -1,35 +1,35 @@
 import { render } from '@testing-library/react';
 
-import type { NodeMotionProps, TextMotionProps } from '../../types';
+import type { TextMotionProps } from '../../types';
 
 import { handleValidation, useValidation } from './useValidation';
 
 describe('useValidation hook', () => {
-  const TestComponent = ({ componentName, props }: { componentName: 'TextMotion' | 'NodeMotion'; props: any }) => {
-    useValidation({ componentName, props });
+  const TestComponent = ({ props }: { props: any }) => {
+    useValidation({ componentName: 'TextMotion', props });
 
     return <div>Test</div>;
   };
 
   it('should throw an error for invalid TextMotionProps', () => {
     const props: Partial<TextMotionProps> = {
-      text: null as any,
+      split: 'invalid-split' as any,
     };
 
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    expect(() => render(<TestComponent componentName="TextMotion" props={props} />)).toThrow();
+    expect(() => render(<TestComponent props={props} />)).toThrow();
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'TextMotion validation errors:',
-      expect.arrayContaining(['text prop is required'])
+      expect.arrayContaining(['split prop must be one of: character, word, line'])
     );
 
     consoleErrorSpy.mockRestore();
   });
 
-  it('should not throw for valid NodeMotionProps', () => {
-    const props: NodeMotionProps = {
+  it('should not throw for valid TextMotionProps', () => {
+    const props: TextMotionProps = {
       children: <span>Hello</span>,
       split: 'word',
       trigger: 'on-load',
@@ -39,7 +39,7 @@ describe('useValidation hook', () => {
       motion: undefined,
     };
 
-    expect(() => render(<TestComponent componentName="NodeMotion" props={props} />)).not.toThrow();
+    expect(() => render(<TestComponent props={props} />)).not.toThrow();
   });
 });
 
@@ -54,12 +54,12 @@ describe('handleValidation', () => {
   it('should throw an error when errors are present in non-production', () => {
     process.env.NODE_ENV = 'development';
 
-    const errors: string[] = ['text prop is required'];
+    const errors: string[] = ['some validation error'];
     const warnings: string[] = [];
 
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    expect(() => handleValidation('TextMotion', errors, warnings)).toThrow('TextMotion: text prop is required');
+    expect(() => handleValidation('TextMotion', errors, warnings)).toThrow('TextMotion: some validation error');
     expect(consoleErrorSpy).toHaveBeenCalledWith('TextMotion validation errors:', errors);
   });
 
@@ -67,7 +67,7 @@ describe('handleValidation', () => {
     process.env.NODE_ENV = 'development';
 
     const errors: string[] = [];
-    const warnings: string[] = ['text prop is empty'];
+    const warnings: string[] = ['some validation warning'];
 
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
@@ -85,7 +85,7 @@ describe('handleValidation', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    handleValidation('NodeMotion', errors, warnings);
+    handleValidation('TextMotion', errors, warnings);
 
     expect(consoleErrorSpy).not.toHaveBeenCalled();
     expect(consoleWarnSpy).not.toHaveBeenCalled();
@@ -94,13 +94,13 @@ describe('handleValidation', () => {
   it('should not throw or log in production', () => {
     process.env.NODE_ENV = 'production';
 
-    const errors: string[] = ['text prop is required'];
-    const warnings: string[] = ['text prop is empty'];
+    const errors: string[] = ['some validation error'];
+    const warnings: string[] = ['some validation warning'];
 
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    expect(() => handleValidation('NodeMotion', errors, warnings)).not.toThrow();
+    expect(() => handleValidation('TextMotion', errors, warnings)).not.toThrow();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
     expect(consoleWarnSpy).not.toHaveBeenCalled();
   });

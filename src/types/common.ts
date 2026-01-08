@@ -61,7 +61,7 @@ export type Motion = {
 
 /**
  * @description
- * A list of predefined animation presets that can be used with the `TextMotion` and `NodeMotion` components.
+ * A list of predefined animation presets that can be used with the `TextMotion` component.
  * Each preset corresponds to a specific animation configuration.
  */
 export type Preset =

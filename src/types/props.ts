@@ -19,7 +19,4 @@ export type MotionPresetProps =
   | { motion?: undefined; preset?: undefined };
 
 // TextMotion
-export type TextMotionProps = BaseMotionProps & MotionPresetProps & { text: string };
-
-// NodeMotion
-export type NodeMotionProps = BaseMotionProps & MotionPresetProps & { children: ReactNode };
+export type TextMotionProps = BaseMotionProps & MotionPresetProps & { children: ReactNode };

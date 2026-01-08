@@ -1,1 +1,0 @@
-export { useAnimatedText } from './useAnimatedText';

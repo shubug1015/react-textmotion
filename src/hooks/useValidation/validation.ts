@@ -1,4 +1,4 @@
-import type { CustomAnimation, Motion, NodeMotionProps, TextMotionProps } from '../../types';
+import type { CustomAnimation, Motion, TextMotionProps } from '../../types';
 
 export type ValidationResult = {
   errors: string[];
@@ -8,7 +8,7 @@ export type ValidationResult = {
 /**
  * @description
  * Validates the props for the TextMotion component.
- * It checks for the presence and type of the 'text' prop, the value of the 'split' prop,
+ * It warns if the 'children' prop is empty, checks the value of the 'split' prop,
  * and runs validation on the 'motion' prop.
  *
  * @param {TextMotionProps} props - The props of the TextMotion component to validate.
@@ -18,39 +18,14 @@ export const validateTextMotionProps = (props: TextMotionProps): ValidationResul
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  if (props.text === undefined || props.text === null) {
-    errors.push('text prop is required');
-  } else if (typeof props.text !== 'string') {
-    errors.push('text prop must be a string');
-  } else if (props.text.trim() === '') {
-    warnings.push('text prop is empty or contains only whitespace');
-  }
-
-  const common = validateCommonProps(props);
-
-  errors.push(...common.errors);
-  warnings.push(...common.warnings);
-
-  return { errors, warnings };
-};
-
-/**
- * @description
- * Validates the props for the NodeMotion component.
- * It warns if the 'children' prop is empty, checks the value of the 'split' prop,
- * and runs validation on the 'motion' prop.
- *
- * @param {NodeMotionProps} props - The props of the NodeMotion component to validate.
- * @returns {ValidationResult} An object containing arrays of errors and warnings.
- */
-export const validateNodeMotionProps = (props: NodeMotionProps): ValidationResult => {
-  const errors: string[] = [];
-  const warnings: string[] = [];
-
   if (props.children === undefined || props.children === null) {
     warnings.push('children prop is empty');
   }
 
+  if (props.split === 'line' && typeof props.children !== 'string') {
+    warnings.push('split="line" is only applicable when children is a string.');
+  }
+
   const common = validateCommonProps(props);
 
   errors.push(...common.errors);
@@ -61,12 +36,12 @@ export const validateNodeMotionProps = (props: NodeMotionProps): ValidationResul
 
 /**
  * @description
- * Validates common props for both TextMotion and NodeMotion components.
+ * Validates common props for the TextMotion component.
  *
- * @param {Partial<TextMotionProps | NodeMotionProps>} props - The props to validate.
+ * @param {Partial<TextMotionProps>} props - The props to validate.
  * @returns {ValidationResult} An object containing arrays of errors and warnings.
  */
-const validateCommonProps = (props: Partial<TextMotionProps | NodeMotionProps>): ValidationResult => {
+const validateCommonProps = (props: Partial<TextMotionProps>): ValidationResult => {
   const errors: string[] = [];
   const warnings: string[] = [];
 

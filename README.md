@@ -4,13 +4,13 @@
 > Lightweight, fully tested, and production-ready.
 
 `react-textmotion` is a **lightweight yet powerful React library** to animate text and components with ease.  
-From **character-level typing effects** to **complex UI block animations**, it provides intuitive APIs, presets, and full customizability.
+From **character-level typing effects** to **complex UI block animations**, it provides intuitive APIs, presets, and full customizability through a single `TextMotion` component.
 
 ## Features
 
 - **Lightweight & Performant** – minimal footprint, no heavy deps
 - **Robust & Tested** – 100% test coverage with Jest + React Testing Library
-- **Flexible API** – animate by character, word, or line
+- **Flexible API** – animate by character, word, or line, supporting both plain text and rich React nodes.
 - **Presets & Motion** – use built-in effects or define your property values
 - **Developer-Friendly** – JSDoc, examples, TypeScript support
 
@@ -31,69 +31,24 @@ import { TextMotion } from 'react-textmotion';
 
 export default function App() {
   return (
-    <TextMotion
-      text="Hello World!"
-      split="character"
-      preset={['fade-in', 'slide-up']}
-    />
+    <TextMotion split="character" preset={['fade-in', 'slide-up']}>
+      Hello World!
+    </TextMotion>
   );
 }
 ```
 
 Instantly animates `"Hello World!"` with fade + slide.
 
-<!-- ## Demo
-
-- 📺 [Live Demo on CodeSandbox](https://codesandbox.io/s/react-textmotion-demo-xxxxx)
-- 📸 Preview:
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/shubug1015/react-textmotion/main/assets/demo-textmotion.gif" width="500" alt="TextMotion demo" />
-</p>
-
---- -->
-
 ## Components
 
 ### `TextMotion`
 
-Animate **plain text strings** with per-character, word, or line animations.
+Animate **plain text strings** or **any React children** (mixed tags, custom components, blocks) with per-character, word, or line animations.
 
 ```tsx
+// Animating a plain string
 <TextMotion
-  text="Hello World!"
-  as="span"
-  split="character"
-  trigger="scroll"
-  repeat={false}
-  initialDelay={0.5}
-  animationOrder="first-to-last"
-  motion={{
-    fade: {
-      variant: 'in',
-      duration: 0.25,
-      delay: 0.025,
-      easing: 'linear',
-    },
-    slide: {
-      variant: 'up',
-      duration: 0.25,
-      delay: 0.025,
-      easing: 'linear',
-    },
-  }}
-  onAnimationStart={() => console.log('Animation started')}
-  onAnimationEnd={() => console.log('Animation ended')}
-/>
-```
-
-### `NodeMotion`
-
-Animate **any React children** (mixed tags, custom components, blocks).
-
-```tsx
-<NodeMotion
-  as="span"
   split="character"
   trigger="scroll"
   repeat={false}
@@ -116,45 +71,41 @@ Animate **any React children** (mixed tags, custom components, blocks).
   onAnimationStart={() => console.log('Animation started')}
   onAnimationEnd={() => console.log('Animation ended')}
 >
+  Hello World!
+</TextMotion>
+
+// Animating mixed React nodes
+<TextMotion
+  as="span"
+  split="word"
+  trigger="on-load"
+  initialDelay={0.5}
+  animationOrder="first-to-last"
+  preset={['fade-in', 'slide-up']}
+  onAnimationStart={() => console.log('Animation started')}
+  onAnimationEnd={() => console.log('Animation ended')}
+>
   <span>Hello</span> <b>World!</b>
-</NodeMotion>
+</TextMotion>
 ```
 
 ## API Reference
 
 ### TextMotion Props
 
-| Prop               | Type                                 | Default         | Required                | Description                                                |
-| ------------------ | ------------------------------------ | --------------- | ----------------------- | ---------------------------------------------------------- |
-| `text`             | `string`                             | `-`             | Yes                     | Text to animate                                            |
-| `as`               | `string`                             | `"span"`        | No                      | HTML tag wrapper                                           |
-| `split`            | `"character" \| "word" \| "line"`    | `"character"`   | No                      | Text split granularity                                     |
-| `trigger`          | `"on-load" \| "scroll"`              | `"scroll"`      | No                      | When animation starts                                      |
-| `repeat`           | `boolean`                            | `true`          | No                      | Repeat entire animation                                    |
-| `initialDelay`     | `number`                             | `0`             | No                      | Initial delay before animation starts (in `s`)             |
-| `animationOrder`   | `"first-to-last" \| "last-to-first"` | `first-to-last` | No                      | Order of the animation sequence                            |
-| `motion`           | `Motion`                             | `-`             | Yes (if `preset` unset) | Custom animation config                                    |
-| `preset`           | `Preset[]`                           | `-`             | Yes (if `motion` unset) | Predefined animation presets                               |
-| `onAnimationStart` | `() => void`                         | `-`             | No                      | Callback function that is called when the animation starts |
-| `onAnimationEnd`   | `() => void`                         | `-`             | No                      | Callback function that is called when the animation ends   |
-
-### NodeMotion
-
-| Prop               | Type                                 | Default         | Required                | Description                                                |
-| ------------------ | ------------------------------------ | --------------- | ----------------------- | ---------------------------------------------------------- |
-| `children`         | `ReactNode`                          | `-`             | Yes                     | Content to animate                                         |
-| `as`               | `string`                             | `"span"`        | No                      | HTML tag wrapper                                           |
-| `split`            | `"character" \| "word"`              | `"character"`   | No                      | Text split granularity                                     |
-| `trigger`          | `"on-load" \| "scroll"`              | `"scroll"`      | No                      | When animation starts                                      |
-| `repeat`           | `boolean`                            | `true`          | No                      | Repeat entire animation                                    |
-| `initialDelay`     | `number`                             | `0`             | No                      | Initial delay before animation starts (in `s`)             |
-| `animationOrder`   | `"first-to-last" \| "last-to-first"` | `first-to-last` | No                      | Order of the animation sequence                            |
-| `motion`           | `Motion`                             | `-`             | Yes (if `preset` unset) | Custom animation config                                    |
-| `preset`           | `Preset[]`                           | `-`             | Yes (if `motion` unset) | Predefined animation presets                               |
-| `onAnimationStart` | `() => void`                         | `-`             | No                      | Callback function that is called when the animation starts |
-| `onAnimationEnd`   | `() => void`                         | `-`             | No                      | Callback function that is called when the animation ends   |
-
-<!-- > Full details: [API Docs](./docs/API.md) -->
+| Prop               | Type                                 | Default         | Required                | Description                                                            |
+| ------------------ | ------------------------------------ | --------------- | ----------------------- | ---------------------------------------------------------------------- |
+| `children`         | `ReactNode`                          | `-`             | Yes                     | Content to animate. Can be a string, a number, or any React element.   |
+| `as`               | `string`                             | `"span"`        | No                      | HTML tag wrapper                                                       |
+| `split`            | `"character" \| "word" \| "line"`    | `"character"`   | No                      | Text split granularity. `line` is only applicable for string children. |
+| `trigger`          | `"on-load" \| "scroll"`              | `"scroll"`      | No                      | When animation starts                                                  |
+| `repeat`           | `boolean`                            | `true`          | No                      | Repeat entire animation                                                |
+| `initialDelay`     | `number`                             | `0`             | No                      | Initial delay before animation starts (in `s`)                         |
+| `animationOrder`   | `"first-to-last" \| "last-to-first"` | `first-to-last` | No                      | Order of the animation sequence                                        |
+| `motion`           | `Motion`                             | `-`             | Yes (if `preset` unset) | Custom animation config                                                |
+| `preset`           | `Preset[]`                           | `-`             | Yes (if `motion` unset) | Predefined animation presets                                           |
+| `onAnimationStart` | `() => void`                         | `-`             | No                      | Callback function that is called when the animation starts             |
+| `onAnimationEnd`   | `() => void`                         | `-`             | No                      | Callback function that is called when the animation ends               |
 
 ## Presets
 

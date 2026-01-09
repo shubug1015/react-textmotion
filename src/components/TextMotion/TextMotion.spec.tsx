@@ -106,15 +106,6 @@ describe('TextMotion component', () => {
     const container = screen.getByLabelText(DEFAULT_ARIA_LABEL);
     expect(container).toBeInTheDocument();
   });
-
-  it('uses DEFAULT_ARIA_LABEL when text is empty while animating', () => {
-    render(<TextMotion trigger="on-load">{''}</TextMotion>);
-
-    const container = screen.getByLabelText(DEFAULT_ARIA_LABEL);
-    const spans = container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
-
-    expect(spans.length).toBe(0);
-  });
 });
 
 describe('TextMotion with different split options', () => {

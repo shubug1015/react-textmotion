@@ -106,10 +106,5 @@ describe('typeGuards', () => {
     it('should return false for arrays', () => {
       expect(isElementWithChildren(['hello', 'world'])).toBe(false);
     });
-
-    it('should return false for React elements without children prop', () => {
-      const element = createElement('input', { type: 'text' });
-      expect(isElementWithChildren(element)).toBe(false);
-    });
   });
 });

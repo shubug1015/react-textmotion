@@ -3,6 +3,7 @@ import '../../styles/motion.scss';
 
 import { type FC, memo, useEffect } from 'react';
 
+import { DEFAULT_ARIA_LABEL } from '../../constants';
 import { useAnimatedChildren } from '../../hooks/useAnimatedChildren';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useResolvedMotion } from '../../hooks/useResolvedMotion';
@@ -92,7 +93,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
 
   const { splittedNode, text } = shouldAnimate
     ? splitNodeAndExtractText(children, split)
-    : { splittedNode: [children], text: 'TextMotion' };
+    : { splittedNode: [children], text: DEFAULT_ARIA_LABEL };
   const resolvedMotion = useResolvedMotion({ motion, preset });
 
   const animatedChildren = useAnimatedChildren({
@@ -111,14 +112,14 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
 
   if (shouldAnimate) {
     return (
-      <Tag ref={targetRef} className="text-motion" aria-label={text} {...rest}>
+      <Tag ref={targetRef} className="text-motion" aria-label={text || DEFAULT_ARIA_LABEL} {...rest}>
         {animatedChildren}
       </Tag>
     );
   }
 
   return (
-    <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text} {...rest}>
+    <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text || DEFAULT_ARIA_LABEL} {...rest}>
       {children}
     </Tag>
   );

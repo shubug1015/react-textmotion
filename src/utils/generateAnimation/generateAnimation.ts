@@ -1,5 +1,6 @@
 import { type CSSProperties } from 'react';
 
+import { ANIMATION_DEFAULTS } from '../../constants';
 import type { CustomAnimation, Motion } from '../../types';
 
 export type StyleWithCustomProperties = CSSProperties & {
@@ -23,33 +24,33 @@ export const generateAnimation = (
   initialDelay: number
 ): { style: StyleWithCustomProperties } => {
   const { animations, style } = Object.entries(motionConfig).reduce(
-    (acc, [name, config]) => {
-      if (config === undefined || config === null) return acc;
+    (accumulator, [name, config]) => {
+      if (config === undefined || config === null) return accumulator;
 
-      if (name === 'custom') {
-        const { name: animationName, duration, delay, easing = 'ease-out' } = config as CustomAnimation;
+      if (name === ANIMATION_DEFAULTS.CUSTOM_ANIMATION_KEY) {
+        const { name: animationName, duration, delay, easing = ANIMATION_DEFAULTS.EASING } = config as CustomAnimation;
         const calculatedDelay = sequenceIndex * delay + initialDelay;
 
         const animationString = `${animationName} ${duration}s ${easing} ${calculatedDelay}s both`;
-        acc.animations.push(animationString);
+        accumulator.animations.push(animationString);
       } else if ('variant' in config) {
-        const { variant, duration, delay, easing = 'ease-out', ...rest } = config;
+        const { variant, duration, delay, easing = ANIMATION_DEFAULTS.EASING, ...rest } = config;
         const calculatedDelay = sequenceIndex * delay + initialDelay;
 
         const animationString = `${name}-${variant} ${duration}s ${easing} ${calculatedDelay}s both`;
-        acc.animations.push(animationString);
+        accumulator.animations.push(animationString);
 
-        const customProps = Object.entries(rest).reduce<StyleWithCustomProperties>((styleAcc, [key, value]) => {
+        const customProps = Object.entries(rest).reduce<StyleWithCustomProperties>((styleAccumulator, [key, value]) => {
           if (value !== undefined && value !== null) {
-            styleAcc[`--${name}-${key}`] = value as string | number;
+            styleAccumulator[`--${name}-${key}`] = value as string | number;
           }
-          return styleAcc;
+          return styleAccumulator;
         }, {});
 
-        acc.style = { ...acc.style, ...customProps };
+        accumulator.style = { ...accumulator.style, ...customProps };
       }
 
-      return acc;
+      return accumulator;
     },
     { animations: [] as string[], style: {} as StyleWithCustomProperties }
   );

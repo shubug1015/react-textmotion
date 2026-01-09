@@ -139,7 +139,7 @@ describe('useIntersectionObserver hook', () => {
     expect(intersected).toBe(true);
 
     observerInstance.trigger([{ isIntersecting: false, target: targetElement }]);
-    expect(intersected).toBe(false); // 개선된 훅에서는 false로 바뀜
+    expect(intersected).toBe(false);
   });
 
   it('should disconnect the observer on unmount', () => {

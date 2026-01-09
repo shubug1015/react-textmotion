@@ -1,8 +1,9 @@
-import { Children, cloneElement, isValidElement, type ReactNode, useMemo } from 'react';
+import { Children, cloneElement, type ReactNode, useMemo } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
 import type { AnimationOrder, Motion } from '../../types';
 import { generateAnimation } from '../../utils/generateAnimation';
+import { isElementWithChildren, isTextNode } from '../../utils/typeGuards/typeGuards';
 
 type UseAnimatedChildrenProps = {
   splittedNode: ReactNode[];
@@ -56,12 +57,18 @@ const countNodes = (nodes: ReactNode[]): number => {
   Children.forEach(nodes, node => {
     count += 1;
 
-    if (isValidElement<{ children?: ReactNode }>(node)) {
+    if (isElementWithChildren(node)) {
       count += countNodes(Children.toArray(node.props.children));
     }
   });
 
   return count;
+};
+
+const incrementSequenceIndex = (ref: { current: number }): number => {
+  const current = ref.current;
+  ref.current += 1;
+  return current;
 };
 
 export const wrapWithAnimatedSpan = (
@@ -74,19 +81,19 @@ export const wrapWithAnimatedSpan = (
   onAnimationEnd?: () => void
 ): ReactNode[] => {
   return splittedNode.map(node => {
-    const currentIndex = sequenceIndexRef!.current++;
+    const currentIndex = incrementSequenceIndex(sequenceIndexRef);
     const sequenceIndex = animationOrder === 'first-to-last' ? currentIndex : totalNodes - currentIndex - 1;
 
     const isLast = sequenceIndex === totalNodes - 1;
     const handleAnimationEnd = isLast ? onAnimationEnd : undefined;
 
-    if (typeof node === 'string' || typeof node === 'number') {
+    if (isTextNode(node)) {
       const { style } = generateAnimation(resolvedMotion, sequenceIndex, initialDelay);
 
       return <AnimatedSpan key={currentIndex} text={String(node)} style={style} onAnimationEnd={handleAnimationEnd} />;
     }
 
-    if (isValidElement<{ children?: ReactNode }>(node)) {
+    if (isElementWithChildren(node)) {
       const childArray = Children.toArray(node.props.children);
       const animatedChildren = wrapWithAnimatedSpan(
         childArray,

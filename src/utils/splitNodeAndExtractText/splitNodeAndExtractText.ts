@@ -29,13 +29,13 @@ export const splitNodeAndExtractText = (node: ReactNode, split: Split): { splitt
 
   if (Array.isArray(node)) {
     return node.reduce<{ splittedNode: ReactNode[]; text: string }>(
-      (acc, child) => {
+      (accumulator, child) => {
         const { splittedNode, text } = splitNodeAndExtractText(child, split);
 
-        acc.splittedNode.push(...splittedNode);
-        acc.text += text;
-
-        return acc;
+        return {
+          splittedNode: [...accumulator.splittedNode, ...splittedNode],
+          text: accumulator.text + text,
+        };
       },
       { splittedNode: [], text: '' }
     );

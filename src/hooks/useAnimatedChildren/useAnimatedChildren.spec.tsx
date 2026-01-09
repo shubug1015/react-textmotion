@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { cloneElement, isValidElement, type ReactNode } from 'react';
 import { render, renderHook } from '@testing-library/react';
 
 import type { AnimationOrder, Motion } from '../../types';
@@ -18,7 +18,10 @@ const renderAnimatedNode = (
   const { result } = renderHook(() =>
     useAnimatedChildren({ splittedNode, initialDelay, animationOrder, resolvedMotion })
   );
-  const { container } = render(<>{result.current}</>);
+  const childrenArray = Array.isArray(result.current) ? result.current : [result.current];
+  const { container } = render(
+    <>{childrenArray.map((child, index) => (isValidElement(child) ? cloneElement(child, { key: index }) : child))}</>
+  );
 
   return container.querySelectorAll('span');
 };
@@ -52,7 +55,15 @@ describe('useAnimatedChildren hook', () => {
     const { result } = renderHook(() =>
       useAnimatedChildren({ splittedNode, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
     );
-    const { container } = render(<>{result.current}</>);
+    const { container } = render(
+      <>
+        {Array.isArray(result.current)
+          ? result.current.map((child: ReactNode, index: number) =>
+              isValidElement(child) ? cloneElement(child, { key: index }) : child
+            )
+          : result.current}
+      </>
+    );
 
     const p = container.querySelector('p');
     const spans = p?.querySelectorAll('span') ?? [];
@@ -71,7 +82,15 @@ describe('useAnimatedChildren hook', () => {
     const { result } = renderHook(() =>
       useAnimatedChildren({ splittedNode, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
     );
-    const { container } = render(<>{result.current}</>);
+    const { container } = render(
+      <>
+        {Array.isArray(result.current)
+          ? result.current.map((child: ReactNode, index: number) =>
+              isValidElement(child) ? cloneElement(child, { key: index }) : child
+            )
+          : result.current}
+      </>
+    );
 
     const span = container.querySelector('span');
 
@@ -84,7 +103,15 @@ describe('useAnimatedChildren hook', () => {
     const { result } = renderHook(() =>
       useAnimatedChildren({ splittedNode, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
     );
-    const { container } = render(<>{result.current}</>);
+    const { container } = render(
+      <>
+        {Array.isArray(result.current)
+          ? result.current.map((child: ReactNode, index: number) =>
+              isValidElement(child) ? cloneElement(child, { key: index }) : child
+            )
+          : result.current}
+      </>
+    );
 
     expect(container.textContent).toBe('');
   });

@@ -1,7 +1,8 @@
-import { cloneElement, isValidElement, type ReactNode } from 'react';
+import { cloneElement, type ReactNode } from 'react';
 
 import type { Split } from '../../types';
 import { splitText } from '../splitText';
+import { isElementWithChildren, isNullishNode, isTextNode } from '../typeGuards/typeGuards';
 
 /**
  * @description
@@ -15,11 +16,11 @@ import { splitText } from '../splitText';
  * @returns {{ splittedNode: ReactNode[]; text: string }} An object containing the array of substrings and the extracted text.
  */
 export const splitNodeAndExtractText = (node: ReactNode, split: Split): { splittedNode: ReactNode[]; text: string } => {
-  if (node == null || typeof node === 'boolean') {
+  if (isNullishNode(node)) {
     return { splittedNode: [], text: '' };
   }
 
-  if (typeof node === 'string' || typeof node === 'number') {
+  if (isTextNode(node)) {
     const text = String(node);
     return {
       splittedNode: splitText(text, split),
@@ -41,7 +42,7 @@ export const splitNodeAndExtractText = (node: ReactNode, split: Split): { splitt
     );
   }
 
-  if (isValidElement<{ children?: ReactNode }>(node)) {
+  if (isElementWithChildren(node)) {
     const { splittedNode, text } = splitNodeAndExtractText(node.props.children, split);
 
     return {

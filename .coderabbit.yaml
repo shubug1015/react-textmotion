@@ -24,9 +24,9 @@ reviews:
   enable_prompt_for_ai_agents: true
   path_filters:
     - '!**/*.xml'
-    - '!**/__generated__/**'
-    - '!**/generated/**'
-    - '!**/*.json'
+    - '!**/dist/**'
+    - '!**/build/**'
+    - '!**/coverage/**'
     - '!**/*.svg'
     - '!**/*.png'
     - '!**/*.jpg'
@@ -92,6 +92,6 @@ reviews:
         - Frame feedback as suggestions, not absolute rules.
   auto_review:
     enabled: true
-    drafts: false
+    drafts: true
 chat:
   auto_reply: true

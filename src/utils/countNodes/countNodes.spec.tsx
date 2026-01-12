@@ -84,7 +84,7 @@ describe('countNodes', () => {
     expect(countNodes(nodes)).toBe(6);
   });
 
-  it('should return 0 for an empty array', () => {
+  it('should return 1 for an empty array', () => {
     const nodes = getNodes(<></>);
     expect(countNodes(nodes)).toBe(1);
   });

@@ -1,0 +1,97 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: 'en-US'
+early_access: false
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  review_status: true
+  commit_status: true
+  fail_commit_status: false
+  collapse_walkthrough: true
+  changed_files_summary: true
+  sequence_diagrams: true
+  estimate_code_review_effort: true
+  assess_linked_issues: true
+  related_issues: true
+  related_prs: true
+  suggested_labels: true
+  auto_apply_labels: false
+  suggested_reviewers: true
+  auto_assign_reviewers: false
+  in_progress_fortune: true
+  poem: false
+  enable_prompt_for_ai_agents: true
+  path_filters:
+    - '!**/*.xml'
+    - '!**/dist/**'
+    - '!**/build/**'
+    - '!**/coverage/**'
+    - '!**/*.svg'
+    - '!**/*.png'
+    - '!**/*.jpg'
+    - '!**/*.gif'
+    - '!**/*.lock'
+  path_instructions:
+    - path: '**/*.{ts,tsx}'
+      instructions: |
+        You are a senior frontend reviewer.
+        Review this code strictly based on the principles of "easy-to-change code"
+        from Frontend Fundamentals (Readability, Predictability, Cohesion, Low Coupling).
+
+        ================================
+        1. Readability
+        ================================
+        - Check if the code can be read top-to-bottom like a document.
+        - Flag places where the reader must jump around to understand logic.
+        - Suggest extracting logic when multiple contexts are mixed in one function or component.
+        - Identify magic numbers or strings and suggest meaningful named constants.
+        - Point out unclear or abbreviated variable/function names.
+        - Prefer simple control flow over nested or overly clever logic.
+
+        ================================
+        2. Predictability
+        ================================
+        - Verify that function and variable names clearly imply their behavior.
+        - Ensure functions with similar responsibilities return consistent data shapes.
+        - Flag hidden side effects (global state mutation, implicit behavior).
+        - Warn when the same name is used with different meanings across the codebase.
+        - Suggest making implicit assumptions explicit.
+
+        ================================
+        3. Cohesion
+        ================================
+        - Check whether code that changes together is located together.
+        - Flag cases where related logic is scattered across multiple files unnecessarily.
+        - Suggest grouping constants, helpers, and hooks near the domain they belong to.
+        - Identify components or functions that contain unrelated responsibilities.
+        - Prefer feature/domain-based structure over technical grouping when applicable.
+
+        ================================
+        4. Coupling
+        ================================
+        - Identify code where a small change would cause wide ripple effects.
+        - Warn when abstractions increase coupling instead of reducing it.
+        - Prefer duplication over premature abstraction if it lowers change impact.
+        - Flag excessive prop drilling and suggest alternative patterns if appropriate.
+        - Ensure components and functions have a single clear reason to change.
+
+        ================================
+        5. Trade-off Awareness
+        ================================
+        - Do NOT blindly suggest abstraction.
+        - Always explain why a suggestion improves ease of change.
+        - If there is a trade-off (readability vs cohesion, duplication vs coupling),
+          explicitly state it in the review.
+
+        ================================
+        6. Review Tone
+        ================================
+        - Be concise, constructive, and principle-based.
+        - Avoid stylistic nitpicks unless they affect maintainability.
+        - Frame feedback as suggestions, not absolute rules.
+  auto_review:
+    enabled: true
+    drafts: true
+chat:
+  auto_reply: true

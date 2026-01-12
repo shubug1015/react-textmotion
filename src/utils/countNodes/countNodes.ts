@@ -1,14 +1,14 @@
 import { Children, type ReactNode } from 'react';
 
-import { isElementWithChildren, isNullishNode } from '../typeGuards';
+import { isElementWithChildren, isNullishNode, isTextNode } from '../typeGuards';
 
 /**
  * @description
- * `countNodes` is a recursive pure function that counts the number of nodes in a React node tree.
- * It returns the total number of nodes in the tree.
+ * `countNodes` is a recursive pure function that counts the number of text nodes in a React node tree.
+ * It returns the total number of text nodes in the tree, which are the nodes that will be animated.
  *
  * @param {ReactNode[]} nodes - The array of React nodes to count.
- * @returns {number} The total number of nodes in the tree.
+ * @returns {number} The total number of animated (text) nodes in the tree.
  */
 export const countNodes = (nodes: ReactNode[]): number => {
   let count = 0;
@@ -18,9 +18,9 @@ export const countNodes = (nodes: ReactNode[]): number => {
       return;
     }
 
-    count += 1;
-
-    if (isElementWithChildren(node)) {
+    if (isTextNode(node)) {
+      count += 1;
+    } else if (isElementWithChildren(node)) {
       count += countNodes(Children.toArray(node.props.children));
     }
   });

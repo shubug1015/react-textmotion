@@ -12,19 +12,19 @@ describe('countNodes', () => {
 
   it('should count multiple text nodes correctly', () => {
     const nodes = getNodes(<>Hello World</>);
-    expect(countNodes(nodes)).toBe(2);
+    expect(countNodes(nodes)).toBe(1);
 
     const nodesWithSeparators = getNodes(
       <>
         {'Hello'} {'World'}
       </>
     );
-    expect(countNodes(nodesWithSeparators)).toBe(4);
+    expect(countNodes(nodesWithSeparators)).toBe(3);
   });
 
   it('should count a single element node as 1', () => {
     const nodes = getNodes(<span>Hello</span>);
-    expect(countNodes(nodes)).toBe(2);
+    expect(countNodes(nodes)).toBe(1);
   });
 
   it('should count multiple element nodes correctly', () => {
@@ -34,7 +34,7 @@ describe('countNodes', () => {
         <span>World</span>
       </>
     );
-    expect(countNodes(nodes)).toBe(5);
+    expect(countNodes(nodes)).toBe(2);
   });
 
   it('should count nested elements correctly', () => {
@@ -45,7 +45,7 @@ describe('countNodes', () => {
       </div>
     );
 
-    expect(countNodes(nodes)).toBe(5);
+    expect(countNodes(nodes)).toBe(2);
   });
 
   it('should count deeply nested elements correctly', () => {
@@ -59,7 +59,7 @@ describe('countNodes', () => {
       </div>
     );
 
-    expect(countNodes(nodes)).toBe(8);
+    expect(countNodes(nodes)).toBe(3);
   });
 
   it('should handle mixed text and element nodes', () => {
@@ -68,7 +68,7 @@ describe('countNodes', () => {
         Start<span>Middle</span>End
       </>
     );
-    expect(countNodes(nodes)).toBe(5);
+    expect(countNodes(nodes)).toBe(3);
   });
 
   it('should count nodes within an array of children', () => {
@@ -81,12 +81,12 @@ describe('countNodes', () => {
       'D',
     ]);
 
-    expect(countNodes(nodes)).toBe(6);
+    expect(countNodes(nodes)).toBe(4);
   });
 
-  it('should return 1 for an empty array', () => {
+  it('should return 0 for an empty array', () => {
     const nodes = getNodes(<></>);
-    expect(countNodes(nodes)).toBe(1);
+    expect(countNodes(nodes)).toBe(0);
   });
 
   it('should handle null and undefined nodes gracefully (not count them)', () => {
@@ -98,7 +98,7 @@ describe('countNodes', () => {
         <span>World</span>
       </>
     );
-    expect(countNodes(nodes)).toBe(4);
+    expect(countNodes(nodes)).toBe(2);
   });
 
   it('should count children of a functional component', () => {
@@ -110,7 +110,7 @@ describe('countNodes', () => {
       </MyComponent>
     );
 
-    expect(countNodes(nodes)).toBe(4);
+    expect(countNodes(nodes)).toBe(2);
   });
 
   it('should count nodes for a complex structure', () => {
@@ -128,6 +128,6 @@ describe('countNodes', () => {
       </>
     );
 
-    expect(countNodes(nodes)).toBe(11);
+    expect(countNodes(nodes)).toBe(5);
   });
 });

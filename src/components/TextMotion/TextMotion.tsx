@@ -91,13 +91,11 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
   const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
-  const { splittedNode, text } = shouldAnimate
-    ? splitNodeAndExtractText(children, split)
-    : { splittedNode: [children], text: DEFAULT_ARIA_LABEL };
+  const { splittedNode, text } = splitNodeAndExtractText(children, split);
   const resolvedMotion = useResolvedMotion({ motion, preset });
 
   const animatedChildren = useAnimatedChildren({
-    splittedNode,
+    splittedNode: shouldAnimate ? splittedNode : [children],
     initialDelay,
     animationOrder,
     resolvedMotion,
@@ -110,17 +108,17 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     }
   }, [shouldAnimate, onAnimationStart]);
 
-  if (shouldAnimate) {
+  if (!shouldAnimate) {
     return (
-      <Tag ref={targetRef} className="text-motion" aria-label={text || DEFAULT_ARIA_LABEL} {...rest}>
-        {animatedChildren}
+      <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text || DEFAULT_ARIA_LABEL} {...rest}>
+        {children}
       </Tag>
     );
   }
 
   return (
-    <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text || DEFAULT_ARIA_LABEL} {...rest}>
-      {children}
+    <Tag ref={targetRef} className="text-motion" aria-label={text || DEFAULT_ARIA_LABEL} {...rest}>
+      {animatedChildren}
     </Tag>
   );
 });

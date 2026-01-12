@@ -4,7 +4,8 @@ import { AnimatedSpan } from '../../components/AnimatedSpan';
 import type { AnimationOrder, Motion } from '../../types';
 import { countNodes } from '../../utils/countNodes';
 import { generateAnimation } from '../../utils/generateAnimation';
-import { isElementWithChildren, isTextNode } from '../../utils/typeGuards/typeGuards';
+import { calculateSequenceIndex, isLastNode } from '../../utils/sequenceHelpers';
+import { isElementWithChildren, isTextNode } from '../../utils/typeGuards';
 
 type UseAnimatedChildrenProps = {
   splittedNode: ReactNode[];
@@ -12,6 +13,11 @@ type UseAnimatedChildrenProps = {
   animationOrder: AnimationOrder;
   resolvedMotion: Motion;
   onAnimationEnd?: () => void;
+};
+
+type WrapResult = {
+  nodes: ReactNode[];
+  nextSequenceIndex: number;
 };
 
 /**
@@ -36,65 +42,67 @@ export const useAnimatedChildren = ({
 }: UseAnimatedChildrenProps): ReactNode[] => {
   const animatedChildren = useMemo(() => {
     const totalNodes = countNodes(splittedNode);
-    const sequenceIndexRef = { current: 0 };
 
-    return wrapWithAnimatedSpan(
+    const { nodes } = wrapWithAnimatedSpan(
       splittedNode,
+      0,
       initialDelay,
       animationOrder,
       resolvedMotion,
       totalNodes,
-      sequenceIndexRef,
       onAnimationEnd
     );
+
+    return nodes;
   }, [splittedNode, initialDelay, animationOrder, resolvedMotion, onAnimationEnd]);
 
   return animatedChildren;
 };
 
-const incrementSequenceIndex = (ref: { current: number }): number => {
-  const current = ref.current;
-  ref.current += 1;
-  return current;
-};
-
-export const wrapWithAnimatedSpan = (
+const wrapWithAnimatedSpan = (
   splittedNode: ReactNode[],
+  currentSequenceIndex: number,
   initialDelay: number,
   animationOrder: AnimationOrder,
   resolvedMotion: Motion,
   totalNodes: number,
-  sequenceIndexRef: { current: number },
   onAnimationEnd?: () => void
-): ReactNode[] => {
-  return splittedNode.map(node => {
-    const currentIndex = incrementSequenceIndex(sequenceIndexRef);
-    const sequenceIndex = animationOrder === 'first-to-last' ? currentIndex : totalNodes - currentIndex - 1;
+): WrapResult => {
+  let sequenceIndex = currentSequenceIndex;
 
-    const isLast = sequenceIndex === totalNodes - 1;
-    const handleAnimationEnd = isLast ? onAnimationEnd : undefined;
-
+  const nodes = splittedNode.map((node, key) => {
     if (isTextNode(node)) {
-      const { style } = generateAnimation(resolvedMotion, sequenceIndex, initialDelay);
+      const currentIndex = sequenceIndex++;
+      const calculatedSequenceIndex = calculateSequenceIndex(currentIndex, totalNodes, animationOrder);
+      const isLast = isLastNode(calculatedSequenceIndex, totalNodes);
+      const handleAnimationEnd = isLast ? onAnimationEnd : undefined;
+      const { style } = generateAnimation(resolvedMotion, calculatedSequenceIndex, initialDelay);
 
-      return <AnimatedSpan key={currentIndex} text={String(node)} style={style} onAnimationEnd={handleAnimationEnd} />;
+      return <AnimatedSpan key={key} text={String(node)} style={style} onAnimationEnd={handleAnimationEnd} />;
     }
 
     if (isElementWithChildren(node)) {
       const childArray = Children.toArray(node.props.children);
-      const animatedChildren = wrapWithAnimatedSpan(
+      const { nodes: animatedChildren, nextSequenceIndex } = wrapWithAnimatedSpan(
         childArray,
+        sequenceIndex,
         initialDelay,
         animationOrder,
         resolvedMotion,
         totalNodes,
-        sequenceIndexRef,
         onAnimationEnd
       );
+      sequenceIndex = nextSequenceIndex;
 
-      return cloneElement(node, { ...node.props, children: animatedChildren, key: currentIndex });
+      return cloneElement(node, {
+        ...node.props,
+        children: animatedChildren,
+        key,
+      });
     }
 
     return node;
   });
+
+  return { nodes, nextSequenceIndex: sequenceIndex };
 };

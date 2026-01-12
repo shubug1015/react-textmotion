@@ -52,6 +52,7 @@ export const useAnimatedChildren = ({
       totalNodes,
       onAnimationEnd
     );
+
     return nodes;
   }, [splittedNode, initialDelay, animationOrder, resolvedMotion, onAnimationEnd]);
 
@@ -69,15 +70,15 @@ const wrapWithAnimatedSpan = (
 ): WrapResult => {
   let sequenceIndex = currentSequenceIndex;
 
-  const nodes = splittedNode.map(node => {
-    const currentIndex = sequenceIndex++;
-    const calculatedSequenceIndex = calculateSequenceIndex(currentIndex, totalNodes, animationOrder);
-    const isLast = isLastNode(calculatedSequenceIndex, totalNodes);
-    const handleAnimationEnd = isLast ? onAnimationEnd : undefined;
-
+  const nodes = splittedNode.map((node, key) => {
     if (isTextNode(node)) {
+      const currentIndex = sequenceIndex++;
+      const calculatedSequenceIndex = calculateSequenceIndex(currentIndex, totalNodes, animationOrder);
+      const isLast = isLastNode(calculatedSequenceIndex, totalNodes);
+      const handleAnimationEnd = isLast ? onAnimationEnd : undefined;
       const { style } = generateAnimation(resolvedMotion, calculatedSequenceIndex, initialDelay);
-      return <AnimatedSpan key={currentIndex} text={String(node)} style={style} onAnimationEnd={handleAnimationEnd} />;
+
+      return <AnimatedSpan key={key} text={String(node)} style={style} onAnimationEnd={handleAnimationEnd} />;
     }
 
     if (isElementWithChildren(node)) {
@@ -96,7 +97,7 @@ const wrapWithAnimatedSpan = (
       return cloneElement(node, {
         ...node.props,
         children: animatedChildren,
-        key: currentIndex,
+        key,
       });
     }
 

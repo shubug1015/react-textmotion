@@ -37,4 +37,14 @@ describe('useResolvedMotion hook', () => {
       fade: { variant: 'in', duration: DURATION, delay: DELAY },
     });
   });
+
+  it('merges multiple presets correctly when multiple presets are provided', () => {
+    const preset: Preset[] = ['fade-in', 'slide-up'];
+    const { result } = renderHook(() => useResolvedMotion({ preset }));
+
+    expect(result.current).toEqual({
+      fade: { variant: 'in', duration: DURATION, delay: DELAY },
+      slide: { variant: 'up', duration: DURATION, delay: DELAY },
+    });
+  });
 });

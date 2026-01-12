@@ -25,7 +25,7 @@ type UseResolvedMotionProps = {
 export const useResolvedMotion = ({ motion, preset }: UseResolvedMotionProps): Motion => {
   const resolvedMotion = useMemo(() => {
     if (preset) {
-      return preset.reduce((config, presetName) => ({ ...config, ...motionMap[presetName] }), {});
+      return mergePresets(preset);
     }
 
     if (motion && Object.keys(motion).length > 0) {
@@ -36,4 +36,10 @@ export const useResolvedMotion = ({ motion, preset }: UseResolvedMotionProps): M
   }, [motion, preset]);
 
   return resolvedMotion;
+};
+
+const mergePresets = (presets: Preset[]): Motion => {
+  return presets.reduce((config, presetName) => {
+    return { ...config, ...motionMap[presetName] };
+  }, {});
 };

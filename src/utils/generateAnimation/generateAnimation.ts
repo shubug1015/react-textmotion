@@ -1,7 +1,7 @@
 import { type CSSProperties } from 'react';
 
 import { ANIMATION_DEFAULTS } from '../../constants';
-import type { CustomAnimation, Motion } from '../../types';
+import type { CustomAnimation, Motion, StandardAnimation } from '../../types';
 
 export type StyleWithCustomProperties = CSSProperties & {
   [key: `--${string}`]: string | number;
@@ -23,37 +23,59 @@ export const generateAnimation = (
   sequenceIndex: number,
   initialDelay: number
 ): { style: StyleWithCustomProperties } => {
-  const { animations, style } = Object.entries(motionConfig).reduce(
-    (accumulator, [name, config]) => {
-      if (config === undefined || config === null) return accumulator;
+  const animations: string[] = [];
+  let style: StyleWithCustomProperties = {};
 
-      if (name === ANIMATION_DEFAULTS.CUSTOM_ANIMATION_KEY) {
-        const { name: animationName, duration, delay, easing = ANIMATION_DEFAULTS.EASING } = config as CustomAnimation;
-        const calculatedDelay = sequenceIndex * delay + initialDelay;
+  Object.entries(motionConfig).forEach(([name, config]) => {
+    if (config === undefined || config === null) return;
 
-        const animationString = `${animationName} ${duration}s ${easing} ${calculatedDelay}s both`;
-        accumulator.animations.push(animationString);
-      } else if ('variant' in config) {
-        const { variant, duration, delay, easing = ANIMATION_DEFAULTS.EASING, ...rest } = config;
-        const calculatedDelay = sequenceIndex * delay + initialDelay;
-
-        const animationString = `${name}-${variant} ${duration}s ${easing} ${calculatedDelay}s both`;
-        accumulator.animations.push(animationString);
-
-        const customProps = Object.entries(rest).reduce<StyleWithCustomProperties>((styleAccumulator, [key, value]) => {
-          if (value !== undefined && value !== null) {
-            styleAccumulator[`--${name}-${key}`] = value as string | number;
-          }
-          return styleAccumulator;
-        }, {});
-
-        accumulator.style = { ...accumulator.style, ...customProps };
-      }
-
-      return accumulator;
-    },
-    { animations: [] as string[], style: {} as StyleWithCustomProperties }
-  );
+    if (name === ANIMATION_DEFAULTS.CUSTOM_ANIMATION_KEY) {
+      const { animationString } = processCustomAnimation(config as CustomAnimation, sequenceIndex, initialDelay);
+      animations.push(animationString);
+    } else if ('variant' in config) {
+      const { animationString, customProps } = processStandardAnimation(
+        name,
+        config as StandardAnimation,
+        sequenceIndex,
+        initialDelay
+      );
+      animations.push(animationString);
+      style = { ...style, ...customProps };
+    }
+  });
 
   return { style: { animation: animations.join(', '), ...style } };
+};
+
+const processStandardAnimation = (
+  name: string,
+  config: StandardAnimation,
+  sequenceIndex: number,
+  initialDelay: number
+): { animationString: string; customProps: StyleWithCustomProperties } => {
+  const { variant, duration, delay, easing = ANIMATION_DEFAULTS.EASING, ...rest } = config;
+  const calculatedDelay = sequenceIndex * delay + initialDelay;
+  const animationString = `${name}-${variant} ${duration}s ${easing} ${calculatedDelay}s both`;
+
+  const customProps = Object.entries(rest).reduce<StyleWithCustomProperties>((styleAccumulator, [key, value]) => {
+    if (value !== undefined && value !== null) {
+      styleAccumulator[`--${name}-${key}`] = value as string | number;
+    }
+
+    return styleAccumulator;
+  }, {});
+
+  return { animationString, customProps };
+};
+
+const processCustomAnimation = (
+  config: CustomAnimation,
+  sequenceIndex: number,
+  initialDelay: number
+): { animationString: string; customProps: StyleWithCustomProperties } => {
+  const { name: animationName, duration, delay, easing = ANIMATION_DEFAULTS.EASING } = config;
+  const calculatedDelay = sequenceIndex * delay + initialDelay;
+  const animationString = `${animationName} ${duration}s ${easing} ${calculatedDelay}s both`;
+
+  return { animationString, customProps: {} };
 };

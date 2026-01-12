@@ -118,6 +118,19 @@ export type FlipAnimation = BaseAnimation & {
 
 /**
  * @description
+ * Union type for all standard animation types.
+ */
+export type StandardAnimation =
+  | FadeAnimation
+  | ScaleAnimation
+  | SlideAnimation
+  | RotateAnimation
+  | BounceAnimation
+  | ElasticAnimation
+  | FlipAnimation;
+
+/**
+ * @description
  * Properties for user-defined custom animations.
  *
  * @property {string} name - The name of the custom CSS animation (keyframes).

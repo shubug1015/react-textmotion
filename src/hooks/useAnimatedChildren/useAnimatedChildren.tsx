@@ -2,6 +2,7 @@ import { Children, cloneElement, type ReactNode, useMemo } from 'react';
 
 import { AnimatedSpan } from '../../components/AnimatedSpan';
 import type { AnimationOrder, Motion } from '../../types';
+import { countNodes } from '../../utils/countNodes';
 import { generateAnimation } from '../../utils/generateAnimation';
 import { isElementWithChildren, isTextNode } from '../../utils/typeGuards/typeGuards';
 
@@ -49,20 +50,6 @@ export const useAnimatedChildren = ({
   }, [splittedNode, initialDelay, animationOrder, resolvedMotion, onAnimationEnd]);
 
   return animatedChildren;
-};
-
-const countNodes = (nodes: ReactNode[]): number => {
-  let count = 0;
-
-  Children.forEach(nodes, node => {
-    count += 1;
-
-    if (isElementWithChildren(node)) {
-      count += countNodes(Children.toArray(node.props.children));
-    }
-  });
-
-  return count;
 };
 
 const incrementSequenceIndex = (ref: { current: number }): number => {

@@ -1,6 +1,6 @@
 import { type CSSProperties, type FC } from 'react';
 
-import { useAnimationEndCallback } from '../../hooks/useAnimationEndCallback';
+import { useAnimationEndCallback } from '../useAnimationEndCallback';
 
 type Props = {
   text: string;

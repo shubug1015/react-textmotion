@@ -1,4 +1,4 @@
-import { Children, cloneElement, type ReactNode, useEffect, useMemo, useRef } from 'react';
+import { Children, cloneElement, type MutableRefObject, type ReactNode, useEffect, useMemo, useRef } from 'react';
 
 import type { AnimationOrder, Motion } from '../../types';
 import { countNodes } from '../../utils/countNodes';
@@ -73,7 +73,7 @@ const wrapWithAnimatedSpan = (
   animationOrder: AnimationOrder,
   resolvedMotion: Motion,
   totalNodes: number,
-  onAnimationEndRef?: React.RefObject<(() => void) | undefined>
+  onAnimationEndRef?: MutableRefObject<(() => void) | undefined>
 ): WrapResult => {
   let sequenceIndex = currentSequenceIndex;
 
@@ -82,7 +82,7 @@ const wrapWithAnimatedSpan = (
       const currentIndex = sequenceIndex++;
       const calculatedSequenceIndex = calculateSequenceIndex(currentIndex, totalNodes, animationOrder);
       const isLast = isLastNode(calculatedSequenceIndex, totalNodes);
-      const handleAnimationEnd = isLast ? onAnimationEndRef?.current : undefined;
+      const handleAnimationEnd = isLast ? () => onAnimationEndRef?.current?.() : undefined;
       const { style } = generateAnimation(resolvedMotion, calculatedSequenceIndex, initialDelay);
 
       return <AnimatedSpan key={key} text={String(node)} style={style} onAnimationEnd={handleAnimationEnd} />;

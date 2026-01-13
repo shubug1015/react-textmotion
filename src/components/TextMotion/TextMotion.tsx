@@ -4,12 +4,9 @@ import '../../styles/motion.scss';
 import { type FC, memo, useEffect } from 'react';
 
 import { DEFAULT_ARIA_LABEL } from '../../constants';
-import { useAnimatedChildren } from '../../hooks/useAnimatedChildren';
-import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
-import { useResolvedMotion } from '../../hooks/useResolvedMotion';
+import { useTextMotionAnimation } from '../../hooks/useTextMotionAnimation';
 import { useValidation } from '../../hooks/useValidation';
 import type { TextMotionProps } from '../../types';
-import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
 
 /**
  * @description
@@ -71,36 +68,11 @@ import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
  * }
  */
 export const TextMotion: FC<TextMotionProps> = memo(props => {
-  const {
-    children,
-    as: Tag = 'span',
-    split = 'character',
-    trigger = 'scroll',
-    repeat = true,
-    initialDelay = 0,
-    animationOrder = 'first-to-last',
-    motion,
-    preset,
-    onAnimationStart,
-    onAnimationEnd,
-    ...rest
-  } = props;
+  const { as: Tag = 'span', children, onAnimationStart } = props;
 
   useValidation({ componentName: 'TextMotion', props });
 
-  const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
-  const shouldAnimate = trigger === 'on-load' || isIntersecting;
-
-  const { splittedNode, text } = splitNodeAndExtractText(children, split);
-  const resolvedMotion = useResolvedMotion({ motion, preset });
-
-  const animatedChildren = useAnimatedChildren({
-    splittedNode: shouldAnimate ? splittedNode : [children],
-    initialDelay,
-    animationOrder,
-    resolvedMotion,
-    onAnimationEnd,
-  });
+  const { shouldAnimate, targetRef, animatedChildren, text } = useTextMotionAnimation(props);
 
   useEffect(() => {
     if (shouldAnimate) {
@@ -110,14 +82,14 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
 
   if (!shouldAnimate) {
     return (
-      <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text || DEFAULT_ARIA_LABEL} {...rest}>
+      <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text || DEFAULT_ARIA_LABEL}>
         {children}
       </Tag>
     );
   }
 
   return (
-    <Tag ref={targetRef} className="text-motion" aria-label={text || DEFAULT_ARIA_LABEL} {...rest}>
+    <Tag ref={targetRef} className="text-motion" aria-label={text || DEFAULT_ARIA_LABEL}>
       {animatedChildren}
     </Tag>
   );

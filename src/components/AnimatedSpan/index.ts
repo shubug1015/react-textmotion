@@ -1,1 +1,0 @@
-export { AnimatedSpan } from './AnimatedSpan';

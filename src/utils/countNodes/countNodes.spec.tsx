@@ -5,6 +5,11 @@ import { countNodes } from './countNodes';
 describe('countNodes', () => {
   const getNodes = (children: ReactNode) => Children.toArray(children);
 
+  it('should handle null nodes', () => {
+    const nodes = [null];
+    expect(countNodes(nodes)).toBe(0);
+  });
+
   it('should count a single text node as 1', () => {
     const nodes = getNodes('Hello');
     expect(countNodes(nodes)).toBe(1);

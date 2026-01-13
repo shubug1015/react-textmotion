@@ -1,4 +1,6 @@
-import { type CSSProperties, type FC, useCallback, useRef } from 'react';
+import { type CSSProperties, type FC } from 'react';
+
+import { useAnimationEndCallback } from '../useAnimationEndCallback';
 
 type Props = {
   text: string;
@@ -17,14 +19,7 @@ type Props = {
  * @returns {JSX.Element} A React element `<span>` with inline animation styles.
  */
 export const AnimatedSpan: FC<Props> = ({ text, style, onAnimationEnd }) => {
-  const calledRef = useRef(false);
-
-  const handleAnimationEnd = useCallback(() => {
-    if (!calledRef.current) {
-      calledRef.current = true;
-      onAnimationEnd?.();
-    }
-  }, [onAnimationEnd]);
+  const handleAnimationEnd = useAnimationEndCallback(onAnimationEnd);
 
   if (text === '\n') {
     return <br />;

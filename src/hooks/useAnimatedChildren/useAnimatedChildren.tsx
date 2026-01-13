@@ -1,11 +1,12 @@
 import { Children, cloneElement, type ReactNode, useMemo } from 'react';
 
-import { AnimatedSpan } from '../../components/AnimatedSpan';
 import type { AnimationOrder, Motion } from '../../types';
 import { countNodes } from '../../utils/countNodes';
 import { generateAnimation } from '../../utils/generateAnimation';
 import { calculateSequenceIndex, isLastNode } from '../../utils/sequenceHelpers';
 import { isElementWithChildren, isTextNode } from '../../utils/typeGuards';
+
+import { AnimatedSpan } from './AnimatedSpan';
 
 type UseAnimatedChildrenProps = {
   splittedNode: ReactNode[];

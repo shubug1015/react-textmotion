@@ -1,12 +1,13 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { type FC, memo, useEffect } from 'react';
+import { type FC, memo, useEffect, useRef } from 'react';
 
 import { DEFAULT_ARIA_LABEL } from '../../constants';
 import { useTextMotionAnimation } from '../../hooks/useTextMotionAnimation';
 import { useValidation } from '../../hooks/useValidation';
 import type { TextMotionProps } from '../../types';
+import { getAriaLabel } from '../../utils/accessibility';
 
 /**
  * @description
@@ -69,28 +70,39 @@ import type { TextMotionProps } from '../../types';
  */
 export const TextMotion: FC<TextMotionProps> = memo(props => {
   const { as: Tag = 'span', children, onAnimationStart } = props;
-
   useValidation({ componentName: 'TextMotion', props });
 
   const { shouldAnimate, targetRef, animatedChildren, text } = useTextMotionAnimation(props);
 
+  const onAnimationStartRef = useRef(onAnimationStart);
+
+  useEffect(() => {
+    onAnimationStartRef.current = onAnimationStart;
+  }, [onAnimationStart]);
+
   useEffect(() => {
     if (shouldAnimate) {
-      onAnimationStart?.();
+      onAnimationStartRef.current?.();
     }
-  }, [shouldAnimate, onAnimationStart]);
+  }, [shouldAnimate]);
 
   if (!shouldAnimate) {
+    const ariaProps = getAriaLabel(text || DEFAULT_ARIA_LABEL);
+
     return (
-      <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text || DEFAULT_ARIA_LABEL}>
+      <Tag ref={targetRef} className="text-motion-inanimate" {...ariaProps}>
         {children}
       </Tag>
     );
   }
 
-  return (
-    <Tag ref={targetRef} className="text-motion" aria-label={text || DEFAULT_ARIA_LABEL}>
-      {animatedChildren}
-    </Tag>
-  );
+  return (() => {
+    const ariaProps = getAriaLabel(text || DEFAULT_ARIA_LABEL);
+
+    return (
+      <Tag ref={targetRef} className="text-motion" {...ariaProps}>
+        {animatedChildren}
+      </Tag>
+    );
+  })();
 });

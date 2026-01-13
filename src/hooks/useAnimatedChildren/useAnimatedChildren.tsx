@@ -1,4 +1,4 @@
-import { Children, cloneElement, type ReactNode, useMemo } from 'react';
+import { Children, cloneElement, type ReactNode, useEffect, useMemo, useRef } from 'react';
 
 import type { AnimationOrder, Motion } from '../../types';
 import { countNodes } from '../../utils/countNodes';
@@ -41,6 +41,12 @@ export const useAnimatedChildren = ({
   resolvedMotion,
   onAnimationEnd,
 }: UseAnimatedChildrenProps): ReactNode[] => {
+  const onAnimationEndRef = useRef(onAnimationEnd);
+
+  useEffect(() => {
+    onAnimationEndRef.current = onAnimationEnd;
+  }, [onAnimationEnd]);
+
   const animatedChildren = useMemo(() => {
     const totalNodes = countNodes(splittedNode);
 
@@ -51,11 +57,11 @@ export const useAnimatedChildren = ({
       animationOrder,
       resolvedMotion,
       totalNodes,
-      onAnimationEnd
+      onAnimationEndRef.current
     );
 
     return nodes;
-  }, [splittedNode, initialDelay, animationOrder, resolvedMotion, onAnimationEnd]);
+  }, [splittedNode, initialDelay, animationOrder, resolvedMotion]);
 
   return animatedChildren;
 };

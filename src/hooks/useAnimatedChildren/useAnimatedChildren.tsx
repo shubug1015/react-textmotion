@@ -57,7 +57,7 @@ export const useAnimatedChildren = ({
       animationOrder,
       resolvedMotion,
       totalNodes,
-      onAnimationEndRef.current
+      onAnimationEndRef
     );
 
     return nodes;
@@ -73,7 +73,7 @@ const wrapWithAnimatedSpan = (
   animationOrder: AnimationOrder,
   resolvedMotion: Motion,
   totalNodes: number,
-  onAnimationEnd?: () => void
+  onAnimationEndRef?: React.RefObject<(() => void) | undefined>
 ): WrapResult => {
   let sequenceIndex = currentSequenceIndex;
 
@@ -82,7 +82,7 @@ const wrapWithAnimatedSpan = (
       const currentIndex = sequenceIndex++;
       const calculatedSequenceIndex = calculateSequenceIndex(currentIndex, totalNodes, animationOrder);
       const isLast = isLastNode(calculatedSequenceIndex, totalNodes);
-      const handleAnimationEnd = isLast ? onAnimationEnd : undefined;
+      const handleAnimationEnd = isLast ? onAnimationEndRef?.current : undefined;
       const { style } = generateAnimation(resolvedMotion, calculatedSequenceIndex, initialDelay);
 
       return <AnimatedSpan key={key} text={String(node)} style={style} onAnimationEnd={handleAnimationEnd} />;
@@ -97,7 +97,7 @@ const wrapWithAnimatedSpan = (
         animationOrder,
         resolvedMotion,
         totalNodes,
-        onAnimationEnd
+        onAnimationEndRef
       );
       sequenceIndex = nextSequenceIndex;
 

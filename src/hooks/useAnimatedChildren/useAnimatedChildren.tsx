@@ -1,4 +1,4 @@
-import { Children, cloneElement, type ReactNode, useMemo } from 'react';
+import { Children, cloneElement, type MutableRefObject, type ReactNode, useEffect, useMemo, useRef } from 'react';
 
 import type { AnimationOrder, Motion } from '../../types';
 import { countNodes } from '../../utils/countNodes';
@@ -41,6 +41,12 @@ export const useAnimatedChildren = ({
   resolvedMotion,
   onAnimationEnd,
 }: UseAnimatedChildrenProps): ReactNode[] => {
+  const onAnimationEndRef = useRef(onAnimationEnd);
+
+  useEffect(() => {
+    onAnimationEndRef.current = onAnimationEnd;
+  }, [onAnimationEnd]);
+
   const animatedChildren = useMemo(() => {
     const totalNodes = countNodes(splittedNode);
 
@@ -51,11 +57,11 @@ export const useAnimatedChildren = ({
       animationOrder,
       resolvedMotion,
       totalNodes,
-      onAnimationEnd
+      onAnimationEndRef
     );
 
     return nodes;
-  }, [splittedNode, initialDelay, animationOrder, resolvedMotion, onAnimationEnd]);
+  }, [splittedNode, initialDelay, animationOrder, resolvedMotion]);
 
   return animatedChildren;
 };
@@ -67,7 +73,7 @@ const wrapWithAnimatedSpan = (
   animationOrder: AnimationOrder,
   resolvedMotion: Motion,
   totalNodes: number,
-  onAnimationEnd?: () => void
+  onAnimationEndRef?: MutableRefObject<(() => void) | undefined>
 ): WrapResult => {
   let sequenceIndex = currentSequenceIndex;
 
@@ -76,7 +82,7 @@ const wrapWithAnimatedSpan = (
       const currentIndex = sequenceIndex++;
       const calculatedSequenceIndex = calculateSequenceIndex(currentIndex, totalNodes, animationOrder);
       const isLast = isLastNode(calculatedSequenceIndex, totalNodes);
-      const handleAnimationEnd = isLast ? onAnimationEnd : undefined;
+      const handleAnimationEnd = isLast ? () => onAnimationEndRef?.current?.() : undefined;
       const { style } = generateAnimation(resolvedMotion, calculatedSequenceIndex, initialDelay);
 
       return <AnimatedSpan key={key} text={String(node)} style={style} onAnimationEnd={handleAnimationEnd} />;
@@ -91,7 +97,7 @@ const wrapWithAnimatedSpan = (
         animationOrder,
         resolvedMotion,
         totalNodes,
-        onAnimationEnd
+        onAnimationEndRef
       );
       sequenceIndex = nextSequenceIndex;
 

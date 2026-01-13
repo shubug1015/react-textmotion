@@ -1,21 +1,22 @@
 import '../../styles/animations.scss';
 import '../../styles/motion.scss';
 
-import { type FC, memo, useEffect } from 'react';
+import { type FC, memo, useEffect, useRef } from 'react';
 
 import { DEFAULT_ARIA_LABEL } from '../../constants';
 import { useTextMotionAnimation } from '../../hooks/useTextMotionAnimation';
 import { useValidation } from '../../hooks/useValidation';
 import type { TextMotionProps } from '../../types';
+import { getAriaLabel } from '../../utils/accessibility';
 
 /**
  * @description
  * `TextMotion` is a component that animates its children by applying motion presets or custom motion configurations.
- * It can animate text nodes by splitting them into characters, words or lines, and can also animate other React elements.
+ * It can animate text nodes by splitting them into characters or words, and can also animate other React elements.
  *
  * @param {ReactNode} children - The content to animate. Can be a string, a number, or any React element.
  * @param {ElementType} [as='span'] - The HTML tag to render. Defaults to `span`.
- * @param {Split} [split='character'] - Defines how the text is split for animation (`character`, `word`, or `line`). `line` is only applicable for string children. Defaults to `'character'`.
+ * @param {Split} [split='character'] - Defines how the text is split for animation (`character` or `word`). Defaults to `'character'`.
  * @param {Trigger} [trigger='scroll'] - Defines when the animation should start. 'on-load' starts the animation immediately. 'scroll' starts the animation only when the component enters the viewport. Defaults to `'scroll'`.
  * @param {boolean} [repeat=true] - Determines if the animation should repeat every time it enters the viewport. Only applicable when `trigger` is `'scroll'`. Defaults to `true`.
  * @param {number} [initialDelay=0] - The initial delay before the animation starts, in seconds. Defaults to `0`.
@@ -69,28 +70,39 @@ import type { TextMotionProps } from '../../types';
  */
 export const TextMotion: FC<TextMotionProps> = memo(props => {
   const { as: Tag = 'span', children, onAnimationStart } = props;
-
   useValidation({ componentName: 'TextMotion', props });
 
   const { shouldAnimate, targetRef, animatedChildren, text } = useTextMotionAnimation(props);
 
+  const onAnimationStartRef = useRef(onAnimationStart);
+
+  useEffect(() => {
+    onAnimationStartRef.current = onAnimationStart;
+  }, [onAnimationStart]);
+
   useEffect(() => {
     if (shouldAnimate) {
-      onAnimationStart?.();
+      onAnimationStartRef.current?.();
     }
-  }, [shouldAnimate, onAnimationStart]);
+  }, [shouldAnimate]);
 
   if (!shouldAnimate) {
+    const ariaProps = getAriaLabel(text || DEFAULT_ARIA_LABEL);
+
     return (
-      <Tag ref={targetRef} className="text-motion-inanimate" aria-label={text || DEFAULT_ARIA_LABEL}>
+      <Tag ref={targetRef} className="text-motion-inanimate" {...ariaProps}>
         {children}
       </Tag>
     );
   }
 
-  return (
-    <Tag ref={targetRef} className="text-motion" aria-label={text || DEFAULT_ARIA_LABEL}>
-      {animatedChildren}
-    </Tag>
-  );
+  return (() => {
+    const ariaProps = getAriaLabel(text || DEFAULT_ARIA_LABEL);
+
+    return (
+      <Tag ref={targetRef} className="text-motion" {...ariaProps}>
+        {animatedChildren}
+      </Tag>
+    );
+  })();
 });

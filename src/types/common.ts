@@ -14,9 +14,8 @@ import type {
  * Defines how text is split for animation.
  * - `character`: Splits the text into individual characters.
  * - `word`: Splits the text into words.
- * - `line`: Splits the text into lines.
  */
-export type Split = 'character' | 'word' | 'line';
+export type Split = 'character' | 'word';
 
 /**
  * @description

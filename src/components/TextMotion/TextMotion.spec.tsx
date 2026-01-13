@@ -262,20 +262,20 @@ describe('TextMotion with different split options (component-level via hook mock
     expect(animatedSpans[3].textContent).toBe('!');
   });
 
-  it('should warn when using split="line" with non-string children', () => {
-    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+  // it('should warn when using split="line" with non-string children', () => {
+  //   const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    render(
-      <TextMotion trigger="on-load" split="line">
-        Hello <strong>World</strong>
-      </TextMotion>
-    );
+  //   render(
+  //     <TextMotion trigger="on-load" split="line">
+  //       Hello <strong>World</strong>
+  //     </TextMotion>
+  //   );
 
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
-      'TextMotion validation warnings:',
-      expect.arrayContaining(['split="line" is only applicable when children is a string.'])
-    );
+  //   expect(consoleWarnSpy).toHaveBeenCalledWith(
+  //     'TextMotion validation warnings:',
+  //     expect.arrayContaining(['split="line" is only applicable when children is a string.'])
+  //   );
 
-    consoleWarnSpy.mockRestore();
-  });
+  //   consoleWarnSpy.mockRestore();
+  // });
 });

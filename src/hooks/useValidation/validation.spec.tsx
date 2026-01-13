@@ -27,18 +27,18 @@ describe('validation utility', () => {
       expect(warnings).toContain('children prop is empty');
     });
 
-    it('should return a warning for "line" split with non-string children', () => {
-      const props: TextMotionProps = {
-        children: [<div key="1" />],
-        split: 'line',
-      };
-      const { warnings } = validateTextMotionProps(props);
+    // it('should return a warning for "line" split with non-string children', () => {
+    //   const props: TextMotionProps = {
+    //     children: [<div key="1" />],
+    //     split: 'line',
+    //   };
+    //   const { warnings } = validateTextMotionProps(props);
 
-      expect(warnings).toContain('split="line" is only applicable when children is a string.');
-    });
+    //   expect(warnings).toContain('split="line" is only applicable when children is a string.');
+    // });
 
     it('should accept valid split values', () => {
-      (['character', 'word', 'line'] as const).forEach(split => {
+      (['character', 'word'] as const).forEach(split => {
         const props: TextMotionProps = { children: 'hello', split };
         const { errors } = validateTextMotionProps(props);
 

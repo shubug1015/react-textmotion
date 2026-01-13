@@ -22,9 +22,9 @@ export const validateTextMotionProps = (props: TextMotionProps): ValidationResul
     warnings.push('children prop is empty');
   }
 
-  if (props.split === 'line' && typeof props.children !== 'string') {
-    warnings.push('split="line" is only applicable when children is a string.');
-  }
+  // if (props.split === 'line' && typeof props.children !== 'string') {
+  //   warnings.push('split="line" is only applicable when children is a string.');
+  // }
 
   const common = validateCommonProps(props);
 
@@ -45,8 +45,8 @@ const validateCommonProps = (props: Partial<TextMotionProps>): ValidationResult 
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  if (props.split !== undefined && !['character', 'word', 'line'].includes(props.split)) {
-    errors.push('split prop must be one of: character, word, line');
+  if (props.split !== undefined && !['character', 'word'].includes(props.split)) {
+    errors.push('split prop must be one of: character, word');
   }
 
   if (props.trigger !== undefined && !['on-load', 'scroll'].includes(props.trigger)) {

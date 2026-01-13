@@ -1,0 +1,1 @@
+export { useTextMotionAnimation } from './useTextMotionAnimation';

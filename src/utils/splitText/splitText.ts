@@ -13,8 +13,8 @@ export const splitText = (text: string, split: Split): string[] => {
   switch (split) {
     case 'word':
       return text.split(/(\s+)/).filter(Boolean);
-    case 'line':
-      return text.split(/(\n)/).filter(Boolean);
+    // case 'line':
+    //   return text.split(/(\n)/).filter(Boolean);
     case 'character':
     default:
       return text.split('');

@@ -22,7 +22,7 @@ describe('useValidation hook', () => {
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'TextMotion validation errors:',
-      expect.arrayContaining(['split prop must be one of: character, word, line'])
+      expect.arrayContaining(['split prop must be one of: character, word'])
     );
 
     consoleErrorSpy.mockRestore();

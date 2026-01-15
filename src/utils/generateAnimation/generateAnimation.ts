@@ -24,7 +24,7 @@ export const generateAnimation = (
   initialDelay: number
 ): { style: StyleWithCustomProperties } => {
   const animations: string[] = [];
-  let style: StyleWithCustomProperties = {};
+  const style: StyleWithCustomProperties = {};
 
   Object.entries(motionConfig).forEach(([name, config]) => {
     if (config === undefined || config === null) return;
@@ -32,19 +32,28 @@ export const generateAnimation = (
     if (name === ANIMATION_DEFAULTS.CUSTOM_ANIMATION_KEY) {
       const { animationString } = processCustomAnimation(config as CustomAnimation, sequenceIndex, initialDelay);
       animations.push(animationString);
-    } else if ('variant' in config) {
+      return;
+    }
+
+    if (typeof config === 'object' && config !== null && 'variant' in config) {
       const { animationString, customProps } = processStandardAnimation(
         name,
         config as StandardAnimation,
         sequenceIndex,
         initialDelay
       );
+
       animations.push(animationString);
-      style = { ...style, ...customProps };
+      Object.assign(style, customProps);
     }
   });
 
-  return { style: { animation: animations.join(', '), ...style } };
+  return {
+    style: {
+      animation: animations.join(', '),
+      ...style,
+    },
+  };
 };
 
 const processStandardAnimation = (

@@ -17,7 +17,7 @@ describe('useTextMotionAnimation', () => {
   const mockUseIntersectionObserver = useIntersectionObserver as jest.Mock;
   const mockUseResolvedMotion = useResolvedMotion as jest.Mock;
   const mockUseAnimatedChildren = useAnimatedChildren as jest.Mock;
-  const mockSplitNodeAndExtractText = splitReactNode as jest.Mock;
+  const mockSplitReactNode = splitReactNode as jest.Mock;
 
   const defaultProps: TextMotionProps = {
     children: 'Hello',
@@ -27,7 +27,7 @@ describe('useTextMotionAnimation', () => {
     mockUseIntersectionObserver.mockReturnValue([null, true]);
     mockUseResolvedMotion.mockReturnValue({});
     mockUseAnimatedChildren.mockReturnValue([]);
-    mockSplitNodeAndExtractText.mockReturnValue({ nodes: ['H', 'e', 'l', 'l', 'o'], text: 'Hello' });
+    mockSplitReactNode.mockReturnValue({ nodes: ['H', 'e', 'l', 'l', 'o'], text: 'Hello' });
   });
 
   afterEach(() => {
@@ -36,7 +36,7 @@ describe('useTextMotionAnimation', () => {
 
   it('should call splitReactNode with children and split type', () => {
     renderHook(() => useTextMotionAnimation({ ...defaultProps, split: 'word' }));
-    expect(mockSplitNodeAndExtractText).toHaveBeenCalledWith('Hello', 'word');
+    expect(mockSplitReactNode).toHaveBeenCalledWith('Hello', 'word');
   });
 
   it('should determine shouldAnimate based on trigger and intersection', () => {
@@ -96,7 +96,7 @@ describe('useTextMotionAnimation', () => {
 
   it('should return correct values', () => {
     mockUseIntersectionObserver.mockReturnValue(['ref', true]);
-    mockSplitNodeAndExtractText.mockReturnValue({ nodes: ['Test'], text: 'Test' });
+    mockSplitReactNode.mockReturnValue({ nodes: ['Test'], text: 'Test' });
     mockUseAnimatedChildren.mockReturnValue(['Animated Test']);
 
     const { result } = renderHook(() => useTextMotionAnimation(defaultProps));

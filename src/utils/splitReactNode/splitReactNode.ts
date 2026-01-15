@@ -11,7 +11,7 @@ type SplitResult = {
 
 /**
  * @description
- * `splitNodeAndExtractText` is a recursive pure function that traverses a React node and its children,
+ * `splitReactNode` is a recursive pure function that traverses a React node and its children,
  * splitting nodes into substrings based on the specified split type.
  * It returns an object containing the array of substrings and the extracted text.
  *

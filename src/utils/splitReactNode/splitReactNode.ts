@@ -18,7 +18,7 @@ type SplitResult = {
  * @param {ReactNode} node - The React node to split.
  * @param {Split} split - The split type for text animations (`character` or `word`).
  *
- * @returns {{ nodes: ReactNode[]; text: string }} An object containing the array of substrings and the extracted text.
+ * @returns {SplitResult} An object containing the array of substrings and the extracted text.
  */
 export const splitReactNode = (node: ReactNode, split: Split): SplitResult => {
   if (isNonRenderableNode(node)) {

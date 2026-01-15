@@ -6,6 +6,7 @@ import { isValidElement, type ReactElement, type ReactNode } from 'react';
  * It returns `true` if the node is a string or number, otherwise `false`.
  *
  * @param {ReactNode} node - The React node to check.
+ *
  * @returns {boolean} `true` if the node is a string or number, otherwise `false`.
  */
 export const isTextNode = (node: ReactNode): node is string | number => {
@@ -18,6 +19,7 @@ export const isTextNode = (node: ReactNode): node is string | number => {
  * It returns `true` if the node is null, undefined, or boolean, otherwise `false`.
  *
  * @param {ReactNode} node - The React node to check.
+ *
  * @returns {boolean} `true` if the node is null, undefined, or boolean, otherwise `false`.
  */
 export const isNonRenderableNode = (node: ReactNode): node is null | undefined | boolean => {
@@ -30,6 +32,7 @@ export const isNonRenderableNode = (node: ReactNode): node is null | undefined |
  * It returns `true` if the node is a valid React element with children, otherwise `false`.
  *
  * @param {ReactNode} node - The React node to check.
+ *
  * @returns {boolean} `true` if the node is a valid React element with children, otherwise `false`.
  */
 export const isElementWithChildren = (node: ReactNode): node is ReactElement<{ children?: ReactNode }> => {

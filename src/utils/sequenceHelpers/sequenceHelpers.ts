@@ -8,6 +8,7 @@ import type { AnimationOrder } from '../../types';
  * @param {number} currentIndex - The current index of the node.
  * @param {number} totalNodes - The total number of nodes in the sequence.
  * @param {AnimationOrder} animationOrder - The animation order of the sequence.
+ *
  * @returns {number} The sequence index of the node.
  */
 export const calculateSequenceIndex = (
@@ -25,6 +26,7 @@ export const calculateSequenceIndex = (
  *
  * @param {number} sequenceIndex - The sequence index of the node.
  * @param {number} totalNodes - The total number of nodes in the sequence.
+ *
  * @returns {boolean} `true` if the node is the last node, otherwise `false`.
  */
 export const isLastNode = (sequenceIndex: number, totalNodes: number): boolean => {

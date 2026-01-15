@@ -7,7 +7,8 @@ import { isElementWithChildren, isNonRenderableNode, isTextNode } from '../typeG
  * `countNodes` is a recursive pure function that counts the number of text nodes in a React node tree.
  * It returns the total number of text nodes in the tree, which are the nodes that will be animated.
  *
- * @param {ReactNode[]} nodes - The array of React nodes to count.
+ * @param {ReactNode} node - The React node to count.
+ *
  * @returns {number} The total number of animated (text) nodes in the tree.
  */
 export const countNodes = (node: ReactNode): number => {

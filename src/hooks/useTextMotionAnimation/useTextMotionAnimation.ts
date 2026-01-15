@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import type { TextMotionProps } from '../../types';
-import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
+import { splitReactNode } from '../../utils/splitReactNode';
 import { useAnimatedChildren } from '../useAnimatedChildren';
 import { useIntersectionObserver } from '../useIntersectionObserver';
 import { useResolvedMotion } from '../useResolvedMotion';
@@ -30,12 +30,12 @@ export const useTextMotionAnimation = (props: TextMotionProps) => {
   const [targetRef, isIntersecting] = useIntersectionObserver({ repeat });
   const shouldAnimate = trigger === 'on-load' || isIntersecting;
 
-  const { splittedNode, text } = useMemo(() => splitNodeAndExtractText(children, split), [children, split]);
+  const { nodes, text } = useMemo(() => splitReactNode(children, split), [children, split]);
 
   const resolvedMotion = useResolvedMotion({ motion, preset });
 
   const animatedChildren = useAnimatedChildren({
-    splittedNode: shouldAnimate ? splittedNode : [children],
+    nodes: shouldAnimate ? nodes : [children],
     initialDelay,
     animationOrder,
     resolvedMotion,

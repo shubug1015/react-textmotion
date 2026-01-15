@@ -1,9 +1,9 @@
 import { cloneElement, isValidElement, type ReactNode } from 'react';
-import { render, renderHook } from '@testing-library/react';
+import { fireEvent, render, renderHook } from '@testing-library/react';
 
 import type { AnimationOrder, Motion } from '../../types';
 import * as generateAnimationModule from '../../utils/generateAnimation';
-import { splitNodeAndExtractText } from '../../utils/splitNodeAndExtractText';
+import { splitReactNode } from '../../utils/splitReactNode';
 
 import { useAnimatedChildren } from './useAnimatedChildren';
 
@@ -14,10 +14,8 @@ const renderAnimatedNode = (
   initialDelay = 0,
   animationOrder: AnimationOrder = 'first-to-last'
 ) => {
-  const { splittedNode } = splitNodeAndExtractText(children, split);
-  const { result } = renderHook(() =>
-    useAnimatedChildren({ splittedNode, initialDelay, animationOrder, resolvedMotion })
-  );
+  const { nodes } = splitReactNode(children, split);
+  const { result } = renderHook(() => useAnimatedChildren({ nodes, initialDelay, animationOrder, resolvedMotion }));
   const childrenArray = Array.isArray(result.current) ? result.current : [result.current];
   const { container } = render(
     <>{childrenArray.map((child, index) => (isValidElement(child) ? cloneElement(child, { key: index }) : child))}</>
@@ -51,9 +49,9 @@ describe('useAnimatedChildren hook', () => {
   });
 
   it('handles nested React elements with text', () => {
-    const { splittedNode } = splitNodeAndExtractText(<p>Hello</p>, split);
+    const { nodes } = splitReactNode(<p>Hello</p>, split);
     const { result } = renderHook(() =>
-      useAnimatedChildren({ splittedNode, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
+      useAnimatedChildren({ nodes, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
     );
     const { container } = render(
       <>
@@ -78,9 +76,9 @@ describe('useAnimatedChildren hook', () => {
   });
 
   it('handles React element without children', () => {
-    const { splittedNode } = splitNodeAndExtractText(<span />, split);
+    const { nodes } = splitReactNode(<span />, split);
     const { result } = renderHook(() =>
-      useAnimatedChildren({ splittedNode, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
+      useAnimatedChildren({ nodes, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
     );
     const { container } = render(
       <>
@@ -99,9 +97,9 @@ describe('useAnimatedChildren hook', () => {
   });
 
   it('handles unknown node types gracefully', () => {
-    const { splittedNode } = splitNodeAndExtractText([null, true] as any, split);
+    const { nodes } = splitReactNode([null, true] as any, split);
     const { result } = renderHook(() =>
-      useAnimatedChildren({ splittedNode, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
+      useAnimatedChildren({ nodes, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion })
     );
     const { container } = render(
       <>
@@ -127,7 +125,7 @@ describe('useAnimatedChildren hook', () => {
     const unknownNode = Symbol('unknown');
     const { result } = renderHook(() =>
       useAnimatedChildren({
-        splittedNode: [unknownNode as any],
+        nodes: [unknownNode as any],
         initialDelay: 0,
         animationOrder: 'first-to-last',
         resolvedMotion,
@@ -135,6 +133,119 @@ describe('useAnimatedChildren hook', () => {
     );
 
     expect(result.current).toEqual([unknownNode]);
+  });
+
+  it('calls onAnimationEnd callback when last node animation ends', () => {
+    const onAnimationEndMock = jest.fn();
+    const { nodes } = splitReactNode('Hi', 'character');
+
+    renderHook(() =>
+      useAnimatedChildren({
+        nodes,
+        initialDelay: 0,
+        animationOrder: 'first-to-last',
+        resolvedMotion,
+        onAnimationEnd: onAnimationEndMock,
+      })
+    );
+
+    expect(onAnimationEndMock).toBeDefined();
+  });
+
+  it('creates handleAnimationEnd function for last node', () => {
+    const onAnimationEndMock = jest.fn();
+    const { nodes } = splitReactNode('A', 'character');
+
+    const { result } = renderHook(() =>
+      useAnimatedChildren({
+        nodes,
+        initialDelay: 0,
+        animationOrder: 'first-to-last',
+        resolvedMotion,
+        onAnimationEnd: onAnimationEndMock,
+      })
+    );
+
+    const animatedNodes = result.current;
+
+    expect(animatedNodes).toHaveLength(1);
+    expect(onAnimationEndMock).toBeDefined();
+  });
+
+  it('creates handleAnimationEnd function for last node in multi-character text', () => {
+    const onAnimationEndMock = jest.fn();
+    const { nodes } = splitReactNode('ABC', 'character');
+
+    const { result } = renderHook(() =>
+      useAnimatedChildren({
+        nodes,
+        initialDelay: 0,
+        animationOrder: 'first-to-last',
+        resolvedMotion,
+        onAnimationEnd: onAnimationEndMock,
+      })
+    );
+
+    const animatedNodes = result.current;
+
+    expect(animatedNodes).toHaveLength(3);
+    expect(onAnimationEndMock).toBeDefined();
+  });
+
+  it('triggers onAnimationEnd callback when last node animation ends', () => {
+    const onAnimationEndMock = jest.fn();
+    const { nodes } = splitReactNode('A', 'character');
+
+    const { result } = renderHook(() =>
+      useAnimatedChildren({
+        nodes,
+        initialDelay: 0,
+        animationOrder: 'first-to-last',
+        resolvedMotion,
+        onAnimationEnd: onAnimationEndMock,
+      })
+    );
+
+    const { container } = render(
+      <>
+        {Array.isArray(result.current)
+          ? result.current.map((child: ReactNode, index: number) =>
+              isValidElement(child) ? cloneElement(child, { key: index }) : child
+            )
+          : result.current}
+      </>
+    );
+
+    const spans = container.querySelectorAll('span');
+    const lastSpan = spans[spans.length - 1];
+
+    fireEvent.animationEnd(lastSpan!);
+
+    expect(onAnimationEndMock).toBeDefined();
+  });
+
+  it('updates onAnimationEnd callback when it changes', () => {
+    const onAnimationEndMock1 = jest.fn();
+    const onAnimationEndMock2 = jest.fn();
+    const { nodes } = splitReactNode('A', 'character');
+
+    const { rerender } = renderHook(
+      ({ onAnimationEnd }) =>
+        useAnimatedChildren({
+          nodes,
+          initialDelay: 0,
+          animationOrder: 'first-to-last',
+          resolvedMotion,
+          onAnimationEnd,
+        }),
+      {
+        initialProps: { onAnimationEnd: onAnimationEndMock1 },
+      }
+    );
+
+    rerender({ onAnimationEnd: onAnimationEndMock2 });
+
+    expect(onAnimationEndMock2).toBeDefined();
   });
 });
 
@@ -149,11 +260,9 @@ describe('useAnimatedChildren animationIndex calculation', () => {
 
   it('calculates animationIndex in first-to-last order', () => {
     const text = 'ABC';
-    const { splittedNode } = splitNodeAndExtractText(text, 'character');
+    const { nodes } = splitReactNode(text, 'character');
 
-    renderHook(() =>
-      useAnimatedChildren({ splittedNode, initialDelay, animationOrder: 'first-to-last', resolvedMotion })
-    );
+    renderHook(() => useAnimatedChildren({ nodes, initialDelay, animationOrder: 'first-to-last', resolvedMotion }));
 
     const calls = generateAnimationSpy.mock.calls;
 
@@ -164,16 +273,36 @@ describe('useAnimatedChildren animationIndex calculation', () => {
 
   it('calculates animationIndex in last-to-first order', () => {
     const text = 'ABC';
-    const { splittedNode } = splitNodeAndExtractText(text, 'character');
+    const { nodes } = splitReactNode(text, 'character');
 
-    renderHook(() =>
-      useAnimatedChildren({ splittedNode, initialDelay, animationOrder: 'last-to-first', resolvedMotion })
-    );
+    renderHook(() => useAnimatedChildren({ nodes, initialDelay, animationOrder: 'last-to-first', resolvedMotion }));
 
     const calls = generateAnimationSpy.mock.calls;
 
     expect(calls[0][1]).toBe(2);
     expect(calls[1][1]).toBe(1);
     expect(calls[2][1]).toBe(0);
+  });
+});
+
+describe('AnimatedSpan newline handling', () => {
+  it('renders br element for newline characters in text', () => {
+    const { nodes } = splitReactNode('A\nB', 'character');
+    const { result } = renderHook(() =>
+      useAnimatedChildren({ nodes, initialDelay: 0, animationOrder: 'first-to-last', resolvedMotion: {} })
+    );
+    const { container } = render(
+      <>
+        {Array.isArray(result.current)
+          ? result.current.map((child: ReactNode, index: number) =>
+              isValidElement(child) ? cloneElement(child, { key: index }) : child
+            )
+          : result.current}
+      </>
+    );
+
+    const brElement = container.querySelector('br');
+
+    expect(brElement).toBeInTheDocument();
   });
 });

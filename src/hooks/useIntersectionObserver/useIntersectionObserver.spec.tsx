@@ -1,4 +1,4 @@
-import { type RefObject, useEffect } from 'react';
+import { useEffect } from 'react';
 import { act, render, screen } from '@testing-library/react';
 
 import { useIntersectionObserver } from './useIntersectionObserver';
@@ -11,9 +11,9 @@ class MockIntersectionObserver {
     this.callback = callback;
   }
 
-  observe = (element: Element) => {
+  observe = jest.fn((element: Element) => {
     this.elements.push(element);
-  };
+  });
 
   unobserve = jest.fn((element: Element) => {
     this.elements = this.elements.filter(el => el !== element);
@@ -52,127 +52,121 @@ Object.defineProperty(window, 'IntersectionObserver', {
   value: mockIntersectionObserver,
 });
 
-describe('useIntersectionObserver hook', () => {
+describe('useIntersectionObserver', () => {
   beforeEach(() => {
     mockIntersectionObserver.mockClear();
   });
 
   const TestComponent = ({
     options,
-    onIntersect,
+    onChange,
   }: {
     options?: Parameters<typeof useIntersectionObserver>[0];
-    onIntersect?: (isIntersecting: boolean) => void;
+    onChange?: (isIntersecting: boolean) => void;
   }) => {
     const [ref, isIntersecting] = useIntersectionObserver<HTMLDivElement>(options);
 
     useEffect(() => {
-      onIntersect?.(isIntersecting);
-    }, [isIntersecting, onIntersect]);
+      onChange?.(isIntersecting);
+    }, [isIntersecting, onChange]);
 
-    return <div ref={ref as RefObject<HTMLDivElement>} data-testid="target-element" />;
+    return <div ref={ref} data-testid="target" />;
   };
 
-  it('should handle null ref without crashing', () => {
-    const NullRefComponent = () => {
-      useIntersectionObserver<HTMLDivElement>();
-      return null;
-    };
+  it('returns initial isIntersecting as false', () => {
+    let value: boolean | undefined;
 
-    act(() => {
-      render(<NullRefComponent />);
-    });
+    render(<TestComponent onChange={v => (value = v)} />);
+
+    expect(value).toBe(false);
   });
 
-  it('should return a ref and initial isIntersecting state as false', () => {
-    let initialIsIntersecting: boolean | undefined;
+  it('sets isIntersecting to true when intersection occurs', () => {
+    let value = false;
 
-    act(() => {
-      render(<TestComponent onIntersect={val => (initialIsIntersecting = val)} />);
-    });
+    render(<TestComponent onChange={v => (value = v)} />);
 
-    expect(initialIsIntersecting).toBe(false);
+    const target = screen.getByTestId('target');
+    const observer = mockIntersectionObserver.mock.results[0].value as MockIntersectionObserver;
+
+    observer.trigger([{ isIntersecting: true, target }]);
+
+    expect(value).toBe(true);
   });
 
-  it('should set isIntersecting to true when the element intersects', () => {
-    let intersected = false;
+  it('toggles isIntersecting when repeat is true', () => {
+    let value = false;
 
-    act(() => {
-      render(<TestComponent onIntersect={val => (intersected = val)} />);
-    });
+    render(<TestComponent options={{ repeat: true }} onChange={v => (value = v)} />);
 
-    const targetElement = screen.getByTestId('target-element');
-    const observerInstance = mockIntersectionObserver.mock.results[0].value;
+    const target = screen.getByTestId('target');
+    const observer = mockIntersectionObserver.mock.results[0].value as MockIntersectionObserver;
 
-    observerInstance.trigger([{ isIntersecting: true, target: targetElement }]);
-    expect(intersected).toBe(true);
+    observer.trigger([{ isIntersecting: true, target }]);
+    expect(value).toBe(true);
+
+    observer.trigger([{ isIntersecting: false, target }]);
+    expect(value).toBe(false);
   });
 
-  it('should toggle isIntersecting when repeat is true', () => {
-    let intersected = false;
+  it('does not update state when isIntersecting value does not change', () => {
+    const onChange = jest.fn();
 
-    act(() => {
-      render(<TestComponent options={{ repeat: true }} onIntersect={val => (intersected = val)} />);
-    });
+    render(<TestComponent onChange={onChange} />);
 
-    const targetElement = screen.getByTestId('target-element');
-    const observerInstance = mockIntersectionObserver.mock.results[0].value;
+    const target = screen.getByTestId('target');
+    const observer = mockIntersectionObserver.mock.results[0].value as MockIntersectionObserver;
 
-    observerInstance.trigger([{ isIntersecting: true, target: targetElement }]);
-    expect(intersected).toBe(true);
+    observer.trigger([{ isIntersecting: false, target }]);
+    expect(onChange).toHaveBeenCalledTimes(1);
 
-    observerInstance.trigger([{ isIntersecting: false, target: targetElement }]);
-    expect(intersected).toBe(false);
+    observer.trigger([{ isIntersecting: true, target }]);
+    expect(onChange).toHaveBeenCalledTimes(2);
+
+    observer.trigger([{ isIntersecting: true, target }]);
+    expect(onChange).toHaveBeenCalledTimes(2);
   });
 
-  it('should not toggle back when repeat is false', () => {
-    let intersected = false;
+  it('unobserves after first intersection when repeat is false', () => {
+    let value = false;
 
-    act(() => {
-      render(<TestComponent options={{ repeat: false }} onIntersect={val => (intersected = val)} />);
-    });
+    render(<TestComponent options={{ repeat: false }} onChange={v => (value = v)} />);
 
-    const targetElement = screen.getByTestId('target-element');
-    const observerInstance = mockIntersectionObserver.mock.results[0].value;
+    const target = screen.getByTestId('target');
+    const observer = mockIntersectionObserver.mock.results[0].value as MockIntersectionObserver;
 
-    observerInstance.trigger([{ isIntersecting: true, target: targetElement }]);
-    expect(intersected).toBe(true);
+    observer.trigger([{ isIntersecting: true, target }]);
 
-    observerInstance.trigger([{ isIntersecting: false, target: targetElement }]);
-    expect(intersected).toBe(false);
+    expect(value).toBe(true);
+    expect(observer.unobserve).toHaveBeenCalledWith(target);
   });
 
-  it('should disconnect the observer on unmount', () => {
-    let unmount: () => void;
+  it('disconnects observer on unmount', () => {
+    const { unmount } = render(<TestComponent />);
 
-    act(() => {
-      ({ unmount } = render(<TestComponent />));
-    });
+    const observer = mockIntersectionObserver.mock.results[0].value as MockIntersectionObserver;
 
-    const observerInstance = mockIntersectionObserver.mock.results[0].value;
+    unmount();
 
-    act(() => {
-      unmount();
-    });
-
-    expect(observerInstance.disconnect).toHaveBeenCalled();
+    expect(observer.disconnect).toHaveBeenCalled();
   });
 
-  it('should pass correct options to IntersectionObserver', () => {
-    const options = {
-      threshold: 0.5,
-      rootMargin: '10px',
-      repeat: true,
-    };
-
-    act(() => {
-      render(<TestComponent options={options} />);
-    });
+  it('passes correct options to IntersectionObserver', () => {
+    render(<TestComponent options={{ threshold: 0.5, rootMargin: '10px', repeat: true }} />);
 
     expect(mockIntersectionObserver).toHaveBeenCalledWith(expect.any(Function), {
       threshold: 0.5,
       root: null,
       rootMargin: '10px',
     });
+  });
+
+  it('does nothing if ref is never attached', () => {
+    const NoRefComponent = () => {
+      useIntersectionObserver<HTMLDivElement>();
+      return null;
+    };
+
+    expect(() => render(<NoRefComponent />)).not.toThrow();
   });
 });

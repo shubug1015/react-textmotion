@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useRef, useState } from 'react';
+import { type RefCallback, useCallback, useEffect, useState } from 'react';
 
 type UseIntersectionObserverProps = IntersectionObserverInit & {
   repeat?: boolean;
@@ -17,28 +17,33 @@ type UseIntersectionObserverProps = IntersectionObserverInit & {
  * @param {string} [options.rootMargin='0%'] - Margin around the root. Can have values similar to the CSS margin property, e.g. "10px 20px 30px 40px" (top, right, bottom, left).
  * @param {boolean} [options.repeat=true] - If true, the observer will keep observing the element. If false, the observer will unobserve after the first intersection. Defaults to true.
  *
- * @returns {[RefObject<T | null>, boolean]} A tuple containing:
- * - `ref`: A RefObject to be attached to the DOM element you want to observe.
+ * @returns {[RefCallback<T>, boolean]} A tuple containing:
+ * - `ref`: A RefCallback to be attached to the DOM element you want to observe.
  * - `isIntersecting`: A boolean indicating whether the observed element is currently intersecting with its root.
  */
 export const useIntersectionObserver = <T extends Element>(
   options: UseIntersectionObserverProps = {}
-): [RefObject<T | null>, boolean] => {
+): [RefCallback<T>, boolean] => {
   const { threshold = 0, root = null, rootMargin = '0%', repeat = true } = options;
-  const ref = useRef<T>(null);
+
+  const [element, setElement] = useState<T | null>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
 
+  const ref = useCallback((node: T | null) => {
+    setElement(node);
+  }, []);
+
   useEffect(() => {
-    const element = ref.current;
     if (!element) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         const isVisible = entry.isIntersecting;
-        setIsIntersecting(isVisible);
+
+        setIsIntersecting(prev => (prev === isVisible ? prev : isVisible));
 
         if (isVisible && !repeat) {
-          observer.unobserve(element);
+          observer.unobserve(entry.target);
         }
       },
       { threshold, root, rootMargin }
@@ -49,7 +54,7 @@ export const useIntersectionObserver = <T extends Element>(
     return () => {
       observer.disconnect();
     };
-  }, [threshold, root, rootMargin, repeat]);
+  }, [element, threshold, root, rootMargin, repeat]);
 
   return [ref, isIntersecting];
 };

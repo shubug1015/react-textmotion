@@ -4,7 +4,7 @@ import type { TextMotionProps } from '../../types';
 import { splitReactNode } from '../../utils/splitReactNode';
 import { useAnimateChildren } from '../useAnimateChildren';
 import { useIntersectionObserver } from '../useIntersectionObserver';
-import { useResolvedMotion } from '../useResolvedMotion';
+import { useResolveMotion } from '../useResolveMotion';
 
 /**
  * @description
@@ -32,7 +32,7 @@ export const useTextMotionAnimation = (props: TextMotionProps) => {
 
   const { nodes, text } = useMemo(() => splitReactNode(children, split), [children, split]);
 
-  const resolvedMotion = useResolvedMotion({ motion, preset });
+  const resolvedMotion = useResolveMotion({ motion, preset });
 
   const animatedChildren = useAnimateChildren({
     nodes: shouldAnimate ? nodes : [children],

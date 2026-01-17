@@ -4,18 +4,18 @@ import type { Preset, TextMotionProps } from '../../types';
 import { splitReactNode } from '../../utils/splitReactNode';
 import { useAnimateChildren } from '../useAnimateChildren';
 import { useIntersectionObserver } from '../useIntersectionObserver';
-import { useResolvedMotion } from '../useResolvedMotion';
+import { useResolveMotion } from '../useResolveMotion';
 
 import { useTextMotionAnimation } from './useTextMotionAnimation';
 
 jest.mock('../useIntersectionObserver');
-jest.mock('../useResolvedMotion');
+jest.mock('../useResolveMotion');
 jest.mock('../useAnimateChildren');
 jest.mock('../../utils/splitReactNode');
 
 describe('useTextMotionAnimation', () => {
   const mockUseIntersectionObserver = useIntersectionObserver as jest.Mock;
-  const mockUseResolvedMotion = useResolvedMotion as jest.Mock;
+  const mockUseResolvedMotion = useResolveMotion as jest.Mock;
   const mockUseAnimatedChildren = useAnimateChildren as jest.Mock;
   const mockSplitReactNode = splitReactNode as jest.Mock;
 
@@ -55,14 +55,14 @@ describe('useTextMotionAnimation', () => {
     expect(result3.current.shouldAnimate).toBe(false);
   });
 
-  it('should call useResolvedMotion with motion prop', () => {
+  it('should call useResolveMotion with motion prop', () => {
     const motion = { fade: { variant: 'in' as const, duration: 1, delay: 1 } };
     const props = { ...defaultProps, motion };
     renderHook(() => useTextMotionAnimation(props));
     expect(mockUseResolvedMotion).toHaveBeenCalledWith({ motion, preset: undefined });
   });
 
-  it('should call useResolvedMotion with preset prop', () => {
+  it('should call useResolveMotion with preset prop', () => {
     const preset: Preset[] = ['slide-up'];
     const props = { ...defaultProps, preset };
     renderHook(() => useTextMotionAnimation(props));

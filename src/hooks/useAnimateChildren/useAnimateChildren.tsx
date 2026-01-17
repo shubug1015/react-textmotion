@@ -21,6 +21,16 @@ type AnimateResult = {
   nextSequenceIndex: number;
 };
 
+type AnimateNodeTreeParams = {
+  nodes: ReactNode[];
+  startSequenceIndex: number;
+  totalTextNodeCount: number;
+  initialDelay: number;
+  animationOrder: AnimationOrder;
+  motion: Motion;
+  onAnimationEndRef?: RefObject<(() => void) | undefined>;
+};
+
 /**
  * @description
  * `useAnimateChildren` is a custom hook that animates an array of React nodes.
@@ -64,16 +74,6 @@ export const useAnimateChildren = ({
   }, [nodes, initialDelay, animationOrder, motion]);
 
   return animatedChildren;
-};
-
-type AnimateNodeTreeParams = {
-  nodes: ReactNode[];
-  startSequenceIndex: number;
-  totalTextNodeCount: number;
-  initialDelay: number;
-  animationOrder: AnimationOrder;
-  motion: Motion;
-  onAnimationEndRef?: RefObject<(() => void) | undefined>;
 };
 
 const animateNodeTree = ({

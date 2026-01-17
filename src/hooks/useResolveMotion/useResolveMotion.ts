@@ -11,7 +11,7 @@ type UseResolvedMotionProps = {
 
 /**
  * @description
- * `useResolvedMotion` is a custom hook that resolves the motion configuration.
+ * `useResolveMotion` is a custom hook that resolves the motion configuration.
  * It either uses the provided `motion` object or generates a configuration from the `preset` array.
  * If a `preset` is provided, it will be mapped to a `Motion` object.
  * If a `motion` object is provided, it will be deep-copied.
@@ -22,7 +22,7 @@ type UseResolvedMotionProps = {
  *
  * @returns {Motion} The resolved motion configuration object.
  */
-export const useResolvedMotion = ({ motion, preset }: UseResolvedMotionProps): Motion => {
+export const useResolveMotion = ({ motion, preset }: UseResolvedMotionProps): Motion => {
   const resolvedMotion = useMemo(() => {
     if (preset) {
       return mergePresets(preset);

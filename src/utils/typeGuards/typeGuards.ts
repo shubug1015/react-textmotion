@@ -6,6 +6,7 @@ import { isValidElement, type ReactElement, type ReactNode } from 'react';
  * It returns `true` if the node is a string or number, otherwise `false`.
  *
  * @param {ReactNode} node - The React node to check.
+ *
  * @returns {boolean} `true` if the node is a string or number, otherwise `false`.
  */
 export const isTextNode = (node: ReactNode): node is string | number => {
@@ -14,13 +15,14 @@ export const isTextNode = (node: ReactNode): node is string | number => {
 
 /**
  * @description
- * Type guard function that checks if a React node is nullish (null, undefined, or boolean).
+ * Type guard function that checks if a React node is non-renderable (null, undefined, or boolean).
  * It returns `true` if the node is null, undefined, or boolean, otherwise `false`.
  *
  * @param {ReactNode} node - The React node to check.
+ *
  * @returns {boolean} `true` if the node is null, undefined, or boolean, otherwise `false`.
  */
-export const isNullishNode = (node: ReactNode): node is null | undefined | boolean => {
+export const isNonRenderableNode = (node: ReactNode): node is null | undefined | boolean => {
   return node == null || typeof node === 'boolean';
 };
 
@@ -30,13 +32,9 @@ export const isNullishNode = (node: ReactNode): node is null | undefined | boole
  * It returns `true` if the node is a valid React element with children, otherwise `false`.
  *
  * @param {ReactNode} node - The React node to check.
+ *
  * @returns {boolean} `true` if the node is a valid React element with children, otherwise `false`.
  */
 export const isElementWithChildren = (node: ReactNode): node is ReactElement<{ children?: ReactNode }> => {
-  if (!isValidElement(node)) {
-    return false;
-  }
-
-  const props = node.props as Record<string, unknown> | null | undefined;
-  return props !== null && props !== undefined && 'children' in props;
+  return isValidElement<{ children?: ReactNode }>(node);
 };

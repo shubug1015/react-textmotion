@@ -1,138 +1,138 @@
-import { Children, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { countNodes } from './countNodes';
 
 describe('countNodes', () => {
-  const getNodes = (children: ReactNode) => Children.toArray(children);
+  describe('non-renderable nodes', () => {
+    it('returns 0 for null, undefined, and boolean values', () => {
+      expect(countNodes(null)).toBe(0);
+      expect(countNodes(undefined)).toBe(0);
+      expect(countNodes(false)).toBe(0);
+    });
 
-  it('should handle null nodes', () => {
-    const nodes = [null];
-    expect(countNodes(nodes)).toBe(0);
+    it('returns 0 for an empty fragment', () => {
+      expect(countNodes(<></>)).toBe(0);
+    });
   });
 
-  it('should count a single text node as 1', () => {
-    const nodes = getNodes('Hello');
-    expect(countNodes(nodes)).toBe(1);
+  describe('text nodes', () => {
+    it('counts a single text node as 1', () => {
+      expect(countNodes('Hello')).toBe(1);
+      expect(countNodes(123)).toBe(1);
+    });
+
+    it('counts multiple text nodes separated by JSX expressions', () => {
+      expect(
+        countNodes(
+          <>
+            {'Hello'} {'World'}
+          </>
+        )
+      ).toBe(3);
+    });
+
+    it('counts mixed text and element siblings correctly', () => {
+      expect(
+        countNodes(
+          <>
+            Start<span>Middle</span>End
+          </>
+        )
+      ).toBe(3);
+    });
   });
 
-  it('should count multiple text nodes correctly', () => {
-    const nodes = getNodes(<>Hello World</>);
-    expect(countNodes(nodes)).toBe(1);
+  describe('element nodes', () => {
+    it('counts text inside a single element', () => {
+      expect(countNodes(<span>Hello</span>)).toBe(1);
+    });
 
-    const nodesWithSeparators = getNodes(
-      <>
-        {'Hello'} {'World'}
-      </>
-    );
-    expect(countNodes(nodesWithSeparators)).toBe(3);
+    it('counts multiple sibling elements', () => {
+      expect(
+        countNodes(
+          <>
+            <span>Hello</span>
+            <span>World</span>
+          </>
+        )
+      ).toBe(2);
+    });
+
+    it('counts nested elements recursively', () => {
+      expect(
+        countNodes(
+          <div>
+            <span>Hello</span>
+            <p>
+              <span>Deep</span>
+              <span>Nested</span>
+            </p>
+          </div>
+        )
+      ).toBe(3);
+    });
   });
 
-  it('should count a single element node as 1', () => {
-    const nodes = getNodes(<span>Hello</span>);
-    expect(countNodes(nodes)).toBe(1);
+  describe('arrays and composite children', () => {
+    it('counts nodes inside an array of ReactNode', () => {
+      expect(
+        countNodes([
+          'A',
+          'B',
+          <div key="c">
+            <span>C</span>
+          </div>,
+          'D',
+        ])
+      ).toBe(4);
+    });
+
+    it('ignores nullish values inside children arrays', () => {
+      expect(
+        countNodes(
+          <>
+            {'Hello'}
+            {null}
+            {undefined}
+            <span>World</span>
+          </>
+        )
+      ).toBe(2);
+    });
   });
 
-  it('should count multiple element nodes correctly', () => {
-    const nodes = getNodes(
-      <>
-        <span>Hello</span>
-        <span>World</span>
-      </>
-    );
-    expect(countNodes(nodes)).toBe(2);
+  describe('custom components', () => {
+    it('counts text nodes rendered by a functional component', () => {
+      const Wrapper = ({ children }: { children: ReactNode }) => <div>{children}</div>;
+
+      expect(
+        countNodes(
+          <Wrapper>
+            <span>Child1</span>
+            Child2
+          </Wrapper>
+        )
+      ).toBe(2);
+    });
   });
 
-  it('should count nested elements correctly', () => {
-    const nodes = getNodes(
-      <div>
-        <span>Hello</span>
-        <span>World</span>
-      </div>
-    );
-
-    expect(countNodes(nodes)).toBe(2);
-  });
-
-  it('should count deeply nested elements correctly', () => {
-    const nodes = getNodes(
-      <div>
-        <span>Hello</span>
-        <p>
-          <span>Deep</span>
-          <span>Nested</span>
-        </p>
-      </div>
-    );
-
-    expect(countNodes(nodes)).toBe(3);
-  });
-
-  it('should handle mixed text and element nodes', () => {
-    const nodes = getNodes(
-      <>
-        Start<span>Middle</span>End
-      </>
-    );
-    expect(countNodes(nodes)).toBe(3);
-  });
-
-  it('should count nodes within an array of children', () => {
-    const nodes = getNodes([
-      'A',
-      'B',
-      <div key={0}>
-        <span>C</span>
-      </div>,
-      'D',
-    ]);
-
-    expect(countNodes(nodes)).toBe(4);
-  });
-
-  it('should return 0 for an empty array', () => {
-    const nodes = getNodes(<></>);
-    expect(countNodes(nodes)).toBe(0);
-  });
-
-  it('should handle null and undefined nodes gracefully (not count them)', () => {
-    const nodes = getNodes(
-      <>
-        {'Hello'}
-        {null}
-        {undefined}
-        <span>World</span>
-      </>
-    );
-    expect(countNodes(nodes)).toBe(2);
-  });
-
-  it('should count children of a functional component', () => {
-    const MyComponent = ({ children }: { children: ReactNode }) => <div>{children}</div>;
-    const nodes = getNodes(
-      <MyComponent>
-        <span>Child1</span>
-        Child2
-      </MyComponent>
-    );
-
-    expect(countNodes(nodes)).toBe(2);
-  });
-
-  it('should count nodes for a complex structure', () => {
-    const nodes = getNodes(
-      <>
-        Line 1
-        <p>
-          Part 1 <span>Part 2</span>
-        </p>
-        <div>
-          <pre>
-            <code>Code</code> More Code
-          </pre>
-        </div>
-      </>
-    );
-
-    expect(countNodes(nodes)).toBe(5);
+  describe('complex real-world structures', () => {
+    it('counts text nodes in a complex nested tree', () => {
+      expect(
+        countNodes(
+          <>
+            Line 1
+            <p>
+              Part 1 <span>Part 2</span>
+            </p>
+            <div>
+              <pre>
+                <code>Code</code> More Code
+              </pre>
+            </div>
+          </>
+        )
+      ).toBe(5);
+    });
   });
 });

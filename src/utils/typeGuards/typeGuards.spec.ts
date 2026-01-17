@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 
-import { isElementWithChildren, isNullishNode, isTextNode } from './typeGuards';
+import { isElementWithChildren, isNonRenderableNode, isTextNode } from './typeGuards';
 
 describe('typeGuards', () => {
   describe('isTextNode', () => {
@@ -35,35 +35,35 @@ describe('typeGuards', () => {
     });
   });
 
-  describe('isNullishNode', () => {
+  describe('isNonRenderableNode', () => {
     it('should return true for null', () => {
-      expect(isNullishNode(null)).toBe(true);
+      expect(isNonRenderableNode(null)).toBe(true);
     });
 
     it('should return true for undefined', () => {
-      expect(isNullishNode(undefined)).toBe(true);
+      expect(isNonRenderableNode(undefined)).toBe(true);
     });
 
     it('should return true for boolean', () => {
-      expect(isNullishNode(true)).toBe(true);
-      expect(isNullishNode(false)).toBe(true);
+      expect(isNonRenderableNode(true)).toBe(true);
+      expect(isNonRenderableNode(false)).toBe(true);
     });
 
     it('should return false for string', () => {
-      expect(isNullishNode('hello')).toBe(false);
+      expect(isNonRenderableNode('hello')).toBe(false);
     });
 
     it('should return false for number', () => {
-      expect(isNullishNode(123)).toBe(false);
+      expect(isNonRenderableNode(123)).toBe(false);
     });
 
     it('should return false for React elements', () => {
       const element = createElement('div', {}, 'hello');
-      expect(isNullishNode(element)).toBe(false);
+      expect(isNonRenderableNode(element)).toBe(false);
     });
 
     it('should return false for arrays', () => {
-      expect(isNullishNode(['hello', 'world'])).toBe(false);
+      expect(isNonRenderableNode(['hello', 'world'])).toBe(false);
     });
   });
 
@@ -78,9 +78,9 @@ describe('typeGuards', () => {
       expect(isElementWithChildren(element)).toBe(true);
     });
 
-    it('should return false for React elements without children prop', () => {
+    it('should return true for React elements without children prop', () => {
       const element = createElement('div');
-      expect(isElementWithChildren(element)).toBe(false);
+      expect(isElementWithChildren(element)).toBe(true);
     });
 
     it('should return false for string', () => {

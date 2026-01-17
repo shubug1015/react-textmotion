@@ -1,4 +1,4 @@
-import { Children, cloneElement, type MutableRefObject, type ReactNode, useEffect, useMemo, useRef } from 'react';
+import { Children, cloneElement, type ReactNode, type RefObject, useEffect, useMemo, useRef } from 'react';
 
 import type { AnimationOrder, Motion } from '../../types';
 import { countNodes } from '../../utils/countNodes';
@@ -9,7 +9,7 @@ import { isElementWithChildren, isTextNode } from '../../utils/typeGuards';
 import { AnimatedSpan } from './AnimatedSpan';
 
 type UseAnimatedChildrenProps = {
-  splittedNode: ReactNode[];
+  nodes: ReactNode[];
   initialDelay: number;
   animationOrder: AnimationOrder;
   resolvedMotion: Motion;
@@ -26,7 +26,7 @@ type WrapResult = {
  * `useAnimatedChildren` is a custom hook that animates an array of React nodes.
  * It manages the animation sequence index to apply delays correctly.
  *
- * @param {ReactNode[]} splittedNode - The array of React nodes to be animated.
+ * @param {ReactNode[]} nodes - The array of React nodes to be animated.
  * @param {number} initialDelay - The initial delay before the animation starts, in seconds.
  * @param {AnimationOrder} animationOrder - Defines the order in which the animation sequence is applied. Defaults to `'first-to-last'`.
  * @param {Motion} resolvedMotion - The motion configuration object, which is a result of merging custom motion and presets.
@@ -35,7 +35,7 @@ type WrapResult = {
  * @returns {ReactNode[]} An array of animated React nodes.
  */
 export const useAnimatedChildren = ({
-  splittedNode,
+  nodes,
   initialDelay,
   animationOrder,
   resolvedMotion,
@@ -48,10 +48,10 @@ export const useAnimatedChildren = ({
   }, [onAnimationEnd]);
 
   const animatedChildren = useMemo(() => {
-    const totalNodes = countNodes(splittedNode);
+    const totalNodes = countNodes(nodes);
 
-    const { nodes } = wrapWithAnimatedSpan(
-      splittedNode,
+    const { nodes: animatedNodes } = wrapWithAnimatedSpan(
+      nodes,
       0,
       initialDelay,
       animationOrder,
@@ -60,24 +60,24 @@ export const useAnimatedChildren = ({
       onAnimationEndRef
     );
 
-    return nodes;
-  }, [splittedNode, initialDelay, animationOrder, resolvedMotion]);
+    return animatedNodes;
+  }, [nodes, initialDelay, animationOrder, resolvedMotion]);
 
   return animatedChildren;
 };
 
 const wrapWithAnimatedSpan = (
-  splittedNode: ReactNode[],
+  nodes: ReactNode[],
   currentSequenceIndex: number,
   initialDelay: number,
   animationOrder: AnimationOrder,
   resolvedMotion: Motion,
   totalNodes: number,
-  onAnimationEndRef?: MutableRefObject<(() => void) | undefined>
+  onAnimationEndRef?: RefObject<(() => void) | undefined>
 ): WrapResult => {
   let sequenceIndex = currentSequenceIndex;
 
-  const nodes = splittedNode.map((node, key) => {
+  const animatedNodes = nodes.map((node, key) => {
     if (isTextNode(node)) {
       const currentIndex = sequenceIndex++;
       const calculatedSequenceIndex = calculateSequenceIndex(currentIndex, totalNodes, animationOrder);
@@ -111,5 +111,5 @@ const wrapWithAnimatedSpan = (
     return node;
   });
 
-  return { nodes, nextSequenceIndex: sequenceIndex };
+  return { nodes: animatedNodes, nextSequenceIndex: sequenceIndex };
 };

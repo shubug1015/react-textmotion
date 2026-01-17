@@ -16,12 +16,11 @@ describe('splitText utility', () => {
   });
 
   describe('when using an invalid split type', () => {
-    it('should default to splitting by character', () => {
+    it('should return the invalid split type value (exhaustive check fallback)', () => {
       const input = 'Hi';
-      const expected = ['H', 'i'];
       const invalidSplit = 'invalid' as any;
 
-      expect(splitText(input, invalidSplit)).toEqual(expected);
+      expect(splitText(input, invalidSplit)).toEqual('invalid');
     });
   });
 });

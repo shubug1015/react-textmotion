@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 
 import type { Preset, TextMotionProps } from '../../types';
 import { splitReactNode } from '../../utils/splitReactNode';
-import { useAnimatedChildren } from '../useAnimatedChildren';
+import { useAnimateChildren } from '../useAnimateChildren';
 import { useIntersectionObserver } from '../useIntersectionObserver';
 import { useResolvedMotion } from '../useResolvedMotion';
 
@@ -10,13 +10,13 @@ import { useTextMotionAnimation } from './useTextMotionAnimation';
 
 jest.mock('../useIntersectionObserver');
 jest.mock('../useResolvedMotion');
-jest.mock('../useAnimatedChildren');
+jest.mock('../useAnimateChildren');
 jest.mock('../../utils/splitReactNode');
 
 describe('useTextMotionAnimation', () => {
   const mockUseIntersectionObserver = useIntersectionObserver as jest.Mock;
   const mockUseResolvedMotion = useResolvedMotion as jest.Mock;
-  const mockUseAnimatedChildren = useAnimatedChildren as jest.Mock;
+  const mockUseAnimatedChildren = useAnimateChildren as jest.Mock;
   const mockSplitReactNode = splitReactNode as jest.Mock;
 
   const defaultProps: TextMotionProps = {
@@ -69,7 +69,7 @@ describe('useTextMotionAnimation', () => {
     expect(mockUseResolvedMotion).toHaveBeenCalledWith({ motion: undefined, preset });
   });
 
-  it('should call useAnimatedChildren with correct props when animating', () => {
+  it('should call useAnimateChildren with correct props when animating', () => {
     const props = { ...defaultProps, initialDelay: 1, animationOrder: 'last-to-first' as const };
     renderHook(() => useTextMotionAnimation(props));
 
@@ -77,12 +77,12 @@ describe('useTextMotionAnimation', () => {
       nodes: ['H', 'e', 'l', 'l', 'o'],
       initialDelay: 1,
       animationOrder: 'last-to-first',
-      resolvedMotion: {},
+      motion: {},
       onAnimationEnd: undefined,
     });
   });
 
-  it('should call useAnimatedChildren with original children when not animating', () => {
+  it('should call useAnimateChildren with original children when not animating', () => {
     mockUseIntersectionObserver.mockReturnValue([null, false]);
     const props = { ...defaultProps, trigger: 'scroll' as const };
     renderHook(() => useTextMotionAnimation(props));

@@ -21,9 +21,9 @@ type Props = {
 export const AnimatedSpan: FC<Props> = ({ text, style, onAnimationEnd }) => {
   const handleAnimationEnd = useAnimationEndCallback(onAnimationEnd);
 
-  if (text === '\n') {
-    return <br />;
-  }
+  // if (text === '\n') {
+  //   return <br />;
+  // }
 
   return (
     <span style={style} aria-hidden="true" onAnimationEnd={handleAnimationEnd}>

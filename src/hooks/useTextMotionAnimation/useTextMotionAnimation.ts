@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import type { TextMotionProps } from '../../types';
 import { splitReactNode } from '../../utils/splitReactNode';
-import { useAnimatedChildren } from '../useAnimatedChildren';
+import { useAnimateChildren } from '../useAnimateChildren';
 import { useIntersectionObserver } from '../useIntersectionObserver';
 import { useResolvedMotion } from '../useResolvedMotion';
 
@@ -34,11 +34,11 @@ export const useTextMotionAnimation = (props: TextMotionProps) => {
 
   const resolvedMotion = useResolvedMotion({ motion, preset });
 
-  const animatedChildren = useAnimatedChildren({
+  const animatedChildren = useAnimateChildren({
     nodes: shouldAnimate ? nodes : [children],
     initialDelay,
     animationOrder,
-    resolvedMotion,
+    motion: resolvedMotion,
     onAnimationEnd,
   });
 

@@ -4,7 +4,7 @@ import '../../styles/motion.scss';
 import { type FC, memo, useEffect, useRef } from 'react';
 
 import { DEFAULT_ARIA_LABEL } from '../../constants';
-import { useTextMotionAnimation } from '../../hooks/useTextMotionAnimation';
+import { useController } from '../../hooks/useController';
 import { useValidation } from '../../hooks/useValidation';
 import type { TextMotionProps } from '../../types';
 import { getAriaLabel } from '../../utils/accessibility';
@@ -69,40 +69,39 @@ import { getAriaLabel } from '../../utils/accessibility';
  * }
  */
 export const TextMotion: FC<TextMotionProps> = memo(props => {
-  const { as: Tag = 'span', children, onAnimationStart } = props;
+  const { as: Component = 'span', children, onAnimationStart } = props;
+
   useValidation({ componentName: 'TextMotion', props });
 
-  const { shouldAnimate, targetRef, animatedChildren, text } = useTextMotionAnimation(props);
+  const { canAnimate, targetRef, animatedChildren, text } = useController(props);
 
-  const onAnimationStartRef = useRef(onAnimationStart);
+  const animationStartCallbackRef = useRef(onAnimationStart);
 
   useEffect(() => {
-    onAnimationStartRef.current = onAnimationStart;
+    animationStartCallbackRef.current = onAnimationStart;
   }, [onAnimationStart]);
 
+  // Trigger animation start callback when animation becomes active.
   useEffect(() => {
-    if (shouldAnimate) {
-      onAnimationStartRef.current?.();
-    }
-  }, [shouldAnimate]);
+    if (!canAnimate) return;
+    animationStartCallbackRef.current?.();
+  }, [canAnimate]);
 
-  if (!shouldAnimate) {
-    const ariaProps = getAriaLabel(text || DEFAULT_ARIA_LABEL);
+  const ariaProps = getAriaLabel(text || DEFAULT_ARIA_LABEL);
 
+  if (!canAnimate) {
     return (
-      <Tag ref={targetRef} className="text-motion-inanimate" {...ariaProps}>
+      <Component ref={targetRef} className="text-motion-inactive" {...ariaProps}>
         {children}
-      </Tag>
+      </Component>
     );
   }
 
-  return (() => {
-    const ariaProps = getAriaLabel(text || DEFAULT_ARIA_LABEL);
-
-    return (
-      <Tag ref={targetRef} className="text-motion" {...ariaProps}>
-        {animatedChildren}
-      </Tag>
-    );
-  })();
+  return (
+    <Component ref={targetRef} className="text-motion" {...ariaProps}>
+      {animatedChildren}
+    </Component>
+  );
 });
+
+TextMotion.displayName = 'TextMotion';

@@ -2,7 +2,7 @@ import { cloneElement, type ReactNode } from 'react';
 
 import type { Split } from '../../types';
 import { splitText } from '../splitText';
-import { isElementWithChildren, isNonRenderableNode, isTextNode } from '../typeGuards/typeGuards';
+import { isElementWithChildren, isNonRenderableNode, isTextNode } from '../typeGuards';
 
 type SplitResult = {
   nodes: ReactNode[];

@@ -1,10 +1,8 @@
-.text-motion span,
-.node-motion span {
+.text-motion span {
   display: inline-block;
   white-space: pre;
 }
 
-.text-motion-inanimate,
-.node-motion-inanimate {
+.text-motion-inactive {
   visibility: hidden;
 }

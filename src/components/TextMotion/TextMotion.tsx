@@ -71,7 +71,7 @@ import { getAriaLabel } from '../../utils/accessibility';
 export const TextMotion: FC<TextMotionProps> = memo(props => {
   const { as: Component = 'span', children, onAnimationStart } = props;
 
-  useValidation({ componentName: 'TextMotion', props });
+  useValidation(props);
 
   const { canAnimate, targetRef, animatedChildren, text } = useController(props);
 
@@ -81,7 +81,7 @@ export const TextMotion: FC<TextMotionProps> = memo(props => {
     animationStartCallbackRef.current = onAnimationStart;
   }, [onAnimationStart]);
 
-  // Trigger animation start callback when animation becomes active.
+  // Trigger animation start callback when animation becomes active
   useEffect(() => {
     if (!canAnimate) return;
     animationStartCallbackRef.current?.();

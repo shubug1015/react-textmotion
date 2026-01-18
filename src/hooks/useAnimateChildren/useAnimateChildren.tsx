@@ -91,7 +91,6 @@ const animateNodeTree = ({
     if (isTextNode(node)) {
       const rawSequenceIndex = sequenceIndex++;
       const orderedSequenceIndex = calculateSequenceIndex(rawSequenceIndex, totalTextNodeCount, animationOrder);
-
       const shouldTriggerAnimationEnd = isLastNode(orderedSequenceIndex, totalTextNodeCount);
 
       const { style } = generateAnimation(motion, orderedSequenceIndex, initialDelay);

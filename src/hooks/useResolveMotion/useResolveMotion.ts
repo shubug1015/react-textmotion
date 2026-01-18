@@ -14,7 +14,7 @@ type UseResolvedMotionProps = {
  * `useResolveMotion` is a custom hook that resolves the motion configuration.
  * It either uses the provided `motion` object or generates a configuration from the `preset` array.
  * If a `preset` is provided, it will be mapped to a `Motion` object.
- * If a `motion` object is provided, it will be deep-copied.
+ * If a `motion` object is provided, it will be returned as-is.
  * If neither is provided, an empty object will be returned.
  *
  * @param {Motion} [motion] - A custom motion configuration object.

@@ -15,8 +15,8 @@ jest.mock('../../utils/splitReactNode');
 
 describe('useController', () => {
   const mockUseIntersectionObserver = useIntersectionObserver as jest.Mock;
-  const mockUseResolvedMotion = useResolveMotion as jest.Mock;
-  const mockUseAnimatedChildren = useAnimateChildren as jest.Mock;
+  const mockUseResolveMotion = useResolveMotion as jest.Mock;
+  const mockUseAnimateChildren = useAnimateChildren as jest.Mock;
   const mockSplitReactNode = splitReactNode as jest.Mock;
 
   const defaultProps: TextMotionProps = {
@@ -25,8 +25,8 @@ describe('useController', () => {
 
   beforeEach(() => {
     mockUseIntersectionObserver.mockReturnValue([null, true]);
-    mockUseResolvedMotion.mockReturnValue({});
-    mockUseAnimatedChildren.mockReturnValue([]);
+    mockUseResolveMotion.mockReturnValue({});
+    mockUseAnimateChildren.mockReturnValue([]);
     mockSplitReactNode.mockReturnValue({ nodes: ['H', 'e', 'l', 'l', 'o'], text: 'Hello' });
   });
 
@@ -59,21 +59,21 @@ describe('useController', () => {
     const motion = { fade: { variant: 'in' as const, duration: 1, delay: 1 } };
     const props = { ...defaultProps, motion };
     renderHook(() => useController(props));
-    expect(mockUseResolvedMotion).toHaveBeenCalledWith({ motion, preset: undefined });
+    expect(mockUseResolveMotion).toHaveBeenCalledWith({ motion, preset: undefined });
   });
 
   it('should call useResolveMotion with preset prop', () => {
     const preset: Preset[] = ['slide-up'];
     const props = { ...defaultProps, preset };
     renderHook(() => useController(props));
-    expect(mockUseResolvedMotion).toHaveBeenCalledWith({ motion: undefined, preset });
+    expect(mockUseResolveMotion).toHaveBeenCalledWith({ motion: undefined, preset });
   });
 
   it('should call useAnimateChildren with correct props when animating', () => {
     const props = { ...defaultProps, initialDelay: 1, animationOrder: 'last-to-first' as const };
     renderHook(() => useController(props));
 
-    expect(mockUseAnimatedChildren).toHaveBeenCalledWith({
+    expect(mockUseAnimateChildren).toHaveBeenCalledWith({
       nodes: ['H', 'e', 'l', 'l', 'o'],
       initialDelay: 1,
       animationOrder: 'last-to-first',
@@ -87,7 +87,7 @@ describe('useController', () => {
     const props = { ...defaultProps, trigger: 'scroll' as const };
     renderHook(() => useController(props));
 
-    expect(mockUseAnimatedChildren).toHaveBeenCalledWith(
+    expect(mockUseAnimateChildren).toHaveBeenCalledWith(
       expect.objectContaining({
         nodes: [defaultProps.children],
       })
@@ -97,7 +97,7 @@ describe('useController', () => {
   it('should return correct values', () => {
     mockUseIntersectionObserver.mockReturnValue(['ref', true]);
     mockSplitReactNode.mockReturnValue({ nodes: ['Test'], text: 'Test' });
-    mockUseAnimatedChildren.mockReturnValue(['Animated Test']);
+    mockUseAnimateChildren.mockReturnValue(['Animated Test']);
 
     const { result } = renderHook(() => useController(defaultProps));
 

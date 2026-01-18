@@ -57,7 +57,7 @@ describe('TextMotion component', () => {
     expect(useControllerSpy).toHaveBeenCalledWith(expect.objectContaining({ trigger: 'scroll', repeat: false }));
   });
 
-  it('renders spans when canAnimate is true (e.g., trigger="on-load")', () => {
+  it('renders spans when canAnimate is true', () => {
     const animatedChildren = Array.from(TEXT).map((ch, i) => (
       <span key={i} aria-hidden="true">
         {ch}
@@ -82,22 +82,6 @@ describe('TextMotion component', () => {
     expect(container.textContent).toBe(TEXT);
     expect(spans.length).toBe(0);
     expect(container).toHaveClass('text-motion-inactive');
-  });
-
-  it('renders spans when canAnimate is true', () => {
-    const animatedChildren = Array.from(TEXT).map((ch, i) => (
-      <span key={i} aria-hidden="true">
-        {ch}
-      </span>
-    ));
-
-    render(<MockTextMotion hookReturn={{ canAnimate: true, text: TEXT, animatedChildren }}>{TEXT}</MockTextMotion>);
-
-    const container = screen.getByLabelText(TEXT);
-    const spans = container.querySelectorAll<HTMLSpanElement>('span[aria-hidden="true"]');
-
-    expect(spans.length).toBe(TEXT.length);
-    expect(container).toHaveClass('text-motion');
   });
 
   it('warns when children is empty null/undefined', () => {
